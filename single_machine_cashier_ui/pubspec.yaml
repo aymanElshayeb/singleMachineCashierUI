@@ -20,7 +20,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: '>=2.11.0 <3.0.0'
+  sdk: '>=2.6.0 <3.0.0'
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -32,10 +32,10 @@ dependencies:
   flutter:
     sdk: flutter
   get_it: ^2.0.1
-  flutter_bloc: ^0.21.0
+  flutter_bloc: ^3.0.0
   equatable: ^0.4.0
   dartz: ^0.8.6
-  connectivity: ^0.4.3+7
+  internet_connection_checker: ^1.0.0+1
   http: ^0.12.0+2
   # Local cache
   shared_preferences: ^0.5.3+4
