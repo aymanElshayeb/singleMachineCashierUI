@@ -11,9 +11,6 @@ class LoginBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Login'),
-      ),
       body: SingleChildScrollView(
         child: buildBody(context),
       ),
@@ -21,36 +18,18 @@ class LoginBuilder extends StatelessWidget {
   }
 
   BlocProvider<UserBloc> buildBody(BuildContext context) {
+    var width = MediaQuery.of(context).size.width;
+    var height = MediaQuery.of(context).size.height;
     return BlocProvider(
       create: (_) => sl<UserBloc>(),
       child: Center(
-        child: Padding(
+        child: Container(
+         width: width,
+          height: height,
           padding: const EdgeInsets.all(10),
-          child: Column(
-            children: <Widget>[
-              SizedBox(height: 10),
-              // Top half
-              BlocBuilder<UserBloc, UserState>(
-                builder: (context, state) {
-                  if (state is Authenticated) {
-                    return MessageDisplay(
-                      message: 'user logged in successfully',
-                    );
-                  } else if (state is Error) {
-                    return MessageDisplay(
-                      message: state.message,
-                    );
-                  }
-                },
-              ),
-
-              // Bottom half
-              Login()
-            ],
-          ),
-        ),
+            child: Login(),
       ),
-    );
+      ));
   }
 }
 

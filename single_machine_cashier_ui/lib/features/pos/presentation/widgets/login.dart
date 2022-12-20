@@ -4,6 +4,7 @@ import 'package:single_machine_cashier_ui/features/pos/domain/usecases/authentic
 
 import '../bloc/user_bloc.dart';
 import '../bloc/user_event.dart';
+import '../bloc/user_state.dart';
 
 class Login extends StatefulWidget {
   const Login();
@@ -37,15 +38,28 @@ class _Login extends State<Login> {
                     padding: const EdgeInsets.symmetric(vertical: 16.0),
                     child: ElevatedButton(
                       onPressed: () {
-                        // Validate returns true if the form is valid, or false otherwise.
-                          // If the form is valid, display a snackbar. In the real world,
-                          // you'd often call a server or save the information in a database.
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Processing Data')),
-                          );
+
+                        print('nour');
+
+                        BlocBuilder<UserBloc, UserState>(
+                          builder: (context, state) {
+                            if (state is Authenticated) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Authenticated')),
+                              );
+                            } else if (state is Error) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Error')),
+                              );
+                            }else  {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('else')));
+                            }
+                          },
+                        );
 
                       },
-                      child: const Text('Submit'),
+                      child: const Text('Login'),
                     ),
                   ),
                 ],

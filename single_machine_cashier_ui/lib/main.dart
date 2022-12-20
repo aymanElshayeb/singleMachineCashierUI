@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'features/pos/presentation/pages/login.dart';
+import 'features/pos/presentation/pages/menu.dart';
 import 'injection_container.dart' as di;
 
 void main() async {
@@ -18,7 +19,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home:  LoginBuilder(),
+      home:  MyHomePage(),
     );
   }
 }
