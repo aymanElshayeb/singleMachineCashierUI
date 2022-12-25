@@ -25,3 +25,4 @@ class MenuDataTable extends StatelessWidget {
     );
   }
 }
+

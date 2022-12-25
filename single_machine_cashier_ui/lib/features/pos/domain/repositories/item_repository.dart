@@ -4,8 +4,7 @@ import 'package:single_machine_cashier_ui/features/pos/domain/entities/user.dart
 import 'package:dartz/dartz.dart';
 
 abstract class ItemsRepository {
-  Future<Either<Failure, Item>> getCategoryItems(int category);
-  Future<Either<Failure, Item>> getAllItems();
+  Future<Either<Failure, List<Item>>> getCategoryItems(int category);
   Future<Either<Failure, Item>> getItem(int id);
 
 }

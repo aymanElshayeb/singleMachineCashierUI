@@ -12,8 +12,10 @@ class Item extends Equatable{
   final String PLU_EAN;
 
 
-  Item(this.PLU_EAN, this.name, this.unit, this.category, this.price, this.kilo, this.id
-      ):super([PLU_EAN,name,unit,kilo,category,price,id]);
+  Item({
+    @required this.PLU_EAN, @required this.name, @required this.unit, @required this.category,
+    @required this.price, @required this.kilo, @required this.id
+  } ):super([PLU_EAN,name,unit,kilo,category,price,id]);
 
 }
 

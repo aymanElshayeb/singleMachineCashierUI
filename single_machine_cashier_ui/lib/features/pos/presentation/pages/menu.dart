@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
+import '../widgets/bill.dart';
 import '../widgets/menu_items.dart';
+import '../widgets/popup_menu.dart';
 import '../widgets/table.dart';
 import 'constants.dart';
 
@@ -42,7 +44,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Row(
                   // mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
-                    menu_button(width, Icons.settings, 'item1'),
+                    PopupMenu(),
                     menu_button(width, Icons.lock, 'item1'),
                     menu_button(width, Icons.home, 'item1'),
                     menu_button(width, Icons.power_off_rounded, 'item1')
@@ -64,7 +66,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 decoration: BoxDecoration(
                     color: seconderyColor,
                     borderRadius: BorderRadius.circular(15)),
-                child: MenuDataTable(['Name','Price','Quantity'],[['tea','20','1'],['coffe','30','1']]),
+                child: BillPart()
               ),
               Container(
                 height: height * 0.9,
@@ -92,7 +94,6 @@ class _MyHomePageState extends State<MyHomePage> {
         label: Text(label), //label text
         style: ElevatedButton.styleFrom(
           primary: Colors.grey.withOpacity(0.6),
-          shadowColor: primaryColor,
           textStyle: const TextStyle(
               color: Colors.white, fontSize: 18, fontStyle: FontStyle.normal),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),

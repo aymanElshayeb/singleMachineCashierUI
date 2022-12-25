@@ -23,8 +23,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   @override
   Stream<UserState> mapEventToState(UserEvent event) async*{
     if (event is AuthenticateUserEvent){
-      final failureOrUser = await authenticateUser(
-        Params(password: event.password),
+      final failureOrUser = await authenticateUser.authenticate(
+        event.password,
       );
       yield failureOrUser.fold( (failure) => Error(message: _mapFailureToMessage(failure))
         ,(user) => Authenticated(),

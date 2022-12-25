@@ -1,28 +1,22 @@
-import 'package:flutter/foundation.dart';
 import 'package:single_machine_cashier_ui/core/error/failures.dart';
 import 'package:single_machine_cashier_ui/core/usecases/usecase.dart';
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
+import 'package:single_machine_cashier_ui/features/pos/domain/entities/category.dart';
 import '../repositories/category_repository.dart';
 
 
-class Categories implements UseCase<Category,Params>{
+class Categories {
   final CategoryRepository repository;
 
   Categories(this.repository);
 
-  Future<Either<Failure, Category>> getCategory(Params params) async {
-    return await repository.getCategory(params.id);
-  }
+  // Future<Either<Failure, Category>> getCategory(int id) async {
+  //   return await repository.getCategory(id);
+  // }
 
-  @override
-  Future<Either<Failure, Category>> call(Params params) async{
+  Future<Either<Failure, List<Category>>> getAllCategories() async{
     return await repository.getCategories();
   }
 }
 
-class Params extends Equatable{
-  final int id;
-
-  Params({this.id}):super([id]);
-}

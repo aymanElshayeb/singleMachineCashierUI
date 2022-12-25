@@ -6,17 +6,13 @@ import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 
-class AuthenticateUser implements UseCase<User,Params>{
+class AuthenticateUser {
   final UserRepository repository;
 
   AuthenticateUser(this.repository);
-  @override
-  Future<Either<Failure, User>> call(Params params) async {
-    return await repository.authenticateUser(params.password);
+
+  Future<Either<Failure, User>> authenticate(String password) async {
+    return await repository.authenticateUser(password);
   }
 }
 
-class Params extends Equatable{
-  final String password;
-  Params({@required this.password}):super([password]);
-}
