@@ -19,12 +19,25 @@ class UserLocalDataSourceImpl implements UserLocalDataSource {
 
   @override
   Future<List<UserModel>> getUsers() {
-    final jsonString = sharedPreferences.getString(CACHED_USERS);
+    // final jsonString = sharedPreferences.getString(CACHED_USERS);
+    final jsonString =[
+      {
+        "userName": "nabil",
+        "id": 1,
+        "role": "ADMIN",
+        "password": "poiuytrewq"
+      },
+      {
+        "userName": "yasser",
+        "id": 2,
+        "role": "Cashier",
+        "password": "qwertyuiop"
+      }
+    ];
 
     if (jsonString != null) {
-      final List<Map<String, dynamic>> jsonMap = json.decode(jsonString);
-      List<UserModel> users;
-
+      final List<Map<String, dynamic>> jsonMap = jsonString;
+      List<UserModel> users=[];
       for (var user in jsonMap) {
         users.add(UserModel.fromJson(user));
       }

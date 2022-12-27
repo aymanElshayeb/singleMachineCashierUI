@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:single_machine_cashier_ui/features/pos/presentation/pages/menu.dart';
 import 'package:virtual_keyboard_multi_language/virtual_keyboard_multi_language.dart';
+import '../../../../core/network/network_info.dart';
+import '../../../../injection_container.dart';
+import '../../data/datasources/user_local_data_source.dart';
+import '../../data/repositories/user_repository_impl.dart';
+import '../../domain/usecases/authenticate_user.dart';
 
 class Login extends StatefulWidget {
   const Login();
@@ -56,7 +63,25 @@ class _Login extends State<Login> {
                             padding: const EdgeInsets.symmetric(vertical: 16.0),
                             child: Center(
                               child: ElevatedButton(
-                                onPressed: () {},
+                                onPressed: () async {
+                                  //  dispatchAuth();
+
+                                  final auth=sl<AuthenticateUser>();
+                                  // AuthenticateUser(UserRepositoryImpl(
+                                  //   localDataSource: UserLocalDataSourceImpl(sharedPreferences: await SharedPreferences.getInstance()),
+                                  //   networkInfo: NetworkInfoImpl(),
+                                  // ),);
+                                  final failureOrUser = await auth.authenticate(
+                                    txt.text
+                                  );
+                                  failureOrUser.fold( (failure) => ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Wronge Password")))
+                                    ,(user) => Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => const MyHomePage()),
+                                    ),
+                                  );
+                                  txt.clear();
+                                },
                                 child: const Text(
                                   'Login',
                                   style: TextStyle(color: Colors.white),
@@ -83,7 +108,7 @@ class _Login extends State<Login> {
           height: 300,
           //width: 500,
           textColor: Colors.white,
-          textController: _controllerText,
+          textController: txt,
           //customLayoutKeys: _customLayoutKeys,
           defaultLayouts: const [VirtualKeyboardDefaultLayouts.English],
           //reverseLayout :true,
@@ -125,11 +150,12 @@ class _Login extends State<Login> {
     setState(() {});
   }
 
-  Padding userInput(String label, bool password) {
+  Padding userInput(String label, bool password,) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: TextFormField(
         autofocus: true,
+        controller: txt,
         obscureText: password,
         decoration: InputDecoration(
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
@@ -145,7 +171,7 @@ class _Login extends State<Login> {
             showKeyboard = true;
           });
         },
-        onFieldSubmitted: (_) {
+        onFieldSubmitted: (_)  {
           //  dispatchAuth();
         },
         validator: (value) {
