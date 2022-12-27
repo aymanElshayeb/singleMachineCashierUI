@@ -7,6 +7,7 @@ import '../bloc/user_bloc.dart';
 import '../bloc/user_state.dart';
 import '../widgets/login.dart';
 import '../widgets/message_display.dart';
+import 'menu.dart';
 
 class LoginBuilder extends StatelessWidget {
   @override
@@ -50,7 +51,19 @@ class LoginBuilder extends StatelessWidget {
 
     return BlocProvider(
       create: (_) => sl<UserBloc>(),
-      child: Center(
+      child: BlocConsumer<UserBloc, UserState>(
+        listener: (context, state) {
+          if (state is Authenticated) {
+            Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const MyHomePage()),
+                  );
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Wronge Password")));
+          }
+        },
+        builder: (context, state) {
+        return Center(
         child: Column(
           children: [
             Container(
@@ -81,7 +94,9 @@ class LoginBuilder extends StatelessWidget {
 
             )  ],
         ),
-      ));
+      );
+  },
+));
   }
 }
 

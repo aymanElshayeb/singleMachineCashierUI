@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/bloc.dart';
 import 'package:single_machine_cashier_ui/features/pos/presentation/pages/menu.dart';
 import 'package:virtual_keyboard_multi_language/virtual_keyboard_multi_language.dart';
 import '../../../../core/network/network_info.dart';
@@ -7,6 +9,7 @@ import '../../../../injection_container.dart';
 import '../../data/datasources/user_local_data_source.dart';
 import '../../data/repositories/user_repository_impl.dart';
 import '../../domain/usecases/authenticate_user.dart';
+import '../bloc/user_bloc.dart';
 
 class Login extends StatefulWidget {
   const Login();
@@ -71,15 +74,17 @@ class _Login extends State<Login> {
                                   //   localDataSource: UserLocalDataSourceImpl(sharedPreferences: await SharedPreferences.getInstance()),
                                   //   networkInfo: NetworkInfoImpl(),
                                   // ),);
-                                  final failureOrUser = await auth.authenticate(
-                                    txt.text
-                                  );
-                                  failureOrUser.fold( (failure) => ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Wronge Password")))
-                                    ,(user) => Navigator.push(
-                                      context,
-                                      MaterialPageRoute(builder: (context) => const MyHomePage()),
-                                    ),
-                                  );
+                                  // final failureOrUser = await auth.authenticate(
+                                  //   txt.text
+                                  // );
+                                  dispatchUser(txt.text);
+
+                                  // failureOrUser.fold( (failure) => ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Wronge Password")))
+                                  //   ,(user) => Navigator.push(
+                                  //     context,
+                                  //     MaterialPageRoute(builder: (context) => const MyHomePage()),
+                                  //   ),
+                                  // );
                                   txt.clear();
                                 },
                                 child: const Text(
@@ -182,5 +187,10 @@ class _Login extends State<Login> {
         },
       ),
     );
+  }
+  void dispatchUser(inputStr) {
+    // Clearing the TextField to prepare it for the next inputted number
+    BlocProvider.of<UserBloc>(context)
+        .add(AuthenticateUserEvent(inputStr));
   }
 }
