@@ -38,12 +38,6 @@ class CartLocalDataSourceImpl implements CartLocalDataSource {
     }
   }
 
-  Future<void> cacheCategories(CartModel itemToCache) {
-    return sharedPreferences.setString(
-      CACHED_CART,
-      json.encode(itemToCache.toJson()),
-    );
-  }
 
   @override
   Future<CartModel> addItems(ItemModel itemToCache) async {

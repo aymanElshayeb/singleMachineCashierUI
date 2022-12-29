@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:virtual_keyboard_multi_language/virtual_keyboard_multi_language.dart';
 
 import '../../../../injection_container.dart';
-import '../bloc/user_bloc.dart';
-import '../bloc/user_state.dart';
+import '../bloc/user/user_bloc.dart';
+import '../bloc/user/user_state.dart';
 import '../widgets/login.dart';
 import '../widgets/message_display.dart';
 import 'menu.dart';
@@ -59,7 +59,7 @@ class LoginBuilder extends StatelessWidget {
                     MaterialPageRoute(builder: (context) => const MyHomePage()),
                   );
           } else {
-            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Wronge Password")));
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Wrong Password")));
           }
         },
         builder: (context, state) {

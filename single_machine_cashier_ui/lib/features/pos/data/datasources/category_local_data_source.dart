@@ -22,11 +22,20 @@ class CategoryLocalDataSourceImpl implements CategoryLocalDataSource {
 
   @override
   Future<List<CategoryModel>> getCategories() {
-    final jsonString = sharedPreferences.getString(CACHED_CATEGORIES);
+    final jsonString = [
+      {
+        "name": "eggs",
+        "id": 1
+      },
+      {
+        "name": "milk",
+        "id": 2
+      }
+    ];
 
     if (jsonString != null) {
-      final List<Map<String, dynamic>> jsonMap = json.decode(jsonString);
-      List<CategoryModel> categories;
+      final List<Map<String, dynamic>> jsonMap = jsonString;
+      List<CategoryModel> categories=[];
 
       for (var category in jsonMap) {
         categories.add(CategoryModel.fromJson(category));

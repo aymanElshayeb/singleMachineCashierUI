@@ -18,5 +18,6 @@ class Categories {
   Future<Either<Failure, List<Category>>> getAllCategories() async{
     return await repository.getCategories();
   }
+
 }
 

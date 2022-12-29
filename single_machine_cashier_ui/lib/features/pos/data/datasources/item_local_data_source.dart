@@ -20,10 +20,65 @@ class ItemLocalDataSourceImpl implements ItemLocalDataSource {
 
   @override
   Future<List<ItemModel>> getItems() {
-    final jsonString = sharedPreferences.getString(CACHED_ITEMS);
+    final jsonString = [
+      {
+        "name": "potato",
+        "id": 1,
+        "unit": "Kilo",
+        "kilo": true,
+        "category": 1,
+        "price": 20,
+        "PLU_EAN": ""
+      },
+      {
+        "name": "orange",
+        "id": 2,
+        "unit": "Kilo",
+        "kilo": true,
+        "category": 1,
+        "price": 15,
+        "PLU_EAN": ""
+      },
+      {
+        "name": "banana",
+        "id": 3,
+        "unit": "Kilo",
+        "category": 1,
+        "kilo": true,
+        "price": 10,
+        "PLU_EAN": ""
+      },
+      {
+        "name": "milk",
+        "id": 4,
+        "unit": "liter",
+        "category": 2,
+        "price": 10,
+        "PLU_EAN": ""
+      },
+      {
+        "name": "eggs",
+        "id": 5,
+        "unit": "piece",
+        "kilo": false,
+        "category": 2,
+        "price": 3,
+        "PLU_EAN": ""
+      },
+      {
+        "name": "cheese",
+        "id": 6,
+        "unit": "Kilo",
+        "kilo": true,
+        "category": 2,
+        "price": 15,
+        "PLU_EAN": ""
+      }
+
+    ];
 
     if (jsonString != null) {
-      final List<Map<String, dynamic>> jsonMap = json.decode(jsonString);
+      final List<Map<String, dynamic>> jsonMap = jsonString;
       List<ItemModel> items;
 
       for (var item in jsonMap) {

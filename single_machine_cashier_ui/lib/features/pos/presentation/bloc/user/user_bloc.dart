@@ -1,11 +1,10 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
-import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/user_event.dart';
-import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/user_state.dart';
-import '../../../../core/error/failures.dart';
-import '../../domain/usecases/authenticate_user.dart';
+import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/user/user_event.dart';
+import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/user/user_state.dart';
+import '../../../../../core/error/failures.dart';
+import '../../../domain/usecases/authenticate_user.dart';
 
 const String SERVER_FAILURE_MESSAGE = 'Server Failure';
 const String CACHE_FAILURE_MESSAGE = 'Cache Failure';
