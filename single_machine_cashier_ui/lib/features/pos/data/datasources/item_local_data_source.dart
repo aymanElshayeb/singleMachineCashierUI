@@ -79,7 +79,7 @@ class ItemLocalDataSourceImpl implements ItemLocalDataSource {
 
     if (jsonString != null) {
       final List<Map<String, dynamic>> jsonMap = jsonString;
-      List<ItemModel> items;
+      List<ItemModel> items=[];
 
       for (var item in jsonMap) {
         items.add(ItemModel.fromJson(item));

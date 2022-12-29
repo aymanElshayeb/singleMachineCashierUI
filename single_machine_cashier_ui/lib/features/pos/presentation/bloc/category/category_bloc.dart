@@ -4,6 +4,7 @@ import 'package:meta/meta.dart';
 import 'package:single_machine_cashier_ui/features/pos/domain/entities/category.dart';
 import 'package:single_machine_cashier_ui/features/pos/domain/usecases/categories.dart';
 import '../../../../../core/error/failures.dart';
+import '../../../domain/entities/item.dart';
 import 'category_event.dart';
 import 'category_state.dart';
 
@@ -22,7 +23,7 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
   @override
   Stream<CategoryState> mapEventToState(CategoryEvent event) async*{
     if (event is GetCategoryItems){
-      final failureOrCategory = await categories.getAllCategories();
+      final failureOrCategory = await categories.getCategoryItems(event.id);
       yield failureOrCategory.fold((failure) => CategoryError(message:  _mapFailureToMessage(failure))
         ,(categoryList) => CategoryItemsFound(categoriesNames:_mapCategoriesToList(categoryList)),
       );
@@ -41,22 +42,22 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
         return 'Unexpected error';
     }
   }
-  List<String> _mapCategoriesToList(List<Category> categoryList) {
+  List<String> _mapCategoriesToList(List<Item> categoryList) {
     List<String> categories=[];
     for (var category in categoryList) {
         categories.add(category.name);
     }
     return categories;
   }
-  Future<List<String>> _getAllCategories() async {
-
-    final failureOrCategory =await categories.getAllCategories();
-    List<String> c;
-    failureOrCategory.fold( (failure) => print("error")
-      ,(categoryList) => c=_mapCategoriesToList(categoryList),
-    );
-   return c;
-  }
+  // Future<List<String>> _getAllCategories() async {
+  //
+  //   final failureOrCategory =await categories.getAllCategories();
+  //   List<String> c;
+  //   failureOrCategory.fold( (failure) => print("error")
+  //     ,(categoryList) => c=_mapCategoriesToList(categoryList),
+  //   );
+  //  return c;
+  // }
 }
 
 

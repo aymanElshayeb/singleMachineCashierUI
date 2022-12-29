@@ -24,11 +24,12 @@ class CategoryLocalDataSourceImpl implements CategoryLocalDataSource {
   Future<List<CategoryModel>> getCategories() {
     final jsonString = [
       {
-        "name": "eggs",
+        "name": "groceries",
         "id": 1
+
       },
       {
-        "name": "milk",
+        "name": "dairy",
         "id": 2
       }
     ];

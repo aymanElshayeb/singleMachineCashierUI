@@ -48,7 +48,7 @@ class MenuItems extends StatelessWidget {
                     ),
                     onPressed: (() {
                       BlocProvider.of<CategoryBloc>(context)
-                          .add(GetCategoryItems(1));
+                          .add(GetCategoryItems(index+1));
                     }),
                     child: Text(state.categories[index]),
                   ),

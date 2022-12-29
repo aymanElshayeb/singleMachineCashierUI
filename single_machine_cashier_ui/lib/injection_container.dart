@@ -5,6 +5,7 @@ import 'package:single_machine_cashier_ui/features/pos/domain/usecases/categorie
 import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/category/bloc.dart';
 import 'core/network/network_info.dart';
 import 'features/pos/data/datasources/category_local_data_source.dart';
+import 'features/pos/data/datasources/item_local_data_source.dart';
 import 'features/pos/data/datasources/user_local_data_source.dart';
 import 'features/pos/data/repositories/category_repository_impl.dart';
 import 'features/pos/data/repositories/user_repository_impl.dart';
@@ -40,7 +41,7 @@ Future<void> init() async {
   sl.registerLazySingleton<CategoryRepository>(
         () => CategoryRepositoryImpl(
       localDataSource: sl(),
-      networkInfo: sl(),
+      networkInfo: sl(), itemLocalDataSource: sl(),
     ),
   );
 
@@ -51,6 +52,9 @@ Future<void> init() async {
 
   sl.registerLazySingleton<CategoryLocalDataSource>(
         () => CategoryLocalDataSourceImpl(sharedPreferences: sl()),
+  );
+  sl.registerLazySingleton<ItemLocalDataSource>(
+        () => ItemLocalDataSourceImpl(sharedPreferences: sl()),
   );
 
   //! Core
