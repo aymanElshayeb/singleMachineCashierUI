@@ -18,12 +18,18 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
   CategoryBloc({@required this.categories, }): assert(categories != null);
 
   @override
-  CategoryState get initialState => CategoryInitial(categoriesNames: const ["groceries","dairy"]);
+  CategoryState get initialState => CategoryInitial(categoriesNames: const ["help","help"]);
 
   @override
   Stream<CategoryState> mapEventToState(CategoryEvent event) async*{
     if (event is GetCategoryItems){
       final failureOrCategory = await categories.getCategoryItems(event.id);
+      yield failureOrCategory.fold((failure) => CategoryError(message:  _mapFailureToMessage(failure))
+        ,(categoryList) => CategoryItemsFound(categoriesNames:_mapCategoriesToList(categoryList)),
+      );
+    }else if (event is InitEvent){
+
+      final failureOrCategory = await categories.getAllCategories();
       yield failureOrCategory.fold((failure) => CategoryError(message:  _mapFailureToMessage(failure))
         ,(categoryList) => CategoryItemsFound(categoriesNames:_mapCategoriesToList(categoryList)),
       );
@@ -42,7 +48,7 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
         return 'Unexpected error';
     }
   }
-  List<String> _mapCategoriesToList(List<Item> categoryList) {
+  List<String> _mapCategoriesToList(var categoryList) {
     List<String> categories=[];
     for (var category in categoryList) {
         categories.add(category.name);

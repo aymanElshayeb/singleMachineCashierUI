@@ -5,8 +5,9 @@ abstract class CategoryEvent extends Equatable {
   CategoryEvent([List props = const <dynamic>[]]) : super(props);
 }
 
+class InitEvent extends CategoryEvent{}
+
 class GetCategoryItems extends CategoryEvent{
   final int id;
   GetCategoryItems(this.id):super([id]);
-
 }

@@ -18,7 +18,7 @@ class MenuItems extends StatelessWidget {
     double height = MediaQuery.of(context).size.height;
 
     return BlocProvider(
-        create: (context) => sl<CategoryBloc>(),
+        create: (context) => sl<CategoryBloc>()..add(InitEvent()),
         child: BlocBuilder<CategoryBloc, CategoryState>(
 
           builder: (context, state) {

@@ -19,7 +19,9 @@ class CategoryInitial extends CategoryState {
   CategoryInitial({
     @required this.categoriesNames,
   }
-):super([categoriesNames]);}
+):super([categoriesNames]);
+}
+
 
 class CategoryItemsFound extends CategoryState {
   final List<String> categoriesNames;
