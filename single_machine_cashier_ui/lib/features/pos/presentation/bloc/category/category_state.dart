@@ -11,6 +11,8 @@ abstract class CategoryState  extends Equatable{
 
 }
 
+class Initial extends CategoryState {}
+
 class CategoryInitial extends CategoryState {
   final List<String> categoriesNames;
   @override

@@ -18,7 +18,7 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
   CategoryBloc({@required this.categories, }): assert(categories != null);
 
   @override
-  CategoryState get initialState => CategoryInitial(categoriesNames: const ["help","help"]);
+  CategoryState get initialState => Initial();
 
   @override
   Stream<CategoryState> mapEventToState(CategoryEvent event) async*{
