@@ -57,8 +57,6 @@ class _MyHomePageState extends State<MyHomePage> {
                         // mainAxisAlignment: MainAxisAlignment.end,
                         children: <Widget>[
                           PopupMenu(),
-                          menu_button(
-                              width, Icons.settings, 'office', state, () {}),
                           menu_button(width, Icons.home, 'Home', state, () {
                             BlocProvider.of<CategoryBloc>(context)
                                 .add(InitEvent());
@@ -104,15 +102,17 @@ class _MyHomePageState extends State<MyHomePage> {
   Container menu_button(double width, IconData icon, String label,
       CategoryState state, Function function) {
     return Container(
-      height: 300,
-      padding: EdgeInsets.all(width * 0.01),
+      height: 35,
+      width: 100,
+      margin: EdgeInsets.all(5),
+      //padding: EdgeInsets.all(width * 0.01),
       child: ElevatedButton.icon(
         icon: Icon(icon), //icon data for elevated button
         label: Text(label), //label text
         style: ElevatedButton.styleFrom(
           primary: Colors.grey.withOpacity(0.6),
           textStyle: const TextStyle(
-              color: Colors.white, fontSize: 18, fontStyle: FontStyle.normal),
+              color: Colors.white, fontSize: 14, fontStyle: FontStyle.normal),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
         ),
         onPressed: ((function)),

@@ -48,13 +48,11 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
     } else if (event is UpdateOrderEvent) {
       Map<Item, int> orders = {};
       orders = state.orderstate;
-      print("this is the item you want to add:" + event.item.name);
       if (orders.containsKey(event.item)) {
         orders.update(event.item, (value) => value + 1);
       } else {
         orders[event.item] = 1;
       }
-      print("now thry are:" + orders.toString());
 
       yield UpdateOrderState(order: orders, items: state.categoryitems);
       yield CategoryItemsFound(
@@ -66,7 +64,6 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
       Map<Item, int> orders = {};
       orders = state.orderstate;
       orders[event.item] = event.quantity;
-      //state.orderstate[event.item] = event.quantity;
       yield UpdateOrderState(order: orders, items: state.categoryitems);
       yield CategoryItemsFound(
           categoriesNames: _mapCategoriesToList(state.categoryitems),
