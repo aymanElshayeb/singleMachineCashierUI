@@ -17,14 +17,9 @@ import 'features/pos/presentation/bloc/user/user_bloc.dart';
 final sl = GetIt.instance;
 
 Future<void> init() async {
+  sl.registerFactory(() => UserBloc(authenticateUser: sl()));
 
-  sl.registerFactory(
-        () => UserBloc(authenticateUser: sl())
-  );
-
-  sl.registerFactory(
-          () => CategoryBloc(categories: sl())
-  );
+  sl.registerFactory(() => CategoryBloc(categories: sl()));
   // Use cases
   sl.registerLazySingleton(() => AuthenticateUser(sl()));
 
@@ -32,29 +27,30 @@ Future<void> init() async {
 
   // Repository
   sl.registerLazySingleton<UserRepository>(
-        () => UserRepositoryImpl(
+    () => UserRepositoryImpl(
       localDataSource: sl(),
       networkInfo: sl(),
     ),
   );
 
   sl.registerLazySingleton<CategoryRepository>(
-        () => CategoryRepositoryImpl(
+    () => CategoryRepositoryImpl(
       localDataSource: sl(),
-      networkInfo: sl(), itemLocalDataSource: sl(),
+      networkInfo: sl(),
+      itemLocalDataSource: sl(),
     ),
   );
 
   // Data sources
   sl.registerLazySingleton<UserLocalDataSource>(
-        () => UserLocalDataSourceImpl(sharedPreferences: sl()),
+    () => UserLocalDataSourceImpl(sharedPreferences: sl()),
   );
 
   sl.registerLazySingleton<CategoryLocalDataSource>(
-        () => CategoryLocalDataSourceImpl(sharedPreferences: sl()),
+    () => CategoryLocalDataSourceImpl(sharedPreferences: sl()),
   );
   sl.registerLazySingleton<ItemLocalDataSource>(
-        () => ItemLocalDataSourceImpl(sharedPreferences: sl()),
+    () => ItemLocalDataSourceImpl(sharedPreferences: sl()),
   );
 
   //! Core

@@ -1,4 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:single_machine_cashier_ui/features/pos/presentation/pages/device_managament.dart';
+import 'package:single_machine_cashier_ui/features/pos/presentation/pages/seller_managament.dart';
 
 // This is the type used by the popup menu below.
 enum SampleItem { itemOne, itemTwo, itemThree, itemFour, itemFive }
@@ -47,22 +50,49 @@ class _PopupMenuState extends State<PopupMenu> {
           });
         },
         itemBuilder: (BuildContext context) => <PopupMenuEntry<SampleItem>>[
-          const PopupMenuItem<SampleItem>(
+          PopupMenuItem<SampleItem>(
             value: SampleItem.itemOne,
             child: ListTile(
-              leading: const Icon(Icons.person),
-              title: const Text('Seller management'),
-            ),
+                leading: const Icon(Icons.person),
+                title: const Text('Seller management'),
+                onTap: () => gotoPage('seller')),
           ),
-          const PopupMenuItem<SampleItem>(
+          PopupMenuItem<SampleItem>(
             value: SampleItem.itemTwo,
             child: ListTile(
               leading: const Icon(Icons.device_hub),
               title: const Text('Device management'),
+              onTap: () => gotoPage('device'),
             ),
           ),
         ],
       ),
     );
+  }
+
+  void gotoPage(String pageName) {
+    switch (pageName) {
+      case 'seller':
+        {
+          // statements;
+          Navigator.push(context,
+              CupertinoPageRoute(builder: (redContext) => SellerMangament()));
+        }
+        break;
+
+      case 'device':
+        {
+          //statements;
+          Navigator.push(context,
+              CupertinoPageRoute(builder: (redContext) => DeviceMangament()));
+        }
+        break;
+
+      default:
+        {
+          throw new Exception();
+        }
+        break;
+    }
   }
 }

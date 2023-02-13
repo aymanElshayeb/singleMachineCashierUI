@@ -4,7 +4,9 @@ import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/user/us
 import 'features/pos/presentation/bloc/category/category_bloc.dart';
 import 'features/pos/presentation/pages/login.dart';
 import 'features/pos/presentation/pages/menu.dart';
+import 'features/pos/presentation/pages/new_menu.dart';
 import 'features/pos/presentation/pages/num_pad.dart';
+import 'features/pos/presentation/pages/seller_managament.dart';
 import 'features/pos/presentation/pages/to_pay.dart';
 import 'injection_container.dart' as di;
 
@@ -35,7 +37,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         home: LoginBuilder(),
-        //home: ToPay(),
+        //home: SellerMangament(),
       ),
     );
   }
