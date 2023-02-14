@@ -136,7 +136,68 @@ class BillPart extends StatelessWidget {
                 Row(
                   children: <Widget>[
                     option_Button(Icon(Icons.delete), 'Remove', () {}),
-                    option_Button(Icon(Icons.search), ' EAN Search', () {}),
+                    option_Button(Icon(Icons.search), ' EAN Search', () {
+                      showDialog(
+                          context: context,
+                          builder: (((context) {
+                            return AlertDialog(
+                              title: Text('EAN Search'),
+                              content: Container(
+                                width: width * 0.6 + 10,
+                                height: height * 0.6,
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      height: height * 0.6,
+                                      width: (width * 0.6) * 0.35,
+                                      child: Column(
+                                        children: [
+                                          TextField(
+                                            controller: EanController,
+                                            decoration: InputDecoration(
+                                              labelText: 'EAN',
+                                              suffixIcon: Icon(
+                                                Icons.code,
+                                                size: 17,
+                                              ),
+                                            ),
+                                          ),
+                                          NumPad(
+                                            buttonSize: 50,
+                                            buttonColor: Colors.grey,
+                                            iconColor: Colors.blueGrey,
+                                            controller: EanController,
+                                            delete: () {
+                                              EanController.text =
+                                                  EanController.text.substring(
+                                                      0,
+                                                      EanController
+                                                              .text.length -
+                                                          1);
+                                            },
+                                            // do something with the input numbers
+                                            onSubmit: () {},
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Container(
+                                        height: height * 0.6,
+                                        width: (width * 0.6) * 0.65,
+                                        decoration: BoxDecoration(
+                                            color: Color.fromARGB(
+                                                255, 228, 227, 227),
+                                            borderRadius:
+                                                BorderRadius.circular(15)))
+                                  ],
+                                ),
+                              ),
+                            );
+                          })));
+                    }),
                     option_Button(Icon(Icons.cancel), 'Cancel', () {}),
                   ],
                 )
