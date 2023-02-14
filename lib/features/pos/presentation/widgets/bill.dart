@@ -8,6 +8,7 @@ import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/tabl
 import '../../domain/entities/item.dart';
 import '../bloc/category/category_bloc.dart';
 import '../bloc/category/category_state.dart';
+import '../pages/num_pad.dart';
 
 class BillPart extends StatelessWidget {
   @override
@@ -20,6 +21,7 @@ class BillPart extends StatelessWidget {
     TextEditingController customController = TextEditingController();
     TextEditingController customController2 = TextEditingController();
     TextEditingController customController3 = TextEditingController();
+    TextEditingController EanController = TextEditingController();
 
     return BlocBuilder<CategoryBloc, CategoryState>(builder: (context, state) {
       cc = context;
@@ -134,7 +136,7 @@ class BillPart extends StatelessWidget {
                 Row(
                   children: <Widget>[
                     option_Button(Icon(Icons.delete), 'Remove', () {}),
-                    option_Button(Icon(Icons.search), ' Bar-Code', () {}),
+                    option_Button(Icon(Icons.search), ' EAN Search', () {}),
                     option_Button(Icon(Icons.cancel), 'Cancel', () {}),
                   ],
                 )
