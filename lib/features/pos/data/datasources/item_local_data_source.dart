@@ -28,7 +28,7 @@ class ItemLocalDataSourceImpl implements ItemLocalDataSource {
         "kilo": true,
         "category": 1,
         "price": 20,
-        "PLU_EAN": ""
+        "PLU_EAN": "aa"
       },
       {
         "name": "orange",
@@ -37,7 +37,7 @@ class ItemLocalDataSourceImpl implements ItemLocalDataSource {
         "kilo": true,
         "category": 1,
         "price": 15,
-        "PLU_EAN": ""
+        "PLU_EAN": "bb"
       },
       {
         "name": "banana",
@@ -46,7 +46,7 @@ class ItemLocalDataSourceImpl implements ItemLocalDataSource {
         "category": 2,
         "kilo": true,
         "price": 10,
-        "PLU_EAN": ""
+        "PLU_EAN": "acc"
       },
       {
         "name": "milk",
@@ -54,7 +54,7 @@ class ItemLocalDataSourceImpl implements ItemLocalDataSource {
         "unit": "liter",
         "category": 2,
         "price": 10,
-        "PLU_EAN": ""
+        "PLU_EAN": "dd"
       },
       {
         "name": "eggs",
@@ -63,7 +63,7 @@ class ItemLocalDataSourceImpl implements ItemLocalDataSource {
         "kilo": false,
         "category": 2,
         "price": 3,
-        "PLU_EAN": ""
+        "PLU_EAN": "ff"
       },
       {
         "name": "cheese",
@@ -72,7 +72,7 @@ class ItemLocalDataSourceImpl implements ItemLocalDataSource {
         "kilo": true,
         "category": 2,
         "price": 15,
-        "PLU_EAN": ""
+        "PLU_EAN": "gg"
       }
     ];
 

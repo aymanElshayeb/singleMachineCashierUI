@@ -58,4 +58,26 @@ class CategoryRepositoryImpl implements CategoryRepository {
       }
     }
   }
+
+  @override
+  Future<Either<Failure, List<Item>>> getEanItem(String ean) async {
+    if (await networkInfo.isConnected) {
+    } else {
+      try {
+        final items = await itemLocalDataSource.getItems();
+        List<Item> tempItems = [];
+
+        for (var item in items) {
+          if (item.PLU_EAN.contains(ean)) {
+            tempItems.add(item);
+            print(item.PLU_EAN + ', ' + item.name);
+          }
+        }
+
+        return Right(tempItems);
+      } on CacheException {
+        return Left(CacheFailure());
+      }
+    }
+  }
 }

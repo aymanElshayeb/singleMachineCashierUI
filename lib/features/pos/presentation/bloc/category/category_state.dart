@@ -13,6 +13,7 @@ abstract class CategoryState extends Equatable {
   bool get gotitems => null;
   List<Item> get categoryitems => null;
   Map<Item, int> get orderstate => {};
+  List<Item> get eanitems => [];
 }
 
 class Initial extends CategoryState {}
@@ -32,6 +33,7 @@ class CategoryItemsFound extends CategoryState {
   final List<Item> categoriesitems;
   final bool boolitems;
   Map<Item, int> orders;
+  final List<Item> finalEanItems;
 
   @override
   bool get gotitems => boolitems;
@@ -41,13 +43,22 @@ class CategoryItemsFound extends CategoryState {
   List<Item> get categoryitems => categoriesitems;
   @override
   Map<Item, int> get orderstate => orders;
+  @override
+  List<Item> get eanitems => finalEanItems;
 
-  CategoryItemsFound({
-    @required this.orders,
-    @required this.categoriesNames,
-    @required this.boolitems,
-    @required this.categoriesitems,
-  }) : super([categoriesNames, boolitems, categoriesitems, orders]);
+  CategoryItemsFound(
+      {@required this.orders,
+      @required this.categoriesNames,
+      @required this.boolitems,
+      @required this.categoriesitems,
+      @required this.finalEanItems})
+      : super([
+          categoriesNames,
+          boolitems,
+          categoriesitems,
+          orders,
+          finalEanItems
+        ]);
 }
 
 class CategoryError extends CategoryState {
@@ -59,6 +70,7 @@ class CategoryError extends CategoryState {
 class UpdateOrderState extends CategoryState {
   final Map<Item, int> order;
   final List<Item> items;
+  final List<Item> finalEanItems;
   @override
   Map<Item, int> get orderstate => order;
   @override
@@ -67,9 +79,37 @@ class UpdateOrderState extends CategoryState {
   List<Item> get categoryitems => items;
   @override
   bool get gotitems => true;
+  @override
+  List<Item> get eanitems => finalEanItems;
 
-  UpdateOrderState({@required this.order, @required this.items})
-      : super([order, items]);
+  UpdateOrderState(
+      {@required this.order,
+      @required this.items,
+      @required this.finalEanItems})
+      : super([order, items, finalEanItems]);
+}
+
+class getItems extends CategoryState {
+  final Map<Item, int> order;
+  final bool got_items;
+  final List<Item> items;
+  final List<Item> finalEanItems;
+  @override
+  Map<Item, int> get orderstate => order;
+  @override
+  List<String> get categories => _mapCategoriesToList(items);
+  @override
+  List<Item> get categoryitems => items;
+  @override
+  bool get gotitems => got_items;
+  @override
+  List<Item> get eanitems => finalEanItems;
+  getItems({
+    @required this.finalEanItems,
+    @required this.order,
+    @required this.items,
+    @required this.got_items,
+  }) : super([finalEanItems, order, items, got_items]);
 }
 
 List<String> _mapCategoriesToList(var categoryList) {
