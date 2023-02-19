@@ -4,7 +4,6 @@ import 'package:single_machine_cashier_ui/features/pos/domain/usecases/items.dar
 
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/error/failures.dart';
-import '../../../../core/network/network_info.dart';
 import '../../domain/entities/category.dart';
 
 import '../../domain/entities/item.dart';
@@ -17,45 +16,57 @@ import 'package:meta/meta.dart';
 class CategoryRepositoryImpl implements CategoryRepository {
   final ItemLocalDataSource itemLocalDataSource;
   final CategoryLocalDataSource localDataSource;
-  final NetworkInfo networkInfo;
 
-  CategoryRepositoryImpl(
-      {@required this.localDataSource,
-      @required this.itemLocalDataSource,
-      @required this.networkInfo});
+  CategoryRepositoryImpl({
+    @required this.localDataSource,
+    @required this.itemLocalDataSource,
+  });
 
   @override
   Future<Either<Failure, List<Category>>> getCategories() async {
-    if (await networkInfo.isConnected) {
-    } else {
-      try {
-        List<Category> categories = await localDataSource.getCategories();
+    try {
+      List<Category> categories = await localDataSource.getCategories();
 
-        return Right(categories);
-      } on CacheException {
-        return Left(CacheFailure());
-      }
+      return Right(categories);
+    } on CacheException {
+      return Left(CacheFailure());
     }
   }
 
   @override
   Future<Either<Failure, List<Item>>> getCategoryItems(int category) async {
-    if (await networkInfo.isConnected) {
-    } else {
-      try {
-        final items = await itemLocalDataSource.getItems();
-        List<Item> tempItems = [];
+    try {
+      final items = await itemLocalDataSource.getItems();
+      List<Item> tempItems = [];
 
-        for (var item in items) {
-          if (item.category == category) {
-            tempItems.add(item);
-          }
+      for (var item in items) {
+        if (item.category == category) {
+          tempItems.add(item);
         }
-
-        return Right(tempItems);
-      } on CacheException {
-        return Left(CacheFailure());
       }
+
+      return Right(tempItems);
+    } on CacheException {
+      return Left(CacheFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<Item>>> getEanItem(String ean) async {
+    try {
+      final items = await itemLocalDataSource.getItems();
+      List<Item> tempItems = [];
+
+      for (var item in items) {
+        if (item.PLU_EAN.contains(ean)) {
+          tempItems.add(item);
+          print(item.PLU_EAN + ', ' + item.name);
+        }
+      }
+
+      return Right(tempItems);
+    } on CacheException {
+      return Left(CacheFailure());
     }
   }
 }

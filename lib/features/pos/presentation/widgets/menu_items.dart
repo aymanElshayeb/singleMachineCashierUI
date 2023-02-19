@@ -55,16 +55,11 @@ class MenuItems extends StatelessWidget {
                         BlocProvider.of<CategoryBloc>(context).add(
                             UpdateOrderEvent(state.categoryitems[index],
                                 state.categoryitems));
-
-                        //BlocProvider.of<CategoryBloc>(context).add(InitEvent());
                       }
                     }),
-                    child: /*Text(state.categories[
-                    index]),*/
-                        Column(
+                    child: Column(
                       children: [
                         Text(state.categories[index]),
-                        /*Text(state.categoryitems[index].price.toString()),*/
                         Container(
                             child: state.gotitems == false
                                 ? Text("")

@@ -1,4 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:single_machine_cashier_ui/features/pos/presentation/pages/device_managament.dart';
+import 'package:single_machine_cashier_ui/features/pos/presentation/pages/seller_managament.dart';
 
 // This is the type used by the popup menu below.
 enum SampleItem { itemOne, itemTwo, itemThree, itemFour, itemFive }
@@ -16,18 +19,30 @@ class _PopupMenuState extends State<PopupMenu> {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Container(
-      height: 30,
-      width: 85,
+      height: 35,
+      width: 100,
+      margin: EdgeInsets.all(5),
       decoration: BoxDecoration(
-          color: Colors.grey, borderRadius: BorderRadius.circular(8)),
+          color: Colors.grey, borderRadius: BorderRadius.circular(5)),
       child: PopupMenuButton<SampleItem>(
         initialValue: selectedMenu,
-        child: Center(
-          child: const Text(
-            'settings',
-            style: TextStyle(
-                color: Colors.white, fontSize: 15, fontStyle: FontStyle.normal),
-          ),
+        child: Row(
+          children: [
+            Icon(
+              Icons.settings,
+              color: Colors.white,
+            ),
+            SizedBox(
+              width: 5,
+            ),
+            const Text(
+              'Office',
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 14,
+                  fontStyle: FontStyle.normal),
+            ),
+          ],
         ),
         onSelected: (SampleItem item) {
           setState(() {
@@ -35,43 +50,49 @@ class _PopupMenuState extends State<PopupMenu> {
           });
         },
         itemBuilder: (BuildContext context) => <PopupMenuEntry<SampleItem>>[
-          const PopupMenuItem<SampleItem>(
+          PopupMenuItem<SampleItem>(
             value: SampleItem.itemOne,
             child: ListTile(
-              leading: const Icon(Icons.history),
-              title: const Text('Bon History'),
-            ),
+                leading: const Icon(Icons.person),
+                title: const Text('Seller management'),
+                onTap: () => gotoPage('seller')),
           ),
-          const PopupMenuItem<SampleItem>(
+          PopupMenuItem<SampleItem>(
             value: SampleItem.itemTwo,
             child: ListTile(
-              leading: const Icon(Icons.work_history),
-              title: const Text('Last Bon'),
-            ),
-          ),
-          const PopupMenuItem<SampleItem>(
-            value: SampleItem.itemThree,
-            child: ListTile(
-              leading: const Icon(Icons.arrow_back),
-              title: const Text('Back'),
-            ),
-          ),
-          const PopupMenuItem<SampleItem>(
-            value: SampleItem.itemFour,
-            child: ListTile(
-              leading: const Icon(Icons.payments_outlined),
-              title: const Text('Add/Take Money'),
-            ),
-          ),
-          const PopupMenuItem<SampleItem>(
-            value: SampleItem.itemFive,
-            child: ListTile(
-              leading: const Icon(Icons.key),
-              title: const Text('Open Drawer'),
+              leading: const Icon(Icons.device_hub),
+              title: const Text('Device management'),
+              onTap: () => gotoPage('device'),
             ),
           ),
         ],
       ),
     );
+  }
+
+  void gotoPage(String pageName) {
+    switch (pageName) {
+      case 'seller':
+        {
+          // statements;
+          Navigator.push(context,
+              CupertinoPageRoute(builder: (redContext) => SellerMangament()));
+        }
+        break;
+
+      case 'device':
+        {
+          //statements;
+          Navigator.push(context,
+              CupertinoPageRoute(builder: (redContext) => DeviceMangament()));
+        }
+        break;
+
+      default:
+        {
+          throw new Exception();
+        }
+        break;
+    }
   }
 }

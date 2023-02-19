@@ -32,3 +32,10 @@ class AddToOrder extends CategoryEvent {
 
   AddToOrder(this.item, this.quantity) : super([item, quantity]);
 }
+
+class GetEAN extends CategoryEvent {
+  final String ean;
+  GetEAN(
+    this.ean,
+  ) : super([ean]);
+}
