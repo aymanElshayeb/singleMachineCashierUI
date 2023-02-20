@@ -41,6 +41,10 @@ dependencies:
   # Local cache
   shared_preferences: ^0.5.3+4
   virtual_keyboard_multi_language: ^1.0.3
+  logging: ^1.1.1
+  flutter_localizations:
+    sdk: flutter
+  intl: any
 
 dev_dependencies:
   flutter_test:
@@ -59,13 +63,16 @@ dev_dependencies:
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter packages.
+# The following section is specific to Flutter.
 flutter:
+  generate: true # Add this line
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
-  # assets:
+  assets:
+    - assets/images/100.png
   
 
   # An image asset can refer to one or more resolution-specific "variants", see

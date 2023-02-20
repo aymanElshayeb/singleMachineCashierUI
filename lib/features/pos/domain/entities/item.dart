@@ -1,22 +1,39 @@
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
-class Item extends Equatable{
-
+class Item extends Equatable {
   final int id;
   final String name;
   final String unit;
   final bool kilo;
   final int category;
-  final double price;
+  final num price;
   final String PLU_EAN;
 
+  Item(
+      {@required this.PLU_EAN,
+      @required this.name,
+      @required this.unit,
+      @required this.category,
+      @required this.price,
+      @required this.kilo,
+      @required this.id})
+      : super([PLU_EAN, name, unit, kilo, category, price, id]);
 
-  Item({
-    @required this.PLU_EAN, @required this.name, @required this.unit, @required this.category,
-    @required this.price, @required this.kilo, @required this.id
-  } ):super([PLU_EAN,name,unit,kilo,category,price,id]);
+  factory Item.fromJson(Map<String, dynamic> jsonMap) {
+    return Item(
+        name: jsonMap['name'],
+        id: jsonMap['id'],
+        unit: jsonMap['unit'],
+        kilo: jsonMap['kilo'],
+        category: jsonMap['category'],
+        price: jsonMap['price'],
+        PLU_EAN: jsonMap['PLU_EAN']);
+  }
 
+  Map<String, dynamic> toJson() {
+    return {};
+  }
 }
 
 // CREATE TABLE TBL_ARTIKEL ([ID] autoincrement, PLU varchar(24), ProdNr varchar(50),

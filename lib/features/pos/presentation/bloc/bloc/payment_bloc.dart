@@ -67,11 +67,11 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     }
   }
 
-  double getTotalCash(String digit) {
+  num getTotalCash(String digit) {
     if (state.cash == 0) {
-      return double.parse(digit);
+      return num.parse(digit);
     } else {
-      return double.parse(state.cash.toString() + digit);
+      return num.parse(state.cash.toString() + digit);
     }
   }
 }

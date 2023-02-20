@@ -10,7 +10,7 @@ class getCash extends PaymentEvent {
 }
 
 class AddToCash extends PaymentEvent {
-  final double money;
+  final num money;
 
   AddToCash({@required this.money});
 }
@@ -22,7 +22,7 @@ class UpdateMethod extends PaymentEvent {
 }
 
 class getTotal extends PaymentEvent {
-  final double total;
+  final num total;
 
   getTotal({@required this.total});
 }

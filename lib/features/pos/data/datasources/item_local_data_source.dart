@@ -1,14 +1,13 @@
 import 'dart:convert';
 import 'package:meta/meta.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:single_machine_cashier_ui/features/pos/data/models/item_model.dart';
 import '../../../../core/error/exceptions.dart';
-import '../models/user_model.dart';
+import '../../domain/entities/item.dart';
 
 abstract class ItemLocalDataSource {
   /// Throws [CacheException] if no data is present
-  Future<List<ItemModel>> getItems();
-  Future<void> cacheItems(ItemModel itemToCache);
+  Future<List<Item>> getItems();
+  Future<void> cacheItems(Item itemToCache);
 }
 
 const CACHED_ITEMS = 'CACHED_ITEMS';
@@ -19,7 +18,7 @@ class ItemLocalDataSourceImpl implements ItemLocalDataSource {
   ItemLocalDataSourceImpl({@required this.sharedPreferences});
 
   @override
-  Future<List<ItemModel>> getItems() {
+  Future<List<Item>> getItems() {
     final jsonString = [
       {
         "name": "potato",
@@ -28,7 +27,7 @@ class ItemLocalDataSourceImpl implements ItemLocalDataSource {
         "kilo": true,
         "category": 1,
         "price": 20,
-        "PLU_EAN": ""
+        "PLU_EAN": "aa"
       },
       {
         "name": "orange",
@@ -36,8 +35,8 @@ class ItemLocalDataSourceImpl implements ItemLocalDataSource {
         "unit": "Kilo",
         "kilo": true,
         "category": 1,
-        "price": 15,
-        "PLU_EAN": ""
+        "price": 15.5,
+        "PLU_EAN": "bb"
       },
       {
         "name": "banana",
@@ -46,7 +45,7 @@ class ItemLocalDataSourceImpl implements ItemLocalDataSource {
         "category": 2,
         "kilo": true,
         "price": 10,
-        "PLU_EAN": ""
+        "PLU_EAN": "acc"
       },
       {
         "name": "milk",
@@ -54,7 +53,7 @@ class ItemLocalDataSourceImpl implements ItemLocalDataSource {
         "unit": "liter",
         "category": 2,
         "price": 10,
-        "PLU_EAN": ""
+        "PLU_EAN": "dd"
       },
       {
         "name": "eggs",
@@ -63,7 +62,7 @@ class ItemLocalDataSourceImpl implements ItemLocalDataSource {
         "kilo": false,
         "category": 2,
         "price": 3,
-        "PLU_EAN": ""
+        "PLU_EAN": "ff"
       },
       {
         "name": "cheese",
@@ -72,16 +71,16 @@ class ItemLocalDataSourceImpl implements ItemLocalDataSource {
         "kilo": true,
         "category": 2,
         "price": 15,
-        "PLU_EAN": ""
+        "PLU_EAN": "gg"
       }
     ];
 
     if (jsonString != null) {
       final List<Map<String, dynamic>> jsonMap = jsonString;
-      List<ItemModel> items = [];
+      List<Item> items = [];
 
       for (var item in jsonMap) {
-        items.add(ItemModel.fromJson(item));
+        items.add(Item.fromJson(item));
       }
       return Future.value(items);
     } else {
@@ -90,7 +89,7 @@ class ItemLocalDataSourceImpl implements ItemLocalDataSource {
   }
 
   @override
-  Future<void> cacheItems(ItemModel itemToCache) {
+  Future<void> cacheItems(Item itemToCache) {
     return sharedPreferences.setString(
       CACHED_ITEMS,
       json.encode(itemToCache.toJson()),

@@ -33,7 +33,8 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
             categoriesNames: _mapCategoriesToList(categoryList),
             boolitems: true,
             categoriesitems: categoryList,
-            orders: state.orderstate),
+            orders: state.orderstate,
+            finalEanItems: state.eanitems),
       );
     } else if (event is InitEvent) {
       final failureOrCategory = await categories.getAllCategories();
@@ -43,36 +44,48 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
             categoriesNames: _mapCategoriesToList(categoryList),
             boolitems: false,
             categoriesitems: [],
-            orders: state.orderstate),
+            orders: state.orderstate,
+            finalEanItems: state.eanitems),
       );
     } else if (event is UpdateOrderEvent) {
       Map<Item, int> orders = {};
       orders = state.orderstate;
-      print("this is the item you want to add:" + event.item.name);
       if (orders.containsKey(event.item)) {
         orders.update(event.item, (value) => value + 1);
       } else {
         orders[event.item] = 1;
       }
-      print("now thry are:" + orders.toString());
 
-      yield UpdateOrderState(order: orders, items: state.categoryitems);
+      yield UpdateOrderState(
+          order: orders,
+          items: state.categoryitems,
+          finalEanItems: state.eanitems);
       yield CategoryItemsFound(
           categoriesNames: _mapCategoriesToList(state.categoryitems),
           boolitems: true,
           categoriesitems: state.categoryitems,
-          orders: state.orderstate);
+          orders: state.orderstate,
+          finalEanItems: state.eanitems);
     } else if (event is AddToOrder) {
       Map<Item, int> orders = {};
       orders = state.orderstate;
       orders[event.item] = event.quantity;
-      //state.orderstate[event.item] = event.quantity;
       yield UpdateOrderState(order: orders, items: state.categoryitems);
       yield CategoryItemsFound(
           categoriesNames: _mapCategoriesToList(state.categoryitems),
           boolitems: state.gotitems,
           categoriesitems: state.categoryitems,
-          orders: state.orderstate);
+          orders: state.orderstate,
+          finalEanItems: []);
+    } else if (event is GetEAN) {
+      final failureOrItems = await categories.execGetEanItem(event.ean);
+      yield failureOrItems.fold(
+          (failure) => CategoryError(message: _mapFailureToMessage(failure)),
+          (itemsList) => getItems(
+              finalEanItems: itemsList,
+              got_items: state.gotitems,
+              items: state.categoryitems,
+              order: state.orderstate));
     }
   }
 
@@ -96,14 +109,4 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
     }
     return categories;
   }
-
-  // Future<List<String>> _getAllCategories() async {
-  //
-  //   final failureOrCategory =await categories.getAllCategories();
-  //   List<String> c;
-  //   failureOrCategory.fold( (failure) => print("error")
-  //     ,(categoryList) => c=_mapCategoriesToList(categoryList),
-  //   );
-  //  return c;
-  // }
 }
