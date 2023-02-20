@@ -19,6 +19,21 @@ class Item extends Equatable {
       @required this.kilo,
       @required this.id})
       : super([PLU_EAN, name, unit, kilo, category, price, id]);
+
+  factory Item.fromJson(Map<String, dynamic> jsonMap) {
+    return Item(
+        name: jsonMap['name'],
+        id: jsonMap['id'],
+        unit: jsonMap['unit'],
+        kilo: jsonMap['kilo'],
+        category: jsonMap['category'],
+        price: jsonMap['price'],
+        PLU_EAN: jsonMap['PLU_EAN']);
+  }
+
+  Map<String, dynamic> toJson() {
+    return {};
+  }
 }
 
 // CREATE TABLE TBL_ARTIKEL ([ID] autoincrement, PLU varchar(24), ProdNr varchar(50),

@@ -12,6 +12,10 @@ import '../bloc/category/category_event.dart';
 import '../bloc/category/category_state.dart';
 import '../pages/constants.dart';
 import '../pages/to_pay.dart';
+import 'package:provider/provider.dart';
+
+import 'different_item_dialog.dart';
+import 'ean_dialog.dart';
 
 class BillButtons extends StatelessWidget {
   final BuildContext context;
@@ -27,100 +31,59 @@ class BillButtons extends StatelessWidget {
         'title': 'Pay',
         'icon': const Icon(Icons.payment),
         'function': () {
+          final currentBloc = context.read<CategoryBloc>();
+
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: ((context) =>
-                      BlocBuilder<CategoryBloc, CategoryState>(
-                        builder: (context, state) {
-                          return ToPay(
-                            //orderstate: state.orderstate,
-                            total: 50,
-                          );
-                        },
+                  builder: ((context) => ToPay(
+                        total: countTheTotal(currentBloc.state.orderstate),
                       ))));
         }
+      },
+      <String, dynamic>{
+        'title': 'Fast pay',
+        'icon': const Icon(Icons.attach_money_rounded),
+        'function': () {}
       },
       <String, dynamic>{
         'title': 'Different item',
         'icon': const Icon(Icons.add_box),
         'function': () {
+          final currentBloc = context.read<CategoryBloc>();
           showDialog(
               context: context,
-              builder: ((context) {
-                return AlertDialog(
-                  title: Text('Enter an item'),
-                  content: Column(children: [
-                    Text('name'),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    TextField(
-                      controller: customController,
-                    ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    Text('price'),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    TextField(
-                      controller: customController2,
-                    ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    Text('Quantity'),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    TextField(
-                      controller: customController3,
-                    ),
-                  ]),
-                  actions: [
-                    MaterialButton(
-                      onPressed: () {
-                        Item item = Item(
-                            name: customController.text,
-                            price: double.parse(customController2.text));
-                        int quantity = int.parse(customController3.text);
-
-                        Navigator.of(context).pop([item, quantity]);
-                      },
-                      child: Text("submit"),
-                    )
-                  ],
+              builder: (((cc) {
+                return BlocProvider.value(
+                  value: currentBloc,
+                  child: DifferentItem(),
                 );
-              })).then((value) {
-            BlocProvider.of<CategoryBloc>(context)
-                .add(AddToOrder(value[0], value[1]));
-
-            /*if (state.gotitems == false) {
-                  BlocProvider.of<CategoryBloc>(context).add(InitEvent());
-                }*/
-          });
+              })));
         }
       },
       <String, dynamic>{
-        'title': 'Fast pay',
-        'icon': const Icon(Icons.payment),
-        'function': () {}
-      },
-      <String, dynamic>{
         'title': 'Remove',
-        'icon': const Icon(Icons.payment),
+        'icon': const Icon(Icons.delete),
         'function': () {}
       },
       <String, dynamic>{
-        'title': 'Pay',
-        'icon': const Icon(Icons.payment),
-        'function': () {}
+        'title': 'EAN search',
+        'icon': const Icon(Icons.manage_search_sharp),
+        'function': () {
+          final currentBloc = context.read<CategoryBloc>();
+          showDialog(
+              context: context,
+              builder: (((cc) {
+                return BlocProvider.value(
+                  value: currentBloc,
+                  child: CustomDialog(),
+                );
+              })));
+        }
       },
       <String, dynamic>{
-        'title': 'Pay',
-        'icon': const Icon(Icons.payment),
+        'title': 'Cancel',
+        'icon': const Icon(Icons.cancel),
         'function': () {}
       },
     ];
@@ -143,15 +106,31 @@ class BillButtons extends StatelessWidget {
                 backgroundColor: Colors.grey,
                 textStyle: TextStyle(
                   color: seconderyColor.withOpacity(1.0),
-                  fontSize: 16,
+                  fontSize: height * 0.017,
                 ),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5)),
               ),
               onPressed: buttons[index]['function'],
-              child: Text(buttons[index]['title']));
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  buttons[index]['icon'],
+                  Text(
+                    buttons[index]['title'],
+                  ),
+                ],
+              ));
         },
       ),
     );
+  }
+
+  double countTheTotal(Map<Item, int> order) {
+    double total = 0;
+    for (int i = 0; i < order.length; i++) {
+      total += order.keys.elementAt(i).price * order.values.elementAt(i);
+    }
+    return total;
   }
 }

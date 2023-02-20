@@ -76,7 +76,7 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
           boolitems: state.gotitems,
           categoriesitems: state.categoryitems,
           orders: state.orderstate,
-          finalEanItems: state.eanitems);
+          finalEanItems: []);
     } else if (event is GetEAN) {
       final failureOrItems = await categories.execGetEanItem(event.ean);
       yield failureOrItems.fold(

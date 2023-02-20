@@ -1,6 +1,4 @@
 import 'package:dartz/dartz.dart';
-import 'package:single_machine_cashier_ui/features/pos/data/models/item_model.dart';
-import 'package:single_machine_cashier_ui/features/pos/data/models/user_model.dart';
 import 'package:single_machine_cashier_ui/features/pos/domain/entities/cart.dart';
 import 'package:single_machine_cashier_ui/features/pos/domain/entities/item.dart';
 import '../../../../core/error/exceptions.dart';

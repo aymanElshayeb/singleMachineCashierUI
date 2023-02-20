@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:dartz/dartz.dart';
-import 'package:single_machine_cashier_ui/features/pos/data/models/user_model.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/error/failures.dart';
 import '../../domain/entities/user.dart';
@@ -21,7 +20,7 @@ class UserRepositoryImpl implements UserRepository {
   Future<Either<Failure, User>> authenticateUser(String password) async {
     try {
       final users = await localDataSource.getUsers();
-      UserModel _user;
+      User _user;
 
       for (var user in users) {
         if (user.password == password) {
@@ -52,12 +51,7 @@ class UserRepositoryImpl implements UserRepository {
   @override
   Future<Either<Failure, List<User>>> addUser(User user) async {
     try {
-      List<User> users = await localDataSource.addUsers(UserModel(
-          userName: user.userName,
-          id: user.id,
-          fullname: user.fullname,
-          role: user.role,
-          password: user.password));
+      List<User> users = await localDataSource.addUsers(user);
       return Right(users);
     } on CacheException {
       return Left(CacheFailure());

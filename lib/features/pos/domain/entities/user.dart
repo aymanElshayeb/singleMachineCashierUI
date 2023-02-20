@@ -15,4 +15,22 @@ class User extends Equatable {
       @required this.password,
       @required this.fullname})
       : super([userName, id, role, password, fullname]);
+
+  factory User.fromJson(Map<String, dynamic> jsonMap) {
+    return User(
+        userName: jsonMap['userName'],
+        id: jsonMap['id'],
+        role: jsonMap['role'],
+        password: jsonMap['password'],
+        fullname: jsonMap['fullname']);
+  }
+  Map<String, dynamic> toJson() {
+    return {
+      'userName': userName,
+      'id': id,
+      'role': role,
+      'password': password,
+      'fullname': fullname
+    };
+  }
 }

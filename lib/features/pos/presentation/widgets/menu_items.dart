@@ -6,7 +6,6 @@ import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/categor
 import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/category/category_event.dart';
 import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/category/category_state.dart';
 import 'package:single_machine_cashier_ui/injection_container.dart';
-import '../../data/models/category_model.dart';
 import '../../domain/entities/item.dart';
 import '../pages/constants.dart';
 

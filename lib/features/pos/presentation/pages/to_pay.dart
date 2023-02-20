@@ -12,7 +12,7 @@ import '../bloc/category/category_state.dart';
 import '../widgets/num_pad.dart';
 
 class ToPay extends StatelessWidget {
-  final double total;
+  final num total;
   const ToPay({Key key, @required this.total}) : super(key: key);
 
   @override
