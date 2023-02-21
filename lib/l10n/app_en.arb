@@ -1,4 +1,5 @@
 {
+    "login":"Login",
     "home": "Home",
     "office": "Office",
     "exit": "Exit",
@@ -17,7 +18,7 @@
     "fullname":"Fullname",
     "username":"Username",
     "password":"Password",
-    "addanewuser":"Add a new user",
+    "addanewuser":"Add",
     "role":"Role",
     "name":"name",
     "price":"Price",
@@ -28,7 +29,8 @@
     "cash":"Cash",
     "returnn":"Return",
     "printreceipt":"Print receipt",
-    "completepayment":"Complete payment"
+    "completepayment":"Complete payment",
+    "enteranitem":"Enter an item"
 
    
   }

@@ -8,6 +8,7 @@ import '../../domain/entities/item.dart';
 import '../bloc/category/category_bloc.dart';
 import '../bloc/category/category_event.dart';
 import '../bloc/category/category_state.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class DifferentItem extends StatelessWidget {
   const DifferentItem({Key key}) : super(key: key);
@@ -22,7 +23,7 @@ class DifferentItem extends StatelessWidget {
     TextEditingController EanController = TextEditingController();
     return BlocBuilder<CategoryBloc, CategoryState>(builder: (context, state) {
       return AlertDialog(
-        title: Text('Enter an item'),
+        title: Text(AppLocalizations.of(context).enteranitem),
         content: Container(
           height: height * 0.25,
           child: Column(children: [
@@ -32,7 +33,7 @@ class DifferentItem extends StatelessWidget {
               child: TextField(
                 controller: customController,
                 decoration: InputDecoration(
-                  labelText: 'name',
+                  labelText: AppLocalizations.of(context).name,
                   suffixIcon: Icon(
                     Icons.fastfood,
                     size: width * 0.014,
@@ -46,7 +47,7 @@ class DifferentItem extends StatelessWidget {
               child: TextField(
                 controller: customController2,
                 decoration: InputDecoration(
-                  labelText: 'price',
+                  labelText: AppLocalizations.of(context).price,
                   suffixIcon: Icon(
                     Icons.price_change,
                     size: width * 0.014,
@@ -60,7 +61,7 @@ class DifferentItem extends StatelessWidget {
               child: TextField(
                 controller: customController3,
                 decoration: InputDecoration(
-                  labelText: 'quantity',
+                  labelText: AppLocalizations.of(context).quantity,
                   suffixIcon: Icon(
                     Icons.add,
                     size: width * 0.014,
@@ -84,7 +85,7 @@ class DifferentItem extends StatelessWidget {
               }
               Navigator.of(context).pop();
             },
-            child: Text("submit"),
+            child: Text(AppLocalizations.of(context).submit),
           )
         ],
       );

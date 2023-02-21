@@ -11,13 +11,15 @@ import '../../domain/entities/user.dart';
 import '../bloc/user/user_bloc.dart';
 import '../widgets/main_app_bar.dart';
 import '../widgets/table.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SellerMangament extends StatelessWidget {
-  final appBar = AppBar(title: Text('Seller managament'));
   SellerMangament({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final appBar =
+        AppBar(title: Text(AppLocalizations.of(context).sellermanagement));
     final screenwidth = MediaQuery.of(context).size.width;
     final screenheight = MediaQuery.of(context).size.height;
     final appBarHeight = appBar.preferredSize.height;
@@ -43,7 +45,7 @@ class SellerMangament extends StatelessWidget {
                       borderRadius: BorderRadius.circular(15)),
                   child: Column(children: [
                     Text(
-                      'New user credentials',
+                      AppLocalizations.of(context).newusercredentials,
                       style: TextStyle(fontSize: 15, color: Colors.blueGrey),
                     ),
                     SizedBox(
@@ -55,7 +57,7 @@ class SellerMangament extends StatelessWidget {
                       child: TextField(
                         controller: controller1,
                         decoration: InputDecoration(
-                          labelText: 'Fullname',
+                          labelText: AppLocalizations.of(context).fullname,
                           suffixIcon: Icon(
                             Icons.abc,
                             size: screenwidth * 0.014,
@@ -69,7 +71,7 @@ class SellerMangament extends StatelessWidget {
                       child: TextField(
                         controller: controller2,
                         decoration: InputDecoration(
-                          labelText: 'Username',
+                          labelText: AppLocalizations.of(context).username,
                           suffixIcon: Icon(
                             Icons.abc,
                             size: screenwidth * 0.014,
@@ -83,7 +85,7 @@ class SellerMangament extends StatelessWidget {
                       child: TextField(
                         controller: controller3,
                         decoration: InputDecoration(
-                          labelText: 'Password',
+                          labelText: AppLocalizations.of(context).password,
                           suffixIcon: Icon(
                             Icons.remove_red_eye,
                             size: screenwidth * 0.014,
@@ -119,7 +121,8 @@ class SellerMangament extends StatelessWidget {
                                           "Enter sufficient credentials!")));
                             }
                           },
-                          child: Text('Add a new user')),
+                          child:
+                              Text(AppLocalizations.of(context).addanewuser)),
                     )
                   ]),
                 ),
@@ -128,14 +131,17 @@ class SellerMangament extends StatelessWidget {
                 padding: const EdgeInsets.all(5.0),
                 child: Container(
                   height: (screenheight - appBarHeight) * 0.535,
-                  width: screenwidth * 0.28,
+                  width: 450,
                   alignment: Alignment.topCenter,
                   decoration: BoxDecoration(
                       color: Color.fromARGB(255, 228, 227, 227),
                       borderRadius: BorderRadius.circular(15)),
                   child: SingleChildScrollView(
-                    child: MenuDataTable(['Full name', 'Username', 'Role'],
-                        getUsersTable(state.users)),
+                    child: MenuDataTable([
+                      AppLocalizations.of(context).fullname,
+                      AppLocalizations.of(context).username,
+                      AppLocalizations.of(context).role
+                    ], getUsersTable(state.users)),
                   ),
                 ),
               )

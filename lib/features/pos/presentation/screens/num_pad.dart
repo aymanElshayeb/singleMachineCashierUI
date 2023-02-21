@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../bloc/bloc/payment_bloc.dart';
+import '../bloc/PaymentBloc/payment_bloc.dart';
 
 // KeyPad widget
 // This widget is reusable and its buttons are customizable (color, size)

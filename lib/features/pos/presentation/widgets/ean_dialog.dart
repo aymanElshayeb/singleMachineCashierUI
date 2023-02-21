@@ -8,6 +8,7 @@ import '../bloc/category/category_bloc.dart';
 import '../bloc/category/category_event.dart';
 import '../bloc/category/category_state.dart';
 import 'num_pad.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CustomDialog extends StatelessWidget {
   const CustomDialog({Key key}) : super(key: key);
@@ -20,7 +21,7 @@ class CustomDialog extends StatelessWidget {
     return BlocBuilder<CategoryBloc, CategoryState>(
       builder: (context, state) {
         return AlertDialog(
-          title: Text('EAN Search'),
+          title: Text(AppLocalizations.of(context).eansearch),
           content: Container(
             width: width * 0.6 + 10,
             height: height * 0.6,

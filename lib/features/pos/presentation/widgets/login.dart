@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:virtual_keyboard_multi_language/virtual_keyboard_multi_language.dart';
 import '../bloc/user/user_bloc.dart';
 import '../bloc/user/user_event.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Login extends StatefulWidget {
   const Login();
@@ -40,46 +41,46 @@ class _Login extends State<Login> {
     var height = MediaQuery.of(context).size.height;
     return Scaffold(
         body: Center(
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                Center(
-                  child: Container(
-                    alignment: Alignment.center,
-                    width: width / 2,
-                    height: height / 2,
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          // userInput('enter your username',false),
-                          userInput('enter your password', true),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 16.0),
-                            child: Center(
-                              child: ElevatedButton(
-                                onPressed: () async {
-                                  dispatchUser(txt.text);
-                                  txt.clear();
-                                },
-                                child: const Text(
-                                  'Login',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Center(
+              child: Container(
+                alignment: Alignment.center,
+                width: width / 2,
+                height: height / 2,
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      // userInput('enter your username',false),
+                      userInput('enter your password', true),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 16.0),
+                        child: Center(
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              dispatchUser(txt.text);
+                              txt.clear();
+                            },
+                            child: Text(
+                              AppLocalizations.of(context).login,
+                              style: TextStyle(color: Colors.white),
                             ),
                           ),
-                        ],
+                        ),
                       ),
-                    ),
+                    ],
                   ),
                 ),
-                (showKeyboard ? virtual_keyboard() : Container())
-              ],
+              ),
             ),
-          ),
-        ));
+            (showKeyboard ? virtual_keyboard() : Container())
+          ],
+        ),
+      ),
+    ));
   }
 
   Container virtual_keyboard() {
@@ -131,7 +132,10 @@ class _Login extends State<Login> {
     setState(() {});
   }
 
-  Padding userInput(String label, bool password,) {
+  Padding userInput(
+    String label,
+    bool password,
+  ) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: TextFormField(
@@ -152,7 +156,7 @@ class _Login extends State<Login> {
             showKeyboard = true;
           });
         },
-        onFieldSubmitted: (_)  {
+        onFieldSubmitted: (_) {
           //  dispatchAuth();
         },
         validator: (value) {
@@ -164,9 +168,9 @@ class _Login extends State<Login> {
       ),
     );
   }
+
   void dispatchUser(inputStr) {
     // Clearing the TextField to prepare it for the next inputted number
-    BlocProvider.of<UserBloc>(context)
-        .add(AuthenticateUserEvent(inputStr));
+    BlocProvider.of<UserBloc>(context).add(AuthenticateUserEvent(inputStr));
   }
 }

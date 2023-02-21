@@ -6,8 +6,8 @@ import '../../../../injection_container.dart';
 import '../bloc/user/user_bloc.dart';
 import '../bloc/user/user_state.dart';
 import '../widgets/login.dart';
-import '../widgets/message_display.dart';
 import 'menu.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LoginBuilder extends StatelessWidget {
   @override

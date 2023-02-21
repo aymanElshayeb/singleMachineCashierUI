@@ -6,10 +6,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/category/bloc.dart';
 import 'package:virtual_keyboard_multi_language/virtual_keyboard_multi_language.dart';
 
-import '../bloc/bloc/payment_bloc.dart';
+import '../bloc/PaymentBloc/payment_bloc.dart';
 import '../bloc/category/category_bloc.dart';
 import '../bloc/category/category_state.dart';
 import '../widgets/num_pad.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ToPay extends StatelessWidget {
   final num total;
@@ -20,14 +21,14 @@ class ToPay extends StatelessWidget {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     final TextEditingController _myController = TextEditingController();
-    String selectedMethod = "Cash";
+    String selectedMethod = 'Cash';
     return BlocProvider(
       create: (context) => PaymentBloc()..add(getTotal(total: total)),
       child: BlocBuilder<PaymentBloc, PaymentState>(
         builder: (context, state) {
           return Scaffold(
             appBar: AppBar(
-              title: const Text("Payment page"),
+              title: Text(AppLocalizations.of(context).paymentpage),
               backgroundColor: Colors.grey,
             ),
             backgroundColor: Color.fromARGB(255, 243, 243, 243),
@@ -40,19 +41,26 @@ class ToPay extends StatelessWidget {
                         color: Color.fromARGB(255, 227, 229, 230),
                         borderRadius: BorderRadius.all(Radius.circular(11.0))),
                     child: Column(children: [
+                      numberBar(state.total, AppLocalizations.of(context).total,
+                          width * 0.230, height * 0.077),
+                      numberBar(state.cash, AppLocalizations.of(context).cash,
+                          width * 0.230, height * 0.077),
                       numberBar(
-                          state.total, "Total", width * 0.230, height * 0.077),
-                      numberBar(
-                          state.cash, "Cash", width * 0.230, height * 0.077),
-                      numberBar(state.inreturn, "Return", width * 0.230,
+                          state.inreturn,
+                          AppLocalizations.of(context).returnn,
+                          width * 0.230,
                           height * 0.077),
                     ]),
                   ),
                   SizedBox(
                     height: height * 0.2,
                   ),
-                  paymentButton(Icons.print, 'Print receipt', () {},
-                      width * 0.221, height * 0.07),
+                  paymentButton(
+                      Icons.print,
+                      AppLocalizations.of(context).printreceipt,
+                      () {},
+                      width * 0.221,
+                      height * 0.07),
                   Container(
                     width: width * 0.221,
                     height: height * 0.07,
@@ -80,8 +88,12 @@ class ToPay extends StatelessWidget {
                       value: state.selectedMethod,
                     ),
                   ),
-                  paymentButton(Icons.payment, 'Complete payment', () {},
-                      width * 0.221, height * 0.07),
+                  paymentButton(
+                      Icons.payment,
+                      AppLocalizations.of(context).completepayment,
+                      () {},
+                      width * 0.221,
+                      height * 0.07),
                 ]),
                 SizedBox(
                   width: width * 0.02,

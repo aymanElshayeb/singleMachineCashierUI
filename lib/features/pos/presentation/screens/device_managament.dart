@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class DeviceMangament extends StatelessWidget {
   const DeviceMangament({Key key}) : super(key: key);
@@ -15,7 +16,8 @@ class DeviceMangament extends StatelessWidget {
     //final appBarHeight = appBar.preferredSize.height;
     final statusBarHeight = MediaQuery.of(context).padding.top;
     return Scaffold(
-      appBar: AppBar(title: Text('Device managament')),
+      appBar:
+          AppBar(title: Text(AppLocalizations.of(context).devicemanagement)),
       body: Center(
         child: Container(
           width: screenwidth * 0.7,
@@ -28,7 +30,7 @@ class DeviceMangament extends StatelessWidget {
               alignment: AlignmentDirectional.topStart,
               padding: EdgeInsets.all(8),
               child: Text(
-                'Printer settings',
+                AppLocalizations.of(context).printersettings,
                 style: TextStyle(fontSize: 17),
               ),
             ),
@@ -63,14 +65,16 @@ class DeviceMangament extends StatelessWidget {
                 SizedBox(
                   width: 20,
                 ),
-                ElevatedButton(onPressed: () {}, child: Text('Test'))
+                ElevatedButton(
+                    onPressed: () {},
+                    child: Text(AppLocalizations.of(context).test))
               ],
             ),
             Container(
               alignment: AlignmentDirectional.topStart,
               padding: EdgeInsets.all(8),
               child: Text(
-                'Drawer settings',
+                AppLocalizations.of(context).drawersettings,
                 style: TextStyle(fontSize: 17),
               ),
             ),
@@ -105,7 +109,9 @@ class DeviceMangament extends StatelessWidget {
                 SizedBox(
                   width: 20,
                 ),
-                ElevatedButton(onPressed: () {}, child: Text('Test'))
+                ElevatedButton(
+                    onPressed: () {},
+                    child: Text(AppLocalizations.of(context).test))
               ],
             )
           ]),

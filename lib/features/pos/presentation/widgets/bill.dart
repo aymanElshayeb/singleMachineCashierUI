@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/category/bloc.dart';
 import 'package:single_machine_cashier_ui/features/pos/presentation/screens/to_pay.dart';
-import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/listviewtable.dart';
 import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/table.dart';
 import '../../domain/entities/item.dart';
 
