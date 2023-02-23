@@ -69,5 +69,4 @@ class CategoryRepositoryImpl implements CategoryRepository {
       return Left(CacheFailure());
     }
   }
-
 }
