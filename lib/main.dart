@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/user/user_bloc.dart';
 import 'features/pos/presentation/bloc/category/category_bloc.dart';
+import 'features/pos/presentation/pages/device_managament.dart';
 import 'features/pos/presentation/pages/login.dart';
 import 'features/pos/presentation/pages/menu.dart';
-import 'features/pos/presentation/pages/num_pad.dart';
+import 'features/pos/presentation/pages/new_menu.dart';
+import 'features/pos/presentation/widgets/num_pad.dart';
+import 'features/pos/presentation/pages/seller_managament.dart';
 import 'features/pos/presentation/pages/to_pay.dart';
 import 'injection_container.dart' as di;
 
@@ -35,7 +38,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         home: LoginBuilder(),
-        //home: ToPay(),
+        //home: DeviceMangament(),
       ),
     );
   }

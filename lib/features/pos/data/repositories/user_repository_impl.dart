@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dartz/dartz.dart';
 import 'package:single_machine_cashier_ui/features/pos/data/models/user_model.dart';
 import '../../../../core/error/exceptions.dart';
@@ -19,7 +21,6 @@ class UserRepositoryImpl implements UserRepository {
   // ignore: missing_return
   Future<Either<Failure, User>> authenticateUser(String password) async {
     if (await networkInfo.isConnected) {
-
     } else {
       try {
         final users = await localDataSource.getUsers();
@@ -36,6 +37,37 @@ class UserRepositoryImpl implements UserRepository {
         } else {
           return Right(_user);
         }
+      } on CacheException {
+        return Left(CacheFailure());
+      }
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<User>>> getAllUsers() async {
+    if (await networkInfo.isConnected) {
+    } else {
+      try {
+        List<User> users = await localDataSource.getUsers();
+        return Right(users);
+      } on CacheException {
+        return Left(CacheFailure());
+      }
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<User>>> addUser(User user) async {
+    if (await networkInfo.isConnected) {
+    } else {
+      try {
+        List<User> users = await localDataSource.addUsers(UserModel(
+            userName: user.userName,
+            id: user.id,
+            fullname: user.fullname,
+            role: user.role,
+            password: user.password));
+        return Right(users);
       } on CacheException {
         return Left(CacheFailure());
       }

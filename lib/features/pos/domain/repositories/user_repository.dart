@@ -4,4 +4,6 @@ import 'package:dartz/dartz.dart';
 
 abstract class UserRepository {
   Future<Either<Failure, User>> authenticateUser(String password);
+  Future<Either<Failure, List<User>>> getAllUsers();
+  Future<Either<Failure, List<User>>> addUser(User user);
 }

@@ -9,7 +9,7 @@ import 'package:virtual_keyboard_multi_language/virtual_keyboard_multi_language.
 import '../bloc/bloc/payment_bloc.dart';
 import '../bloc/category/category_bloc.dart';
 import '../bloc/category/category_state.dart';
-import 'num_pad.dart';
+import '../widgets/num_pad.dart';
 
 class ToPay extends StatelessWidget {
   final double total;
