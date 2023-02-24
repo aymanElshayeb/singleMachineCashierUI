@@ -64,6 +64,12 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
           final_total: state.total,
           final_return: state.inreturn,
           final_selected: event.method);
+    } else if (event is DeleteFromCash) {
+      yield UpdatePaymentState(
+          final_cash: subtractFromCash(state.cash),
+          final_total: state.total,
+          final_return: state.inreturn,
+          final_selected: state.selectedMethod);
     }
   }
 
@@ -73,5 +79,20 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
     } else {
       return num.parse(state.cash.toString() + digit);
     }
+  }
+
+  num subtractFromCash(num cash) {
+    // if (cash.toString().length <= 1) {
+    //   return 0;
+    // } else {
+    //   return double.parse(cash.toString());
+    // }
+    String cashString = cash.toString();
+    if (cashString.length > 1) {
+      cashString = cashString.substring(0, cashString.length - 1);
+    } else {
+      return 0;
+    }
+    return int.parse(cashString);
   }
 }

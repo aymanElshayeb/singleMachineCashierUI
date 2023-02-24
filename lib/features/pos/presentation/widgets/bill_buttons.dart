@@ -10,12 +10,13 @@ import '../../domain/entities/item.dart';
 import '../bloc/category/category_bloc.dart';
 import '../bloc/category/category_event.dart';
 import '../bloc/category/category_state.dart';
-import '../pages/constants.dart';
-import '../pages/to_pay.dart';
+import '../screens/constants.dart';
+import '../screens/to_pay.dart';
 import 'package:provider/provider.dart';
 
 import 'different_item_dialog.dart';
 import 'ean_dialog.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class BillButtons extends StatelessWidget {
   final BuildContext context;
@@ -28,7 +29,7 @@ class BillButtons extends StatelessWidget {
     TextEditingController customController3 = TextEditingController();
     List<Map<String, dynamic>> buttons = <Map<String, dynamic>>[
       <String, dynamic>{
-        'title': 'Pay',
+        'title': AppLocalizations.of(context).pay,
         'icon': const Icon(Icons.payment),
         'function': () {
           final currentBloc = context.read<CategoryBloc>();
@@ -42,12 +43,12 @@ class BillButtons extends StatelessWidget {
         }
       },
       <String, dynamic>{
-        'title': 'Fast pay',
+        'title': AppLocalizations.of(context).fastpay,
         'icon': const Icon(Icons.attach_money_rounded),
         'function': () {}
       },
       <String, dynamic>{
-        'title': 'Different item',
+        'title': AppLocalizations.of(context).differentitem,
         'icon': const Icon(Icons.add_box),
         'function': () {
           final currentBloc = context.read<CategoryBloc>();
@@ -62,12 +63,12 @@ class BillButtons extends StatelessWidget {
         }
       },
       <String, dynamic>{
-        'title': 'Remove',
+        'title': AppLocalizations.of(context).remove,
         'icon': const Icon(Icons.delete),
         'function': () {}
       },
       <String, dynamic>{
-        'title': 'EAN search',
+        'title': AppLocalizations.of(context).eansearch,
         'icon': const Icon(Icons.manage_search_sharp),
         'function': () {
           final currentBloc = context.read<CategoryBloc>();
@@ -82,7 +83,7 @@ class BillButtons extends StatelessWidget {
         }
       },
       <String, dynamic>{
-        'title': 'Cancel',
+        'title': AppLocalizations.of(context).cancel,
         'icon': const Icon(Icons.cancel),
         'function': () {}
       },
@@ -103,7 +104,9 @@ class BillButtons extends StatelessWidget {
         itemBuilder: (BuildContext context, int index) {
           return ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.grey,
+                //backgroundColor: Colors.grey,
+                backgroundColor: Theme.of(context).primaryColor,
+
                 textStyle: TextStyle(
                   color: seconderyColor.withOpacity(1.0),
                   fontSize: height * 0.017,

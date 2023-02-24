@@ -44,8 +44,12 @@ class CustomDialog extends StatelessWidget {
                       ),
                       NumPad(
                         buttonSize: 50,
-                        buttonColor: Colors.grey,
-                        iconColor: Colors.blueGrey,
+                        //buttonColor: Colors.grey,
+                        //iconColor: Colors.blueGrey,
+                        buttonColor: Theme.of(context).canvasColor,
+                        iconColor:
+                            Theme.of(context).appBarTheme.foregroundColor,
+
                         controller: EanController,
                         delete: () {
                           if (EanController.text.length > 0) {
@@ -73,7 +77,8 @@ class CustomDialog extends StatelessWidget {
                   height: height * 0.6,
                   width: (width * 0.6) * 0.65,
                   decoration: BoxDecoration(
-                      color: Color.fromARGB(255, 228, 227, 227),
+                      //color: Color.fromARGB(255, 228, 227, 227),
+                      color: Theme.of(context).backgroundColor,
                       borderRadius: BorderRadius.circular(15)),
                   child: ListView.builder(
                       itemCount: state.eanitems.length,

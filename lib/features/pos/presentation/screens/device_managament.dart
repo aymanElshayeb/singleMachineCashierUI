@@ -23,7 +23,8 @@ class DeviceMangament extends StatelessWidget {
           width: screenwidth * 0.7,
           height: screenheight * 0.9,
           decoration: BoxDecoration(
-              color: Color.fromARGB(255, 228, 227, 227),
+              //color: Color.fromARGB(255, 228, 227, 227),
+              color: Theme.of(context).backgroundColor,
               borderRadius: BorderRadius.circular(15)),
           child: Column(children: [
             Container(
@@ -42,7 +43,7 @@ class DeviceMangament extends StatelessWidget {
                   alignment: AlignmentDirectional.center,
                   margin: EdgeInsets.all(8.0),
                   decoration: BoxDecoration(
-                      color: Color.fromARGB(255, 218, 218, 218),
+                      //color: Color.fromARGB(255, 218, 218, 218),
                       borderRadius: BorderRadius.all(Radius.circular(5.0))),
                   child: DropdownButton(
                     items: ["printer1", "printer2"]
@@ -65,7 +66,8 @@ class DeviceMangament extends StatelessWidget {
                 SizedBox(
                   width: 20,
                 ),
-                ElevatedButton(
+                MaterialButton(
+                    color: Theme.of(context).primaryColor,
                     onPressed: () {},
                     child: Text(AppLocalizations.of(context).test))
               ],
@@ -86,7 +88,8 @@ class DeviceMangament extends StatelessWidget {
                   alignment: AlignmentDirectional.center,
                   margin: EdgeInsets.all(8.0),
                   decoration: BoxDecoration(
-                      color: Color.fromARGB(255, 218, 218, 218),
+                      //color: Color.fromARGB(255, 218, 218, 218),
+
                       borderRadius: BorderRadius.all(Radius.circular(5.0))),
                   child: DropdownButton(
                     items: ["drawer1", "drawer2"]
@@ -109,7 +112,8 @@ class DeviceMangament extends StatelessWidget {
                 SizedBox(
                   width: 20,
                 ),
-                ElevatedButton(
+                MaterialButton(
+                    color: Theme.of(context).primaryColor,
                     onPressed: () {},
                     child: Text(AppLocalizations.of(context).test))
               ],

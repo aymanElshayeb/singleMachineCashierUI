@@ -17,6 +17,7 @@ import 'package:logging/logging.dart';
 class CategoryRepositoryImpl implements CategoryRepository {
   final ItemLocalDataSource itemLocalDataSource;
   final CategoryLocalDataSource localDataSource;
+  final _log = Logger('CategoryRepositoryImpl');
 
   CategoryRepositoryImpl({
     @required this.localDataSource,
@@ -61,7 +62,7 @@ class CategoryRepositoryImpl implements CategoryRepository {
       for (var item in items) {
         if (item.PLU_EAN.contains(ean)) {
           tempItems.add(item);
-          print(item.PLU_EAN + ', ' + item.name);
+          _log.fine('EAN:${item.PLU_EAN}, item: ${item.name}');
         }
       }
 

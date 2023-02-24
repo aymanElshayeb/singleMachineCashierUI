@@ -33,7 +33,7 @@ class SellerMangament extends StatelessWidget {
         builder: (context, state) {
           return Scaffold(
             appBar: appBar,
-            backgroundColor: Colors.grey,
+            //backgroundColor: Colors.grey,
             body: Column(children: [
               Padding(
                 padding: const EdgeInsets.all(5.0),
@@ -41,12 +41,13 @@ class SellerMangament extends StatelessWidget {
                   height: (screenheight - appBarHeight) * 0.43,
                   width: screenwidth,
                   decoration: BoxDecoration(
-                      color: Color.fromARGB(255, 228, 227, 227),
+                      //color: Color.fromARGB(255, 228, 227, 227),
+                      color: Theme.of(context).backgroundColor,
                       borderRadius: BorderRadius.circular(15)),
                   child: Column(children: [
                     Text(
                       AppLocalizations.of(context).newusercredentials,
-                      style: TextStyle(fontSize: 15, color: Colors.blueGrey),
+                      //style: TextStyle(fontSize: 15, color: Colors.blueGrey),
                     ),
                     SizedBox(
                       height: screenheight * 0.05,
@@ -99,7 +100,8 @@ class SellerMangament extends StatelessWidget {
                     Container(
                       width: screenwidth * 0.11,
                       height: screenheight * 0.05,
-                      child: ElevatedButton(
+                      child: MaterialButton(
+                          color: Theme.of(context).primaryColorDark,
                           onPressed: () {
                             if (controller1.text != '' &&
                                 controller2.text != '' &&
@@ -134,7 +136,8 @@ class SellerMangament extends StatelessWidget {
                   width: 450,
                   alignment: Alignment.topCenter,
                   decoration: BoxDecoration(
-                      color: Color.fromARGB(255, 228, 227, 227),
+                      //color: Color.fromARGB(255, 228, 227, 227),
+
                       borderRadius: BorderRadius.circular(15)),
                   child: SingleChildScrollView(
                     child: MenuDataTable([

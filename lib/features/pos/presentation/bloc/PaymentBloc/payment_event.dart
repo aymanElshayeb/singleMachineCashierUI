@@ -15,6 +15,8 @@ class AddToCash extends PaymentEvent {
   AddToCash({@required this.money});
 }
 
+class DeleteFromCash extends PaymentEvent {}
+
 class UpdateMethod extends PaymentEvent {
   final String method;
 

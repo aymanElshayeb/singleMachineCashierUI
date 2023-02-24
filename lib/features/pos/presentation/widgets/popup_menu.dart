@@ -25,7 +25,9 @@ class _PopupMenuState extends State<PopupMenu> {
       width: width * 0.1,
       margin: EdgeInsets.all(5),
       decoration: BoxDecoration(
-          color: Colors.grey, borderRadius: BorderRadius.circular(5)),
+          //color: Colors.grey,
+          color: Theme.of(context).primaryColor,
+          borderRadius: BorderRadius.circular(5)),
       child: PopupMenuButton<SampleItem>(
         initialValue: selectedMenu,
         child: Row(
@@ -33,7 +35,7 @@ class _PopupMenuState extends State<PopupMenu> {
           children: [
             Icon(
               Icons.settings,
-              color: Colors.white,
+              //color: Colors.white,
             ),
             SizedBox(
               width: 5,
@@ -41,7 +43,7 @@ class _PopupMenuState extends State<PopupMenu> {
             Text(
               AppLocalizations.of(context).office,
               style: TextStyle(
-                  color: Colors.white,
+                  //color: Colors.white,
                   fontSize: 0.011 * width,
                   fontStyle: FontStyle.normal),
             ),

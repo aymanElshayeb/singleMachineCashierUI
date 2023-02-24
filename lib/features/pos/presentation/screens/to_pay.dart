@@ -3,6 +3,7 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:logging/logging.dart';
 import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/category/bloc.dart';
 import 'package:virtual_keyboard_multi_language/virtual_keyboard_multi_language.dart';
 
@@ -21,6 +22,7 @@ class ToPay extends StatelessWidget {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     final TextEditingController _myController = TextEditingController();
+    final _log = Logger('ToPay');
     String selectedMethod = 'Cash';
     return BlocProvider(
       create: (context) => PaymentBloc()..add(getTotal(total: total)),
@@ -29,23 +31,33 @@ class ToPay extends StatelessWidget {
           return Scaffold(
             appBar: AppBar(
               title: Text(AppLocalizations.of(context).paymentpage),
-              backgroundColor: Colors.grey,
+              //backgroundColor: Colors.grey,
             ),
-            backgroundColor: Color.fromARGB(255, 243, 243, 243),
+            //backgroundColor: Color.fromARGB(255, 243, 243, 243),
             body: Row(
               children: [
                 Column(mainAxisAlignment: MainAxisAlignment.start, children: [
                   Container(
                     margin: EdgeInsets.all(8.0),
                     decoration: BoxDecoration(
-                        color: Color.fromARGB(255, 227, 229, 230),
+                        //color: Color.fromARGB(255, 227, 229, 230),
+                        color: Theme.of(context).backgroundColor,
                         borderRadius: BorderRadius.all(Radius.circular(11.0))),
                     child: Column(children: [
-                      numberBar(state.total, AppLocalizations.of(context).total,
-                          width * 0.230, height * 0.077),
-                      numberBar(state.cash, AppLocalizations.of(context).cash,
-                          width * 0.230, height * 0.077),
                       numberBar(
+                          Theme.of(context).primaryColor,
+                          state.total,
+                          AppLocalizations.of(context).total,
+                          width * 0.230,
+                          height * 0.077),
+                      numberBar(
+                          Theme.of(context).primaryColor,
+                          state.cash,
+                          AppLocalizations.of(context).cash,
+                          width * 0.230,
+                          height * 0.077),
+                      numberBar(
+                          Theme.of(context).primaryColor,
                           state.inreturn,
                           AppLocalizations.of(context).returnn,
                           width * 0.230,
@@ -55,18 +67,14 @@ class ToPay extends StatelessWidget {
                   SizedBox(
                     height: height * 0.2,
                   ),
-                  paymentButton(
-                      Icons.print,
-                      AppLocalizations.of(context).printreceipt,
-                      () {},
-                      width * 0.221,
-                      height * 0.07),
                   Container(
                     width: width * 0.221,
                     height: height * 0.07,
                     margin: EdgeInsets.all(8.0),
+                    alignment: AlignmentDirectional.center,
                     decoration: BoxDecoration(
-                        color: Colors.blue,
+
+                        //color: Colors.blue,
                         borderRadius: BorderRadius.all(Radius.circular(5.0))),
                     child: DropdownButton(
                       items: ["Cash", "Visa"]
@@ -83,12 +91,24 @@ class ToPay extends StatelessWidget {
                       onChanged: (val) {
                         BlocProvider.of<PaymentBloc>(context)
                             .add(UpdateMethod(method: val));
-                        print(val);
+
+                        _log.fine(val);
                       },
                       value: state.selectedMethod,
                     ),
                   ),
                   paymentButton(
+                      Theme.of(context).primaryColor,
+                      Icons.print,
+                      AppLocalizations.of(context).printreceipt,
+                      () {},
+                      width * 0.221,
+                      height * 0.07),
+                  SizedBox(
+                    height: height * 0.02,
+                  ),
+                  paymentButton(
+                      Theme.of(context).primaryColor,
                       Icons.payment,
                       AppLocalizations.of(context).completepayment,
                       () {},
@@ -105,18 +125,25 @@ class ToPay extends StatelessWidget {
                     height: height * 0.45,
                     margin: EdgeInsets.all(8.0),
                     decoration: BoxDecoration(
-                        color: Color.fromARGB(255, 227, 229, 230),
+                        //color: Color.fromARGB(255, 227, 229, 230),
+                        color: Theme.of(context).backgroundColor,
                         borderRadius: BorderRadius.all(Radius.circular(11.0))),
                     child: NumPad(
                       buttonSize: width * 0.04,
-                      buttonColor: Colors.grey,
-                      iconColor: Colors.blueGrey,
+                      //buttonColor: Colors.grey,
+                      //iconColor: Colors.blueGrey,
+                      buttonColor: Theme.of(context).canvasColor,
+                      iconColor: Theme.of(context).appBarTheme.foregroundColor,
                       controller: _myController,
                       delete: () {
-                        if (_myController.text.length > 0) {
-                          _myController.text = _myController.text
-                              .substring(0, _myController.text.length - 1);
-                        }
+                        BlocProvider.of<PaymentBloc>(context)
+                            .add(DeleteFromCash());
+                        BlocProvider.of<PaymentBloc>(context)
+                            .add(AddToCash(money: 0));
+                        // if (_myController.text.length > 0) {
+                        //   _myController.text = _myController.text
+                        //       .substring(0, _myController.text.length - 1);
+                        // }
                       },
                       // do something with the input numbers
                       onSubmit: () {},
@@ -130,7 +157,8 @@ class ToPay extends StatelessWidget {
                       height: height,
                       margin: EdgeInsets.all(8.0),
                       decoration: BoxDecoration(
-                          color: Color.fromARGB(255, 227, 229, 230),
+                          //color: Color.fromARGB(255, 227, 229, 230),
+                          color: Theme.of(context).backgroundColor,
                           borderRadius:
                               BorderRadius.all(Radius.circular(11.0))),
                     ),
@@ -139,7 +167,7 @@ class ToPay extends StatelessWidget {
                       child: Container(
                         width: width * 0.11,
                         height: height * 0.11,
-                        margin: EdgeInsets.all(8.0),
+                        margin: EdgeInsets.all(15.0),
                         child: Container(
                           child: ConstrainedBox(
                             constraints: BoxConstraints.expand(),
@@ -149,6 +177,7 @@ class ToPay extends StatelessWidget {
                                 onTap: () {
                                   BlocProvider.of<PaymentBloc>(context)
                                       .add(AddToCash(money: 100));
+                                  _log.fine(100);
                                 },
                               ),
                             ),
@@ -166,21 +195,26 @@ class ToPay extends StatelessWidget {
     );
   }
 
-  Container numberBar(num number, String title, double width, double height) {
+  Container numberBar(
+      Color color, num number, String title, double width, double height) {
     return Container(
       width: width,
       height: height,
       padding: EdgeInsets.all(3.0),
       margin: EdgeInsets.all(8.0),
       decoration: BoxDecoration(
-          color: Colors.blueGrey,
+          //color: Colors.blueGrey,
+          color: color,
           borderRadius: BorderRadius.all(Radius.circular(5.0))),
       child: Center(
           child:
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
         Column(
           children: [
-            Text(title, style: TextStyle(fontSize: 20, color: Colors.white)),
+            Text(title,
+                style: TextStyle(
+                  fontSize: 20, //color: Colors.white
+                )),
           ],
         ),
         Container(
@@ -188,26 +222,32 @@ class ToPay extends StatelessWidget {
                 ? Text("")
                 : Text(
                     number.toString(),
-                    style: TextStyle(fontSize: 45, color: Colors.black),
+                    style: TextStyle(
+                      fontSize: 40, //color: Colors.black
+                    ),
                   ))
       ])),
     );
   }
 
-  Container paymentButton(IconData icon, String title, Function function,
-      double width, double height) {
+  Container paymentButton(Color color, IconData icon, String title,
+      Function function, double width, double height) {
     return Container(
-      width: width,
-      height: height,
-      child: ElevatedButton.icon(
-        onPressed: function,
-        icon: Icon(
-          // <-- Icon
-          icon,
-          size: 24.0,
-        ),
-        label: Text(title), // <-- Text
-      ),
-    );
+        width: width,
+        height: height,
+        child: MaterialButton(
+          color: color,
+          onPressed: function,
+          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Icon(
+              icon,
+              size: 24,
+            ),
+            SizedBox(
+              width: width * 0.02,
+            ),
+            Text(title)
+          ]),
+        ));
   }
 }
