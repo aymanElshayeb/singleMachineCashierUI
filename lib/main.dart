@@ -5,7 +5,6 @@ import 'features/pos/presentation/bloc/category/category_bloc.dart';
 import 'features/pos/presentation/pages/device_managament.dart';
 import 'features/pos/presentation/pages/login.dart';
 import 'features/pos/presentation/pages/menu.dart';
-import 'features/pos/presentation/pages/new_menu.dart';
 import 'features/pos/presentation/widgets/num_pad.dart';
 import 'features/pos/presentation/pages/seller_managament.dart';
 import 'features/pos/presentation/pages/to_pay.dart';
@@ -38,7 +37,6 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         home: LoginBuilder(),
-        //home: DeviceMangament(),
       ),
     );
   }

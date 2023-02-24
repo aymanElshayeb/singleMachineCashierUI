@@ -47,8 +47,10 @@ class CustomDialog extends StatelessWidget {
                         iconColor: Colors.blueGrey,
                         controller: EanController,
                         delete: () {
-                          EanController.text = EanController.text
-                              .substring(0, EanController.text.length - 1);
+                          if (EanController.text.length > 0) {
+                            EanController.text = EanController.text
+                                .substring(0, EanController.text.length - 1);
+                          }
                         },
                         // do something with the input numbers
                         onSubmit: () {

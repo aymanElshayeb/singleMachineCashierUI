@@ -3,7 +3,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:single_machine_cashier_ui/features/pos/domain/repositories/category_repository.dart';
 import 'package:single_machine_cashier_ui/features/pos/domain/usecases/categories.dart';
 import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/category/bloc.dart';
-import 'core/network/network_info.dart';
 import 'features/pos/data/datasources/category_local_data_source.dart';
 import 'features/pos/data/datasources/item_local_data_source.dart';
 import 'features/pos/data/datasources/user_local_data_source.dart';
@@ -29,14 +28,12 @@ Future<void> init() async {
   sl.registerLazySingleton<UserRepository>(
     () => UserRepositoryImpl(
       localDataSource: sl(),
-      networkInfo: sl(),
     ),
   );
 
   sl.registerLazySingleton<CategoryRepository>(
     () => CategoryRepositoryImpl(
       localDataSource: sl(),
-      networkInfo: sl(),
       itemLocalDataSource: sl(),
     ),
   );
@@ -54,7 +51,6 @@ Future<void> init() async {
   );
 
   //! Core
-  sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl());
 
   //! External
   final sharedPreferences = await SharedPreferences.getInstance();

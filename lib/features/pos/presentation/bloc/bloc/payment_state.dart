@@ -3,25 +3,25 @@ part of 'payment_bloc.dart';
 @immutable
 abstract class PaymentState extends Equatable {
   PaymentState([List props = const <dynamic>[]]) : super(props);
-  double get total => 0;
-  double get cash => 0;
-  double get inreturn => 0;
+  num get total => 0;
+  num get cash => 0;
+  num get inreturn => 0;
   String get selectedMethod => "Cash";
 }
 
 class PaymentInitial extends PaymentState {}
 
 class UpdatePaymentState extends PaymentState {
-  final double final_cash;
-  final double final_total;
-  final double final_return;
+  final num final_cash;
+  final num final_total;
+  final num final_return;
   final String final_selected;
   @override
-  double get total => final_total;
+  num get total => final_total;
   @override
-  double get cash => final_cash;
+  num get cash => final_cash;
   @override
-  double get inreturn => final_return;
+  num get inreturn => final_return;
   @override
   String get selectedMethod => final_selected;
   UpdatePaymentState(

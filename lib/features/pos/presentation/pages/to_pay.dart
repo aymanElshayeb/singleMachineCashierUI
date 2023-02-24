@@ -12,7 +12,7 @@ import '../bloc/category/category_state.dart';
 import '../widgets/num_pad.dart';
 
 class ToPay extends StatelessWidget {
-  final double total;
+  final num total;
   const ToPay({Key key, @required this.total}) : super(key: key);
 
   @override
@@ -40,19 +40,22 @@ class ToPay extends StatelessWidget {
                         color: Color.fromARGB(255, 227, 229, 230),
                         borderRadius: BorderRadius.all(Radius.circular(11.0))),
                     child: Column(children: [
-                      numberBar(state.total, "Total"),
-                      numberBar(state.cash, "Cash"),
-                      numberBar(state.inreturn, "Return"),
+                      numberBar(
+                          state.total, "Total", width * 0.230, height * 0.077),
+                      numberBar(
+                          state.cash, "Cash", width * 0.230, height * 0.077),
+                      numberBar(state.inreturn, "Return", width * 0.230,
+                          height * 0.077),
                     ]),
                   ),
-
-                  const SizedBox(
-                    height: 140,
+                  SizedBox(
+                    height: height * 0.2,
                   ),
-                  paymentButton(Icons.print, 'Print receipt', () {}),
+                  paymentButton(Icons.print, 'Print receipt', () {},
+                      width * 0.221, height * 0.07),
                   Container(
-                    width: 300,
-                    height: 50,
+                    width: width * 0.221,
+                    height: height * 0.07,
                     margin: EdgeInsets.all(8.0),
                     decoration: BoxDecoration(
                         color: Colors.blue,
@@ -77,43 +80,34 @@ class ToPay extends StatelessWidget {
                       value: state.selectedMethod,
                     ),
                   ),
-                  paymentButton(Icons.payment, 'Complete payment', () {}),
-
-                  //DropdownButton(items: [], onChanged: onChanged)
+                  paymentButton(Icons.payment, 'Complete payment', () {},
+                      width * 0.221, height * 0.07),
                 ]),
                 SizedBox(
-                  width: 20,
+                  width: width * 0.02,
                 ),
                 Align(
                   alignment: AlignmentDirectional.topCenter,
                   child: Container(
-                    width: 300,
-                    height: 300,
+                    width: width * 0.2,
+                    height: height * 0.45,
                     margin: EdgeInsets.all(8.0),
                     decoration: BoxDecoration(
                         color: Color.fromARGB(255, 227, 229, 230),
                         borderRadius: BorderRadius.all(Radius.circular(11.0))),
                     child: NumPad(
-                      buttonSize: 50,
+                      buttonSize: width * 0.04,
                       buttonColor: Colors.grey,
                       iconColor: Colors.blueGrey,
                       controller: _myController,
                       delete: () {
-                        _myController.text = _myController.text
-                            .substring(0, _myController.text.length - 1);
+                        if (_myController.text.length > 0) {
+                          _myController.text = _myController.text
+                              .substring(0, _myController.text.length - 1);
+                        }
                       },
                       // do something with the input numbers
-                      onSubmit: () {
-                        /*debugPrint('Your code: ${_myController.text}');
-                        showDialog(
-                            context: context,
-                            builder: (_) => AlertDialog(
-                                  content: Text(
-                                    "You code is ${_myController.text}",
-                                    style: const TextStyle(fontSize: 30),
-                                  ),
-                                ));*/
-                      },
+                      onSubmit: () {},
                     ),
                   ),
                 ),
@@ -131,17 +125,16 @@ class ToPay extends StatelessWidget {
                     Material(
                       color: Colors.transparent,
                       child: Container(
-                        width: 130,
-                        height: 130,
+                        width: width * 0.11,
+                        height: height * 0.11,
                         margin: EdgeInsets.all(8.0),
                         child: Container(
                           child: ConstrainedBox(
                             constraints: BoxConstraints.expand(),
                             child: Ink.image(
-                              image: AssetImage('images/100.png'),
+                              image: AssetImage('assets/images/100.png'),
                               child: InkWell(
                                 onTap: () {
-                                  print("hey");
                                   BlocProvider.of<PaymentBloc>(context)
                                       .add(AddToCash(money: 100));
                                 },
@@ -161,10 +154,10 @@ class ToPay extends StatelessWidget {
     );
   }
 
-  Container numberBar(double number, String title) {
+  Container numberBar(num number, String title, double width, double height) {
     return Container(
-      width: 300,
-      height: 60,
+      width: width,
+      height: height,
       padding: EdgeInsets.all(3.0),
       margin: EdgeInsets.all(8.0),
       decoration: BoxDecoration(
@@ -183,17 +176,17 @@ class ToPay extends StatelessWidget {
                 ? Text("")
                 : Text(
                     number.toString(),
-                    style: TextStyle(fontSize: 54, color: Colors.black),
+                    style: TextStyle(fontSize: 45, color: Colors.black),
                   ))
       ])),
     );
   }
 
-  Container paymentButton(IconData icon, String title, Function function) {
+  Container paymentButton(IconData icon, String title, Function function,
+      double width, double height) {
     return Container(
-      width: 300,
-      height: 50,
-      color: Colors.red,
+      width: width,
+      height: height,
       child: ElevatedButton.icon(
         onPressed: function,
         icon: Icon(
