@@ -1,14 +1,13 @@
 import 'dart:convert';
 import 'package:meta/meta.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:single_machine_cashier_ui/features/pos/data/models/item_model.dart';
 import '../../../../core/error/exceptions.dart';
-import '../models/user_model.dart';
+import '../../domain/entities/item.dart';
 
 abstract class ItemLocalDataSource {
   /// Throws [CacheException] if no data is present
-  Future<List<ItemModel>> getItems();
-  Future<void> cacheItems(ItemModel itemToCache);
+  Future<List<Item>> getItems();
+  Future<void> cacheItems(Item itemToCache);
 }
 
 const CACHED_ITEMS = 'CACHED_ITEMS';
@@ -19,7 +18,7 @@ class ItemLocalDataSourceImpl implements ItemLocalDataSource {
   ItemLocalDataSourceImpl({@required this.sharedPreferences});
 
   @override
-  Future<List<ItemModel>> getItems() {
+  Future<List<Item>> getItems() {
     final jsonString = [
       {
         "name": "potato",
@@ -36,7 +35,7 @@ class ItemLocalDataSourceImpl implements ItemLocalDataSource {
         "unit": "Kilo",
         "kilo": true,
         "category": 1,
-        "price": 15,
+        "price": 15.5,
         "PLU_EAN": "bb"
       },
       {
@@ -78,10 +77,10 @@ class ItemLocalDataSourceImpl implements ItemLocalDataSource {
 
     if (jsonString != null) {
       final List<Map<String, dynamic>> jsonMap = jsonString;
-      List<ItemModel> items = [];
+      List<Item> items = [];
 
       for (var item in jsonMap) {
-        items.add(ItemModel.fromJson(item));
+        items.add(Item.fromJson(item));
       }
       return Future.value(items);
     } else {
@@ -90,7 +89,7 @@ class ItemLocalDataSourceImpl implements ItemLocalDataSource {
   }
 
   @override
-  Future<void> cacheItems(ItemModel itemToCache) {
+  Future<void> cacheItems(Item itemToCache) {
     return sharedPreferences.setString(
       CACHED_ITEMS,
       json.encode(itemToCache.toJson()),

@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:single_machine_cashier_ui/features/pos/presentation/pages/device_managament.dart';
-import 'package:single_machine_cashier_ui/features/pos/presentation/pages/seller_managament.dart';
+import 'package:single_machine_cashier_ui/features/pos/presentation/screens/device_managament.dart';
+import 'package:single_machine_cashier_ui/features/pos/presentation/screens/seller_managament.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 // This is the type used by the popup menu below.
 enum SampleItem { itemOne, itemTwo, itemThree, itemFour, itemFive }
@@ -19,14 +21,15 @@ class _PopupMenuState extends State<PopupMenu> {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Container(
-      height: 35,
-      width: 100,
+      height: height * 0.2,
+      width: width * 0.1,
       margin: EdgeInsets.all(5),
       decoration: BoxDecoration(
           color: Colors.grey, borderRadius: BorderRadius.circular(5)),
       child: PopupMenuButton<SampleItem>(
         initialValue: selectedMenu,
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
               Icons.settings,
@@ -35,11 +38,11 @@ class _PopupMenuState extends State<PopupMenu> {
             SizedBox(
               width: 5,
             ),
-            const Text(
-              'Office',
+            Text(
+              AppLocalizations.of(context).office,
               style: TextStyle(
                   color: Colors.white,
-                  fontSize: 14,
+                  fontSize: 0.011 * width,
                   fontStyle: FontStyle.normal),
             ),
           ],
@@ -54,14 +57,14 @@ class _PopupMenuState extends State<PopupMenu> {
             value: SampleItem.itemOne,
             child: ListTile(
                 leading: const Icon(Icons.person),
-                title: const Text('Seller management'),
+                title: Text(AppLocalizations.of(context).sellermanagement),
                 onTap: () => gotoPage('seller')),
           ),
           PopupMenuItem<SampleItem>(
             value: SampleItem.itemTwo,
             child: ListTile(
               leading: const Icon(Icons.device_hub),
-              title: const Text('Device management'),
+              title: Text(AppLocalizations.of(context).devicemanagement),
               onTap: () => gotoPage('device'),
             ),
           ),

@@ -9,9 +9,9 @@ import 'package:meta/meta.dart';
 abstract class CategoryState extends Equatable {
   CategoryState([List props = const <dynamic>[]]) : super(props);
 
-  List<String> get categories => null;
+  List<String> get categories => [];
   bool get gotitems => null;
-  List<Item> get categoryitems => null;
+  List<Item> get categoryitems => [];
   Map<Item, int> get orderstate => {};
   List<Item> get eanitems => [];
 }

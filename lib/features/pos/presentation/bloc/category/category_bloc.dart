@@ -76,7 +76,7 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
           boolitems: state.gotitems,
           categoriesitems: state.categoryitems,
           orders: state.orderstate,
-          finalEanItems: state.eanitems);
+          finalEanItems: []);
     } else if (event is GetEAN) {
       final failureOrItems = await categories.execGetEanItem(event.ean);
       yield failureOrItems.fold(
@@ -109,14 +109,4 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
     }
     return categories;
   }
-
-  // Future<List<String>> _getAllCategories() async {
-  //
-  //   final failureOrCategory =await categories.getAllCategories();
-  //   List<String> c;
-  //   failureOrCategory.fold( (failure) => print("error")
-  //     ,(categoryList) => c=_mapCategoriesToList(categoryList),
-  //   );
-  //  return c;
-  // }
 }
