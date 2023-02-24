@@ -9,6 +9,7 @@ import '../../../../injection_container.dart';
 
 import '../../domain/entities/user.dart';
 import '../bloc/user/user_bloc.dart';
+import '../widgets/main_app_bar.dart';
 import '../widgets/table.dart';
 
 class SellerMangament extends StatelessWidget {
@@ -35,7 +36,7 @@ class SellerMangament extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(5.0),
                 child: Container(
-                  height: (screenheight - appBarHeight) * 0.45 - 10,
+                  height: (screenheight - appBarHeight) * 0.43,
                   width: screenwidth,
                   decoration: BoxDecoration(
                       color: Color.fromARGB(255, 228, 227, 227),
@@ -46,80 +47,88 @@ class SellerMangament extends StatelessWidget {
                       style: TextStyle(fontSize: 15, color: Colors.blueGrey),
                     ),
                     SizedBox(
-                      height: 20,
+                      height: screenheight * 0.05,
                     ),
                     Container(
-                      width: 250,
+                      width: screenwidth * 0.19,
+                      height: screenheight * 0.08,
                       child: TextField(
                         controller: controller1,
                         decoration: InputDecoration(
                           labelText: 'Fullname',
                           suffixIcon: Icon(
                             Icons.abc,
-                            size: 17,
+                            size: screenwidth * 0.014,
                           ),
                         ),
                       ),
                     ),
                     Container(
-                      width: 250,
+                      width: screenwidth * 0.19,
+                      height: screenheight * 0.08,
                       child: TextField(
                         controller: controller2,
                         decoration: InputDecoration(
                           labelText: 'Username',
                           suffixIcon: Icon(
                             Icons.abc,
-                            size: 17,
+                            size: screenwidth * 0.014,
                           ),
                         ),
                       ),
                     ),
                     Container(
-                      width: 250,
+                      width: screenwidth * 0.19,
+                      height: screenheight * 0.08,
                       child: TextField(
                         controller: controller3,
                         decoration: InputDecoration(
                           labelText: 'Password',
                           suffixIcon: Icon(
                             Icons.remove_red_eye,
-                            size: 17,
+                            size: screenwidth * 0.014,
                           ),
                         ),
                       ),
                     ),
                     SizedBox(
-                      height: 20,
+                      height: screenheight * 0.02,
                     ),
-                    ElevatedButton(
-                        onPressed: () {
-                          if (controller1.text != '' &&
-                              controller2.text != '' &&
-                              controller3.text != '') {
-                            BlocProvider.of<UserBloc>(context).add(AddUser(User(
-                                fullname: controller1.text,
-                                role: 'ADMIN',
-                                userName: controller2.text,
-                                password: controller3.text,
-                                id: 5)));
-                            controller1.text = '';
-                            controller2.text = '';
-                            controller3.text = '';
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content:
-                                        Text("Enter sufficient credentials!")));
-                          }
-                        },
-                        child: Text('Add a new user'))
+                    Container(
+                      width: screenwidth * 0.11,
+                      height: screenheight * 0.05,
+                      child: ElevatedButton(
+                          onPressed: () {
+                            if (controller1.text != '' &&
+                                controller2.text != '' &&
+                                controller3.text != '') {
+                              BlocProvider.of<UserBloc>(context).add(AddUser(
+                                  User(
+                                      fullname: controller1.text,
+                                      role: 'ADMIN',
+                                      userName: controller2.text,
+                                      password: controller3.text,
+                                      id: 5)));
+                              controller1.text = '';
+                              controller2.text = '';
+                              controller3.text = '';
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content: Text(
+                                          "Enter sufficient credentials!")));
+                            }
+                          },
+                          child: Text('Add a new user')),
+                    )
                   ]),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.all(5.0),
                 child: Container(
-                  height: (screenheight - appBarHeight) * 0.55 - 10,
-                  width: screenwidth - 985,
+                  height: (screenheight - appBarHeight) * 0.535,
+                  width: screenwidth * 0.28,
                   alignment: Alignment.topCenter,
                   decoration: BoxDecoration(
                       color: Color.fromARGB(255, 228, 227, 227),

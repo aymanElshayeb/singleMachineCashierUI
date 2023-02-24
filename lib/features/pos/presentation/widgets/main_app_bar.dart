@@ -3,18 +3,13 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:single_machine_cashier_ui/features/pos/presentation/screens/constants.dart';
+import 'package:single_machine_cashier_ui/features/pos/presentation/pages/constants.dart';
 import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/popup_menu.dart';
 
 import '../../domain/entities/item.dart';
-import '../bloc/Locale/locale_bloc_bloc.dart';
 import '../bloc/category/category_bloc.dart';
 import '../bloc/category/category_event.dart';
 import '../bloc/category/category_state.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-import 'Language_popup.dart';
-import 'Language_popup.dart';
 
 class MainAppBar extends StatelessWidget {
   const MainAppBar({Key key}) : super(key: key);
@@ -49,7 +44,7 @@ class MainAppBar extends StatelessWidget {
                 ),
               ),
               SizedBox(
-                width: width * 0.435,
+                width: width * 0.6,
               ),
               Padding(
                 padding: EdgeInsets.only(right: width * 0.02),
@@ -57,13 +52,11 @@ class MainAppBar extends StatelessWidget {
                   // mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
                     PopupMenu(),
-                    menu_button(width, height, Icons.home,
-                        AppLocalizations.of(context).home, state, () {
+                    menu_button(width, Icons.home, 'Home', state, () {
                       BlocProvider.of<CategoryBloc>(context).add(InitEvent());
                     }),
-                    menu_button(width, height, Icons.power_settings_new,
-                        AppLocalizations.of(context).exit, state, () {}),
-                    LangPopup(),
+                    menu_button(
+                        width, Icons.power_settings_new, 'Exit', state, () {})
                   ],
                 ),
               ),
@@ -82,11 +75,11 @@ class MainAppBar extends StatelessWidget {
     return total.toString();
   }
 
-  Container menu_button(double width, double height, IconData icon,
-      String label, CategoryState state, Function function) {
+  Container menu_button(double width, IconData icon, String label,
+      CategoryState state, Function function) {
     return Container(
-      height: height * 0.2,
-      width: width * 0.1,
+      height: 35,
+      width: 100,
       margin: EdgeInsets.all(5),
       //padding: EdgeInsets.all(width * 0.01),
       child: ElevatedButton.icon(
@@ -94,10 +87,8 @@ class MainAppBar extends StatelessWidget {
         label: Text(label), //label text
         style: ElevatedButton.styleFrom(
           primary: Colors.grey.withOpacity(0.6),
-          textStyle: TextStyle(
-              color: Colors.white,
-              fontSize: 0.011 * width,
-              fontStyle: FontStyle.normal),
+          textStyle: const TextStyle(
+              color: Colors.white, fontSize: 14, fontStyle: FontStyle.normal),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
         ),
         onPressed: ((function)),

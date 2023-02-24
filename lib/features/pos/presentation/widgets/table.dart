@@ -18,19 +18,16 @@ class MenuDataTable extends StatelessWidget {
           DataColumn(
               label: Text(item,
                   style: TextStyle(
-                      fontSize: screenwidth * 0.009,
+                      fontSize: screenwidth * 0.0122,
                       fontWeight: FontWeight.bold))),
       ],
       rows: [
         for (var items in rows)
           DataRow(cells: [
             for (var item in items)
-              DataCell(Container(
-                width: screenwidth * 0.09,
-                child: Text(
-                  item,
-                  style: TextStyle(fontSize: screenwidth * 0.01),
-                ),
+              DataCell(Text(
+                item,
+                style: TextStyle(fontSize: screenwidth * 0.011),
               )),
           ]),
       ],

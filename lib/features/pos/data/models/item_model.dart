@@ -9,7 +9,7 @@ class ItemModel extends Item {
     @required String unit,
     @required bool kilo,
     @required int category,
-    @required double price,
+    @required num price,
     @required String PLU_EAN,
   }) : super(
             name: name,

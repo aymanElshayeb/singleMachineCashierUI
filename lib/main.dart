@@ -4,7 +4,12 @@ import 'package:logging/logging.dart';
 import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/user/user_bloc.dart';
 import 'features/pos/presentation/bloc/Locale/locale_bloc_bloc.dart';
 import 'features/pos/presentation/bloc/category/category_bloc.dart';
-import 'features/pos/presentation/screens/login.dart';
+import 'features/pos/presentation/pages/device_managament.dart';
+import 'features/pos/presentation/pages/login.dart';
+import 'features/pos/presentation/pages/menu.dart';
+import 'features/pos/presentation/widgets/num_pad.dart';
+import 'features/pos/presentation/pages/seller_managament.dart';
+import 'features/pos/presentation/pages/to_pay.dart';
 import 'injection_container.dart' as di;
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -45,15 +50,8 @@ class MyApp extends StatelessWidget {
           },
         ),
       ],
-      child: BlocBuilder<LocaleBlocBloc, LocaleBlocState>(
-        builder: (context, state) {
-          return MaterialApp(
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
-            supportedLocales: AppLocalizations.supportedLocales,
-            locale: state.locale,
-            home: LoginBuilder(),
-          );
-        },
+      child: MaterialApp(
+        home: LoginBuilder(),
       ),
     );
   }
