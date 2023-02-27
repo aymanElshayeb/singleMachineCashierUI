@@ -94,7 +94,7 @@ class BillButtons extends StatelessWidget {
     return Container(
       height: 0.2 * height,
       child: GridView.builder(
-        itemCount: 6, //should be length of the items list
+        itemCount: buttons.length, //should be length of the items list
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             childAspectRatio: MediaQuery.of(context).size.width /
                 (MediaQuery.of(context).size.height),

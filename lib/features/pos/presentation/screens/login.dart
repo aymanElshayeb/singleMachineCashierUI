@@ -70,26 +70,26 @@ class LoginBuilder extends StatelessWidget {
                     padding: const EdgeInsets.all(10),
                     child: Login(),
                   ),
-                  Container(
-                    // Keyboard is transparent
-                    color: Colors.deepPurple,
-                    child: VirtualKeyboard(
-                        // Default height is 300
-                        height: 350,
-                        // Default height is will screen width
-                        width: 600,
-                        // Default is black
-                        textColor: Colors.white,
-                        // Default 14
-                        fontSize: 20,
-                        // the layouts supported
-                        //
-                        defaultLayouts: [VirtualKeyboardDefaultLayouts.English],
-                        // [A-Z, 0-9]
-                        type: VirtualKeyboardType.Alphanumeric,
-                        // Callback for key press event
-                        onKeyPress: _onKeyPress),
-                  )
+                  // Container(
+                  //   // Keyboard is transparent
+                  //   color: Colors.deepPurple,
+                  //   child: VirtualKeyboard(
+                  //       // Default height is 300
+                  //       height: 350,
+                  //       // Default height is will screen width
+                  //       width: 600,
+                  //       // Default is black
+                  //       textColor: Colors.white,
+                  //       // Default 14
+                  //       fontSize: 20,
+                  //       // the layouts supported
+                  //       //
+                  //       defaultLayouts: [VirtualKeyboardDefaultLayouts.English],
+                  //       // [A-Z, 0-9]
+                  //       type: VirtualKeyboardType.Alphanumeric,
+                  //       // Callback for key press event
+                  //       onKeyPress: _onKeyPress),
+                  // )
                 ],
               ),
             );
