@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/user/user_bloc.dart';
 import 'features/pos/presentation/bloc/Locale/locale_bloc_bloc.dart';
+import 'features/pos/presentation/bloc/cart/cart_bloc.dart';
 import 'features/pos/presentation/bloc/category/category_bloc.dart';
 import 'features/pos/presentation/screens/login.dart';
 import 'injection_container.dart' as di;
@@ -42,6 +43,11 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (BuildContext context) {
             return LocaleBlocBloc(LocaleBlocState.initial());
+          },
+        ),
+        BlocProvider(
+          create: (BuildContext context) {
+            return CartBloc();
           },
         ),
       ],

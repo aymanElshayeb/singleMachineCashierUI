@@ -16,19 +16,15 @@ class CartActions {
     return await repository.getCart();
   }
 
-
-  Future<Either<Failure, Cart>> addItems(Item item) async {
-    return await repository.addItems(item);
+  Future<Either<Failure, Cart>> addItems(Item item, num quantity) async {
+    return await repository.addItems(item, quantity);
   }
 
-
-  Future<Either<Failure, Cart>> removeItem(Item item) async{
+  Future<Either<Failure, Cart>> removeItem(Item item) async {
     return await repository.removeItem(item);
   }
 
-  Future<Either<Failure, double>> getTotalPrice()async{
+  Future<Either<Failure, double>> getTotalPrice() async {
     return await repository.getTotalPrice();
   }
-
 }
-

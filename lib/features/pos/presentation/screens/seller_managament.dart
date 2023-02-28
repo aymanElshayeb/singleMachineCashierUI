@@ -84,6 +84,7 @@ class SellerMangament extends StatelessWidget {
                       width: screenwidth * 0.19,
                       height: screenheight * 0.08,
                       child: TextField(
+                        obscureText: true,
                         controller: controller3,
                         decoration: InputDecoration(
                           labelText: AppLocalizations.of(context).password,

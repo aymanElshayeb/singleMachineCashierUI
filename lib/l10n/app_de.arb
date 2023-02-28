@@ -30,5 +30,6 @@
     "returnn":"Zurückkehren",
     "printreceipt":"Druckeingang",
     "completepayment":"Zur vollständigen Bezahlung",
-    "enteranitem":"einen Artikel eingeben"
+    "enteranitem":"einen Artikel eingeben",
+    "discount":"Rabatt"
 }

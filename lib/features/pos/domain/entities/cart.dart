@@ -4,22 +4,23 @@ import 'package:meta/meta.dart';
 
 class Cart extends Equatable {
   List<Item> items;
+  List<num> quantities;
 
   Cart({
     @required this.items,
-  }) : super([items]);
-  Future<List<Item>> addItem(Item item) async {
-    items.add(item);
-    return items;
+    @required this.quantities,
+  }) : super([items, quantities]);
+
+  // Future<List<Item>> addItem(Item item) async {
+  //   items.add(item);
+  //   return items;
+  // }
+
+  factory Cart.fromJson(Map<String, Object> jsonMap) {
+    return Cart(items: jsonMap['items'], quantities: jsonMap['quantities']);
   }
 
-  factory Cart.fromJson(Map<String, dynamic> jsonMap) {
-    return Cart(items: jsonMap['items']);
-  }
-
-  Map<String, dynamic> toJson() {
-    return {
-      'items': items,
-    };
+  Map<Object, Object> toJson() {
+    return {'items': items, 'quantites': quantities};
   }
 }

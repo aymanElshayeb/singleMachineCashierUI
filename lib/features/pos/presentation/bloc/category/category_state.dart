@@ -12,7 +12,7 @@ abstract class CategoryState extends Equatable {
   List<String> get categories => [];
   bool get gotitems => null;
   List<Item> get categoryitems => [];
-  Map<Item, int> get orderstate => {};
+  Map<Item, num> get orderstate => {};
   List<Item> get eanitems => [];
 }
 
@@ -32,7 +32,7 @@ class CategoryItemsFound extends CategoryState {
   final List<String> categoriesNames;
   final List<Item> categoriesitems;
   final bool boolitems;
-  Map<Item, int> orders;
+  Map<Item, num> orders;
   final List<Item> finalEanItems;
 
   @override
@@ -42,7 +42,7 @@ class CategoryItemsFound extends CategoryState {
   @override
   List<Item> get categoryitems => categoriesitems;
   @override
-  Map<Item, int> get orderstate => orders;
+  Map<Item, num> get orderstate => orders;
   @override
   List<Item> get eanitems => finalEanItems;
 
@@ -68,11 +68,11 @@ class CategoryError extends CategoryState {
 }
 
 class UpdateOrderState extends CategoryState {
-  final Map<Item, int> order;
+  final Map<Item, num> order;
   final List<Item> items;
   final List<Item> finalEanItems;
   @override
-  Map<Item, int> get orderstate => order;
+  Map<Item, num> get orderstate => order;
   @override
   List<String> get categories => _mapCategoriesToList(items);
   @override
@@ -90,12 +90,12 @@ class UpdateOrderState extends CategoryState {
 }
 
 class getItems extends CategoryState {
-  final Map<Item, int> order;
+  final Map<Item, num> order;
   final bool got_items;
   final List<Item> items;
   final List<Item> finalEanItems;
   @override
-  Map<Item, int> get orderstate => order;
+  Map<Item, num> get orderstate => order;
   @override
   List<String> get categories => _mapCategoriesToList(items);
   @override

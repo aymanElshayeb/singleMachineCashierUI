@@ -26,9 +26,19 @@ class UpdateOrderEvent extends CategoryEvent {
   UpdateOrderEvent(this.item, this.items) : super([item, items]);
 }
 
+class SubtractFromOrder extends CategoryEvent {
+  final Item item;
+  SubtractFromOrder(this.item) : super([item]);
+}
+
+class DeleteFromOrder extends CategoryEvent {
+  final Item item;
+  DeleteFromOrder(this.item) : super([item]);
+}
+
 class AddToOrder extends CategoryEvent {
   final Item item;
-  final int quantity;
+  final num quantity;
 
   AddToOrder(this.item, this.quantity) : super([item, quantity]);
 }
