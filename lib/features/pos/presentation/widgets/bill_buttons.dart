@@ -5,6 +5,7 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/split_bill_dialog.dart';
 
 import '../../domain/entities/item.dart';
 import '../bloc/cart/cart_bloc.dart';
@@ -37,19 +38,33 @@ class BillButtons extends StatelessWidget {
         'icon': const Icon(Icons.payment),
         'function': () {
           final currentBloc = context.read<CategoryBloc>();
-
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: ((context) => ToPay(
-                        total: countTheTotal(currentBloc.state.orderstate),
+                  builder: ((context) => BlocProvider.value(
+                        value: currentBloc,
+                        child: ToPay(
+                          order: currentBloc.state.orderstate,
+                          isOrder: true,
+                        ),
                       ))));
         }
       },
       <String, dynamic>{
-        'title': AppLocalizations.of(context).fastpay,
-        'icon': const Icon(Icons.attach_money_rounded),
-        'function': () {}
+        'title': AppLocalizations.of(context).split,
+        'icon': const Icon(Icons.splitscreen),
+        'function': () {
+          final currentBloc = context.read<CategoryBloc>();
+          showDialog(
+              //barrierDismissible: false,
+              context: context,
+              builder: (((cc) {
+                return BlocProvider.value(
+                  value: currentBloc,
+                  child: SplitBill(),
+                );
+              })));
+        }
       },
       <String, dynamic>{
         'title': AppLocalizations.of(context).differentitem,
@@ -145,13 +160,5 @@ class BillButtons extends StatelessWidget {
         },
       ),
     );
-  }
-
-  double countTheTotal(Map<Item, num> order) {
-    double total = 0;
-    for (int i = 0; i < order.length; i++) {
-      total += order.keys.elementAt(i).price * order.values.elementAt(i);
-    }
-    return total;
   }
 }

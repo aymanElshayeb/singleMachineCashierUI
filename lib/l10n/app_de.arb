@@ -31,5 +31,6 @@
     "printreceipt":"Druckeingang",
     "completepayment":"Zur vollständigen Bezahlung",
     "enteranitem":"einen Artikel eingeben",
-    "discount":"Rabatt"
+    "discount":"Rabatt",
+    "split":"Teilt"
 }

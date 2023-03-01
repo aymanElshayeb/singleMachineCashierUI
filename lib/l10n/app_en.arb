@@ -31,7 +31,8 @@
     "printreceipt":"Print receipt",
     "completepayment":"Complete payment",
     "enteranitem":"Enter an item",
-    "discount":"Discount"
+    "discount":"Discount",
+    "split":"Split"
 
    
   }

@@ -14,6 +14,7 @@ abstract class CategoryState extends Equatable {
   List<Item> get categoryitems => [];
   Map<Item, num> get orderstate => {};
   List<Item> get eanitems => [];
+  Map<Item, num> get subOrderState => {};
 }
 
 class Initial extends CategoryState {}
@@ -28,12 +29,25 @@ class CategoryInitial extends CategoryState {
   }) : super([categoriesNames]);
 }
 
+class UpdateSubOrder extends CategoryState {
+  final Map<Item, num> subOrder;
+  @override
+  Map<Item, num> get subOrderState => subOrder;
+
+  UpdateSubOrder({
+    @required this.subOrder,
+  }) : super([subOrder]);
+}
+
 class CategoryItemsFound extends CategoryState {
   final List<String> categoriesNames;
   final List<Item> categoriesitems;
   final bool boolitems;
   Map<Item, num> orders;
   final List<Item> finalEanItems;
+  final Map<Item, num> subOrder;
+  @override
+  Map<Item, num> get subOrderState => subOrder;
 
   @override
   bool get gotitems => boolitems;
@@ -51,13 +65,15 @@ class CategoryItemsFound extends CategoryState {
       @required this.categoriesNames,
       @required this.boolitems,
       @required this.categoriesitems,
-      @required this.finalEanItems})
+      @required this.finalEanItems,
+      @required this.subOrder})
       : super([
           categoriesNames,
           boolitems,
           categoriesitems,
           orders,
-          finalEanItems
+          finalEanItems,
+          subOrder
         ]);
 }
 
@@ -71,6 +87,9 @@ class UpdateOrderState extends CategoryState {
   final Map<Item, num> order;
   final List<Item> items;
   final List<Item> finalEanItems;
+  final Map<Item, num> subOrder;
+  @override
+  Map<Item, num> get subOrderState => subOrder;
   @override
   Map<Item, num> get orderstate => order;
   @override
@@ -85,8 +104,9 @@ class UpdateOrderState extends CategoryState {
   UpdateOrderState(
       {@required this.order,
       @required this.items,
-      @required this.finalEanItems})
-      : super([order, items, finalEanItems]);
+      @required this.finalEanItems,
+      @required this.subOrder})
+      : super([order, items, finalEanItems, subOrder]);
 }
 
 class getItems extends CategoryState {
