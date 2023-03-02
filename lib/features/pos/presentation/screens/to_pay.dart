@@ -10,6 +10,7 @@ import 'package:virtual_keyboard_multi_language/virtual_keyboard_multi_language.
 import '../bloc/PaymentBloc/payment_bloc.dart';
 import '../bloc/category/category_bloc.dart';
 import '../bloc/category/category_state.dart';
+import '../widgets/currency.dart';
 import '../widgets/num_pad.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -140,53 +141,13 @@ class ToPay extends StatelessWidget {
                             .add(DeleteFromCash());
                         BlocProvider.of<PaymentBloc>(context)
                             .add(AddToCash(money: 0));
-                        // if (_myController.text.length > 0) {
-                        //   _myController.text = _myController.text
-                        //       .substring(0, _myController.text.length - 1);
-                        // }
                       },
                       // do something with the input numbers
                       onSubmit: () {},
                     ),
                   ),
                 ),
-                Stack(
-                  children: [
-                    Container(
-                      width: width * 0.499,
-                      height: height,
-                      margin: EdgeInsets.all(8.0),
-                      decoration: BoxDecoration(
-                          //color: Color.fromARGB(255, 227, 229, 230),
-                          color: Theme.of(context).backgroundColor,
-                          borderRadius:
-                              BorderRadius.all(Radius.circular(11.0))),
-                    ),
-                    Material(
-                      color: Colors.transparent,
-                      child: Container(
-                        width: width * 0.11,
-                        height: height * 0.11,
-                        margin: EdgeInsets.all(15.0),
-                        child: Container(
-                          child: ConstrainedBox(
-                            constraints: BoxConstraints.expand(),
-                            child: Ink.image(
-                              image: AssetImage('assets/images/100.png'),
-                              child: InkWell(
-                                onTap: () {
-                                  BlocProvider.of<PaymentBloc>(context)
-                                      .add(AddToCash(money: 100));
-                                  _log.fine(100);
-                                },
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    )
-                  ],
-                )
+                const Currency(),
               ],
             ),
           );
