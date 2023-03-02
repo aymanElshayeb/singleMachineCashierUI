@@ -9,6 +9,7 @@ import '../bloc/category/category_event.dart';
 import '../bloc/category/category_state.dart';
 import 'num_pad.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:virtual_keyboard_multi_language/virtual_keyboard_multi_language.dart';
 
 class CustomDialog extends StatelessWidget {
   const CustomDialog({Key key}) : super(key: key);

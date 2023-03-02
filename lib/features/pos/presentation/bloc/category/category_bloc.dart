@@ -34,7 +34,8 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
             boolitems: true,
             categoriesitems: categoryList,
             orders: state.orderstate,
-            finalEanItems: state.eanitems),
+            finalEanItems: state.eanitems,
+            subOrder: state.subOrderState),
       );
     } else if (event is InitEvent) {
       final failureOrCategory = await categories.getAllCategories();
@@ -45,10 +46,11 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
             boolitems: false,
             categoriesitems: [],
             orders: state.orderstate,
-            finalEanItems: state.eanitems),
+            finalEanItems: state.eanitems,
+            subOrder: state.subOrderState),
       );
     } else if (event is UpdateOrderEvent) {
-      Map<Item, int> orders = {};
+      Map<Item, num> orders = {};
       orders = state.orderstate;
       if (orders.containsKey(event.item)) {
         orders.update(event.item, (value) => value + 1);
@@ -59,24 +61,35 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
       yield UpdateOrderState(
           order: orders,
           items: state.categoryitems,
-          finalEanItems: state.eanitems);
+          finalEanItems: state.eanitems,
+          subOrder: state.subOrderState);
       yield CategoryItemsFound(
           categoriesNames: _mapCategoriesToList(state.categoryitems),
           boolitems: true,
           categoriesitems: state.categoryitems,
           orders: state.orderstate,
-          finalEanItems: state.eanitems);
+          finalEanItems: state.eanitems,
+          subOrder: state.subOrderState);
     } else if (event is AddToOrder) {
-      Map<Item, int> orders = {};
+      Map<Item, num> orders = {};
       orders = state.orderstate;
-      orders[event.item] = event.quantity;
-      yield UpdateOrderState(order: orders, items: state.categoryitems);
+      if (orders.containsKey(event.item)) {
+        orders[event.item] += event.quantity;
+      } else {
+        orders[event.item] = event.quantity;
+      }
+
+      yield UpdateOrderState(
+          order: orders,
+          items: state.categoryitems,
+          subOrder: state.subOrderState);
       yield CategoryItemsFound(
           categoriesNames: _mapCategoriesToList(state.categoryitems),
           boolitems: state.gotitems,
           categoriesitems: state.categoryitems,
-          orders: state.orderstate,
-          finalEanItems: []);
+          orders: orders,
+          finalEanItems: [],
+          subOrder: state.subOrderState);
     } else if (event is GetEAN) {
       final failureOrItems = await categories.execGetEanItem(event.ean);
       yield failureOrItems.fold(
@@ -86,6 +99,148 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
               got_items: state.gotitems,
               items: state.categoryitems,
               order: state.orderstate));
+    } else if (event is SubtractFromOrder) {
+      Map<Item, num> orders = {};
+      orders = state.orderstate;
+      if (orders.containsKey(event.item)) {
+        orders.update(event.item, (value) {
+          if (value > 1)
+            return value - 1;
+          else
+            return value;
+        });
+        yield UpdateOrderState(
+            order: orders,
+            items: state.categoryitems,
+            finalEanItems: state.eanitems,
+            subOrder: state.subOrderState);
+        yield CategoryItemsFound(
+            categoriesNames: _mapCategoriesToList(state.categoryitems),
+            boolitems: state.gotitems,
+            categoriesitems: state.categoryitems,
+            orders: state.orderstate,
+            finalEanItems: state.eanitems,
+            subOrder: state.subOrderState);
+      }
+    } else if (event is DeleteFromOrder) {
+      Map<Item, num> orders = {};
+      orders = state.orderstate;
+      orders.remove(event.item);
+      List<Item> toRemove = [];
+      orders.forEach((key, value) {
+        if (key.name.contains(event.item.name)) {
+          toRemove.add(key);
+        }
+      });
+      orders.removeWhere((key, value) => toRemove.contains(key));
+
+      yield UpdateOrderState(
+          order: orders,
+          items: state.categoryitems,
+          finalEanItems: state.eanitems,
+          subOrder: state.subOrderState);
+      yield CategoryItemsFound(
+          categoriesNames: _mapCategoriesToList(state.categoryitems),
+          boolitems: true,
+          categoriesitems: state.categoryitems,
+          orders: state.orderstate,
+          finalEanItems: state.eanitems,
+          subOrder: state.subOrderState);
+    } else if (event is AddToSubOrder) {
+      Map<Item, num> suborder = {};
+      suborder = state.subOrderState;
+      if (suborder.containsKey(event.item)) {
+        suborder[event.item] += event.quantity;
+      } else {
+        suborder[event.item] = event.quantity;
+      }
+
+      yield UpdateOrderState(
+          order: state.orderstate,
+          items: state.categoryitems,
+          subOrder: state.subOrderState);
+      yield CategoryItemsFound(
+          categoriesNames: _mapCategoriesToList(state.categoryitems),
+          boolitems: state.gotitems,
+          categoriesitems: state.categoryitems,
+          orders: state.orderstate,
+          finalEanItems: [],
+          subOrder: suborder);
+    } else if (event is DeleteFromSubOrder) {
+      Map<Item, num> orders = {};
+      orders = state.subOrderState;
+      orders.remove(event.item);
+      List<Item> toRemove = [];
+      orders.forEach((key, value) {
+        if (key.name.contains(event.item.name)) {
+          toRemove.add(key);
+        }
+      });
+      orders.removeWhere((key, value) => toRemove.contains(key));
+
+      yield UpdateOrderState(
+          order: state.orderstate,
+          items: state.categoryitems,
+          finalEanItems: state.eanitems,
+          subOrder: orders);
+      yield CategoryItemsFound(
+          categoriesNames: _mapCategoriesToList(state.categoryitems),
+          boolitems: true,
+          categoriesitems: state.categoryitems,
+          orders: state.orderstate,
+          finalEanItems: state.eanitems,
+          subOrder: orders);
+    } else if (event is SubtractFromSubOrder) {
+      Map<Item, num> orders = {};
+      orders = state.subOrderState;
+      if (orders.containsKey(event.item)) {
+        orders.update(event.item, (value) {
+          if (value > 1)
+            return value - 1;
+          else
+            return value;
+        });
+        yield UpdateOrderState(
+            order: state.orderstate,
+            items: state.categoryitems,
+            finalEanItems: state.eanitems,
+            subOrder: orders);
+        yield CategoryItemsFound(
+            categoriesNames: _mapCategoriesToList(state.categoryitems),
+            boolitems: state.gotitems,
+            categoriesitems: state.categoryitems,
+            orders: state.orderstate,
+            finalEanItems: state.eanitems,
+            subOrder: orders);
+      }
+    } else if (event is FinishOrder) {
+      if (event.isOrder) {
+        yield UpdateOrderState(
+            order: {},
+            items: state.categoryitems,
+            finalEanItems: state.eanitems,
+            subOrder: state.subOrderState);
+        yield CategoryItemsFound(
+            categoriesNames: _mapCategoriesToList(state.categoryitems),
+            boolitems: state.gotitems,
+            categoriesitems: state.categoryitems,
+            orders: {},
+            finalEanItems: state.eanitems,
+            subOrder: state.subOrderState);
+      } else {
+        yield UpdateOrderState(
+            order: state.orderstate,
+            items: state.categoryitems,
+            finalEanItems: state.eanitems,
+            subOrder: {});
+        yield CategoryItemsFound(
+            categoriesNames: _mapCategoriesToList(state.categoryitems),
+            boolitems: state.gotitems,
+            categoriesitems: state.categoryitems,
+            orders: state.orderstate,
+            finalEanItems: state.eanitems,
+            subOrder: {});
+      }
     }
   }
 

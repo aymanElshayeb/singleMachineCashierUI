@@ -89,7 +89,7 @@ class MainAppBar extends StatelessWidget {
     );
   }
 
-  String countTheTotal(Map<Item, int> order) {
+  String countTheTotal(Map<Item, num> order) {
     double total = 0;
     for (int i = 0; i < order.length; i++) {
       total += order.keys.elementAt(i).price * order.values.elementAt(i);

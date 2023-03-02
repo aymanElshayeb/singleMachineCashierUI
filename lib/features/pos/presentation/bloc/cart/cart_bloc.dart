@@ -2,6 +2,9 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import '../../../../../core/error/failures.dart';
+import '../../../domain/entities/cart.dart';
+import '../../../domain/entities/item.dart';
+import '../../../domain/usecases/cart.dart';
 import '../../../domain/usecases/items.dart';
 import '../user/user_state.dart';
 import 'cart_event.dart';
@@ -11,20 +14,22 @@ const String SERVER_FAILURE_MESSAGE = 'Server Failure';
 const String CACHE_FAILURE_MESSAGE = 'Cache Failure';
 const String AUTHENTICATION_FAILURE_MESSAGE = 'Invalid password';
 
-class ItemBloc extends Bloc<ItemEvent, ItemState> {
-  final Items items;
+class CartBloc extends Bloc<CartEvent, CartState> {
+  final CartActions cart;
 
-  ItemBloc({@required this.items}): assert(items != null);
-
-
-  @override
-  ItemState get initialState => ItemInitial();
+  CartBloc({@required this.cart}) /*: assert(cart != null)*/;
 
   @override
-  Stream<ItemState> mapEventToState(ItemEvent event) async*{
-    if (event != null ){
-      ;
-    }
+  CartState get initialState => ItemInitial();
+
+  @override
+  Stream<CartState> mapEventToState(CartEvent event) async* {
+    if (event is GetCartItems) {
+    } else if (event is AddToOrder) {}
+  }
+
+  num getTotalPrice(Map<Item, num> order) {
+    return 5;
   }
 
   String _mapFailureToMessage(Failure failure) {
