@@ -4,12 +4,15 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/quantity_dialog.dart';
+import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/user_permission_dialog.dart';
 
 import '../bloc/category/category_bloc.dart';
 import '../bloc/category/category_event.dart';
 import '../bloc/category/category_state.dart';
 import 'package:provider/provider.dart';
 
+import '../bloc/user/user_bloc.dart';
+import '../bloc/user/user_state.dart';
 import 'item_discount_dialog.dart';
 
 class CartItem extends StatelessWidget {
@@ -82,9 +85,24 @@ class CartItem extends StatelessWidget {
                     InkWell(
                       child: Icon(Icons.delete, size: height * 0.029),
                       onTap: (() {
-                        BlocProvider.of<CategoryBloc>(context).add(
-                            DeleteFromOrder(
-                                state.orderstate.keys.elementAt(index)));
+                        final currentBloc = context.read<UserBloc>();
+                        if (currentBloc.state.currentUser.role == 'ADMIN') {
+                          BlocProvider.of<CategoryBloc>(context).add(
+                              DeleteFromOrder(
+                                  state.orderstate.keys.elementAt(index)));
+                        } else if (currentBloc.state.currentUser.role ==
+                            'Cashier') {
+                          showDialog(
+                              //barrierDismissible: false,
+                              context: context,
+                              builder: (((cc) {
+                                return BlocProvider.value(
+                                  value: currentBloc,
+                                  child: UserPermissionDialog(),
+                                );
+                              })));
+                        }
+
                         if (state.gotitems == false) {
                           BlocProvider.of<CategoryBloc>(context)
                               .add(InitEvent());
@@ -110,10 +128,26 @@ class CartItem extends StatelessWidget {
                             InkWell(
                               child: Icon(Icons.remove),
                               onTap: () {
-                                BlocProvider.of<CategoryBloc>(context)
-                                    .add(SubtractFromOrder(
-                                  state.orderstate.keys.elementAt(index),
-                                ));
+                                final currentBloc = context.read<UserBloc>();
+                                if (currentBloc.state.currentUser.role ==
+                                    'ADMIN') {
+                                  BlocProvider.of<CategoryBloc>(context)
+                                      .add(SubtractFromOrder(
+                                    state.orderstate.keys.elementAt(index),
+                                  ));
+                                } else if (currentBloc.state.currentUser.role ==
+                                    'Cashier') {
+                                  showDialog(
+                                      //barrierDismissible: false,
+                                      context: context,
+                                      builder: (((cc) {
+                                        return BlocProvider.value(
+                                          value: currentBloc,
+                                          child: UserPermissionDialog(),
+                                        );
+                                      })));
+                                }
+
                                 if (state.gotitems == false) {
                                   BlocProvider.of<CategoryBloc>(context)
                                       .add(InitEvent());
@@ -124,20 +158,36 @@ class CartItem extends StatelessWidget {
                               child: Text(
                                   '${state.orderstate.values.elementAt(index).toString()}'),
                               onTap: (() {
-                                final currentBloc =
-                                    context.read<CategoryBloc>();
-                                showDialog(
-                                    context: context,
-                                    builder: (((cc) {
-                                      return BlocProvider.value(
-                                        value: currentBloc,
-                                        child: QuantityDialog(
-                                            quantity: state.orderstate.values
-                                                .elementAt(index),
-                                            item: state.orderstate.keys
-                                                .elementAt(index)),
-                                      );
-                                    })));
+                                final currentBloc2 = context.read<UserBloc>();
+                                if (currentBloc2.state.currentUser.role ==
+                                    'ADMIN') {
+                                  final currentBloc =
+                                      context.read<CategoryBloc>();
+                                  showDialog(
+                                      context: context,
+                                      builder: (((cc) {
+                                        return BlocProvider.value(
+                                          value: currentBloc,
+                                          child: QuantityDialog(
+                                              quantity: state.orderstate.values
+                                                  .elementAt(index),
+                                              item: state.orderstate.keys
+                                                  .elementAt(index)),
+                                        );
+                                      })));
+                                } else if (currentBloc2
+                                        .state.currentUser.role ==
+                                    'Cashier') {
+                                  showDialog(
+                                      //barrierDismissible: false,
+                                      context: context,
+                                      builder: (((cc) {
+                                        return BlocProvider.value(
+                                          value: currentBloc2,
+                                          child: UserPermissionDialog(),
+                                        );
+                                      })));
+                                }
                               }),
                             ),
                             InkWell(
@@ -170,8 +220,23 @@ class CartItem extends StatelessWidget {
                 trailing: InkWell(
                   child: Icon(Icons.delete, size: height * 0.029),
                   onTap: (() {
-                    BlocProvider.of<CategoryBloc>(context).add(DeleteFromOrder(
-                        state.orderstate.keys.elementAt(index)));
+                    final currentBloc = context.read<UserBloc>();
+                    if (currentBloc.state.currentUser.role == 'ADMIN') {
+                      BlocProvider.of<CategoryBloc>(context).add(
+                          DeleteFromOrder(
+                              state.orderstate.keys.elementAt(index)));
+                    } else if (currentBloc.state.currentUser.role ==
+                        'Cashier') {
+                      showDialog(
+                          //barrierDismissible: false,
+                          context: context,
+                          builder: (((cc) {
+                            return BlocProvider.value(
+                              value: currentBloc,
+                              child: UserPermissionDialog(),
+                            );
+                          })));
+                    }
                     if (state.gotitems == false) {
                       BlocProvider.of<CategoryBloc>(context).add(InitEvent());
                     }

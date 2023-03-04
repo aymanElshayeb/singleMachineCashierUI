@@ -3,6 +3,7 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/virtual_keyboard.dart';
 
 import '../../domain/entities/item.dart';
 import '../bloc/category/category_bloc.dart';
@@ -40,6 +41,17 @@ class ItemDiscountDialog extends StatelessWidget {
                   size: width * 0.014,
                 ),
               ),
+              onTap: () {
+                showModalBottomSheet<void>(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return Keyboard(
+                      controller: customController,
+                      number: true,
+                    );
+                  },
+                );
+              },
             ),
           ),
           actions: [

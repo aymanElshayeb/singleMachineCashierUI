@@ -58,6 +58,8 @@ class DeleteFromOrder extends CategoryEvent {
   DeleteFromOrder(this.item) : super([item]);
 }
 
+class CancelOrder extends CategoryEvent {}
+
 class AddToOrder extends CategoryEvent {
   final Item item;
   final num quantity;

@@ -6,6 +6,7 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/split_bill_dialog.dart';
+import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/user_permission_dialog.dart';
 
 import '../../domain/entities/item.dart';
 import '../bloc/cart/cart_bloc.dart';
@@ -14,12 +15,14 @@ import '../bloc/cart/cart_state.dart';
 import '../bloc/category/category_bloc.dart';
 import '../bloc/category/category_event.dart';
 import '../bloc/category/category_state.dart';
+import '../bloc/user/user_bloc.dart';
 import '../screens/constants.dart';
 import '../screens/to_pay.dart';
 import 'package:provider/provider.dart';
 
+import 'confirm_dialog.dart';
 import 'different_item_dialog.dart';
-import 'discount_dialog.dart';
+import 'discount_popup.dart';
 import 'ean_dialog.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -93,7 +96,7 @@ class BillButtons extends StatelessWidget {
                   value: currentBloc,
                   child: BlocBuilder<CategoryBloc, CategoryState>(
                     builder: (context, state) {
-                      return DiscountDialog(order: state.orderstate);
+                      return DiscountPopup();
                     },
                   ),
                 );
@@ -118,7 +121,32 @@ class BillButtons extends StatelessWidget {
       <String, dynamic>{
         'title': AppLocalizations.of(context).cancel,
         'icon': const Icon(Icons.cancel),
-        'function': () {}
+        'function': () {
+          final currentBloc = context.read<CategoryBloc>();
+          if (currentBloc.state.orderstate.length != 0) {
+            final currentBloc2 = context.read<UserBloc>();
+            if (currentBloc2.state.currentUser.role == 'ADMIN') {
+              showDialog(
+                  context: context,
+                  builder: (((cc) {
+                    return BlocProvider.value(
+                      value: currentBloc,
+                      child: ConfirmDialog(),
+                    );
+                  })));
+            } else if (currentBloc2.state.currentUser.role == 'Cashier') {
+              showDialog(
+                  //barrierDismissible: false,
+                  context: context,
+                  builder: (((cc) {
+                    return BlocProvider.value(
+                      value: currentBloc2,
+                      child: UserPermissionDialog(),
+                    );
+                  })));
+            }
+          }
+        }
       },
     ];
     double width = MediaQuery.of(context).size.width;

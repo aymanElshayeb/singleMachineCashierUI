@@ -3,6 +3,7 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/virtual_keyboard.dart';
 
 import '../bloc/category/category_bloc.dart';
 import '../bloc/category/category_event.dart';
@@ -42,6 +43,17 @@ class CustomDialog extends StatelessWidget {
                             size: 17,
                           ),
                         ),
+                        onTap: () {
+                          showModalBottomSheet<void>(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return Keyboard(
+                                controller: EanController,
+                                number: false,
+                              );
+                            },
+                          );
+                        },
                       ),
                       NumPad(
                         buttonSize: 50,

@@ -4,6 +4,7 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/category/bloc.dart';
+import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/virtual_keyboard.dart';
 
 import '../bloc/category/category_bloc.dart';
 import '../bloc/category/category_state.dart';
@@ -31,6 +32,17 @@ class QuantityDialog extends StatelessWidget {
                 children: [
                   TextField(
                     controller: controller,
+                    onTap: () {
+                      showModalBottomSheet<void>(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return Keyboard(
+                            controller: controller,
+                            number: true,
+                          );
+                        },
+                      );
+                    },
                   ),
                 ],
               )),

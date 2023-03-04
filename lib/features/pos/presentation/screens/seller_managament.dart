@@ -13,6 +13,8 @@ import '../widgets/main_app_bar.dart';
 import '../widgets/table.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../widgets/virtual_keyboard.dart';
+
 class SellerMangament extends StatelessWidget {
   SellerMangament({Key key}) : super(key: key);
 
@@ -64,6 +66,17 @@ class SellerMangament extends StatelessWidget {
                             size: screenwidth * 0.014,
                           ),
                         ),
+                        onTap: () {
+                          showModalBottomSheet<void>(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return Keyboard(
+                                controller: controller1,
+                                number: false,
+                              );
+                            },
+                          );
+                        },
                       ),
                     ),
                     Container(
@@ -78,6 +91,17 @@ class SellerMangament extends StatelessWidget {
                             size: screenwidth * 0.014,
                           ),
                         ),
+                        onTap: () {
+                          showModalBottomSheet<void>(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return Keyboard(
+                                controller: controller2,
+                                number: false,
+                              );
+                            },
+                          );
+                        },
                       ),
                     ),
                     Container(
@@ -93,6 +117,17 @@ class SellerMangament extends StatelessWidget {
                             size: screenwidth * 0.014,
                           ),
                         ),
+                        onTap: () {
+                          showModalBottomSheet<void>(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return Keyboard(
+                                controller: controller3,
+                                number: false,
+                              );
+                            },
+                          );
+                        },
                       ),
                     ),
                     SizedBox(
@@ -110,7 +145,7 @@ class SellerMangament extends StatelessWidget {
                               BlocProvider.of<UserBloc>(context).add(AddUser(
                                   User(
                                       fullname: controller1.text,
-                                      role: 'ADMIN',
+                                      role: 'Cashier',
                                       userName: controller2.text,
                                       password: controller3.text,
                                       id: 5)));

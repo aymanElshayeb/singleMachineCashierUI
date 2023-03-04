@@ -91,7 +91,12 @@ class SplitBill extends StatelessWidget {
                               BlocProvider.of<CategoryBloc>(context).add(
                                   AddToSubOrder(
                                       state.orderstate.keys.elementAt(index),
-                                      1));
+                                      state.orderstate.values
+                                                  .elementAt(index) >=
+                                              1
+                                          ? 1
+                                          : state.orderstate.values
+                                              .elementAt(index)));
                               if (state.orderstate.values.elementAt(index) >
                                   1) {
                                 BlocProvider.of<CategoryBloc>(context).add(

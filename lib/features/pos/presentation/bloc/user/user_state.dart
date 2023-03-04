@@ -5,12 +5,25 @@ import 'package:meta/meta.dart';
 @immutable
 abstract class UserState extends Equatable {
   List<User> get users => [];
+  User get currentUser => User();
   UserState([List props = const <dynamic>[]]) : super(props);
 }
 
 class UserInitial extends UserState {}
 
-class Authenticated extends UserState {}
+class Authenticated extends UserState {
+  final User current;
+  @override
+  User get currentUser => current;
+  Authenticated({@required this.current}) : super([current]);
+}
+
+class AuthenticatedAgain extends UserState {
+  final User current;
+  @override
+  User get currentUser => current;
+  AuthenticatedAgain({@required this.current}) : super([current]);
+}
 
 class UpdateUsers extends UserState {
   final List<User> our_users;

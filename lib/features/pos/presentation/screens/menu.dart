@@ -4,21 +4,16 @@ import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/categor
 
 import '../../../../injection_container.dart';
 import '../../domain/entities/item.dart';
+import '../bloc/user/user_bloc.dart';
 import '../widgets/bill.dart';
 import '../widgets/main_app_bar.dart';
 import '../widgets/menu_items.dart';
 import '../widgets/popup_menu.dart';
 import '../widgets/table.dart';
 import 'constants.dart';
+import 'package:provider/provider.dart';
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage();
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
+class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;

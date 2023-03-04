@@ -27,7 +27,7 @@ class UserLocalDataSourceImpl implements UserLocalDataSource {
       "userName": "yasser",
       "id": 2,
       "role": "Cashier",
-      "password": "qwertyuiop",
+      "password": "iu",
       "fullname": "yasser mohamed"
     },
   ];

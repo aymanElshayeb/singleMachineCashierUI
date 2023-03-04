@@ -125,14 +125,18 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
     } else if (event is DeleteFromOrder) {
       Map<Item, num> orders = {};
       orders = state.orderstate;
-      orders.remove(event.item);
+      //orders.remove(event.item);
       List<Item> toRemove = [];
-      orders.forEach((key, value) {
-        if (key.name.contains(event.item.name)) {
-          toRemove.add(key);
-        }
-      });
-      orders.removeWhere((key, value) => toRemove.contains(key));
+      if (event.item.name.contains('Discount')) {
+        orders.remove(event.item);
+      } else {
+        orders.forEach((key, value) {
+          if (key.name.contains(event.item.name)) {
+            toRemove.add(key);
+          }
+        });
+        orders.removeWhere((key, value) => toRemove.contains(key));
+      }
 
       yield UpdateOrderState(
           order: orders,
@@ -241,6 +245,19 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
             finalEanItems: state.eanitems,
             subOrder: {});
       }
+    } else if (event is CancelOrder) {
+      yield UpdateOrderState(
+          order: {},
+          items: state.categoryitems,
+          finalEanItems: [],
+          subOrder: {});
+      yield CategoryItemsFound(
+          categoriesNames: _mapCategoriesToList(state.categoryitems),
+          boolitems: state.gotitems,
+          categoriesitems: state.categoryitems,
+          orders: {},
+          finalEanItems: [],
+          subOrder: {});
     }
   }
 
