@@ -5,20 +5,27 @@ import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/category/bloc.dart';
+import 'package:single_machine_cashier_ui/features/pos/presentation/screens/menu.dart';
 import 'package:virtual_keyboard_multi_language/virtual_keyboard_multi_language.dart';
 
+import '../../domain/entities/item.dart';
 import '../bloc/PaymentBloc/payment_bloc.dart';
 import '../bloc/category/category_bloc.dart';
 import '../bloc/category/category_state.dart';
+import '../widgets/currency.dart';
 import '../widgets/num_pad.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 
 class ToPay extends StatelessWidget {
-  final num total;
-  const ToPay({Key key, @required this.total}) : super(key: key);
+  final Map<Item, num> order;
+  final isOrder;
+  const ToPay({Key key, @required this.order, @required this.isOrder})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    num total = countTheTotal(order);
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     final TextEditingController _myController = TextEditingController();
@@ -107,13 +114,13 @@ class ToPay extends StatelessWidget {
                   SizedBox(
                     height: height * 0.02,
                   ),
-                  paymentButton(
-                      Theme.of(context).primaryColor,
-                      Icons.payment,
-                      AppLocalizations.of(context).completepayment,
-                      () {},
-                      width * 0.221,
-                      height * 0.07),
+                  paymentButton(Theme.of(context).primaryColor, Icons.payment,
+                      AppLocalizations.of(context).completepayment, () {
+                    BlocProvider.of<PaymentBloc>(context)
+                        .add(getTotal(total: 0));
+                    BlocProvider.of<CategoryBloc>(context)
+                        .add(FinishOrder(isOrder));
+                  }, width * 0.221, height * 0.07),
                 ]),
                 SizedBox(
                   width: width * 0.02,
@@ -140,53 +147,13 @@ class ToPay extends StatelessWidget {
                             .add(DeleteFromCash());
                         BlocProvider.of<PaymentBloc>(context)
                             .add(AddToCash(money: 0));
-                        // if (_myController.text.length > 0) {
-                        //   _myController.text = _myController.text
-                        //       .substring(0, _myController.text.length - 1);
-                        // }
                       },
                       // do something with the input numbers
                       onSubmit: () {},
                     ),
                   ),
                 ),
-                Stack(
-                  children: [
-                    Container(
-                      width: width * 0.499,
-                      height: height,
-                      margin: EdgeInsets.all(8.0),
-                      decoration: BoxDecoration(
-                          //color: Color.fromARGB(255, 227, 229, 230),
-                          color: Theme.of(context).backgroundColor,
-                          borderRadius:
-                              BorderRadius.all(Radius.circular(11.0))),
-                    ),
-                    Material(
-                      color: Colors.transparent,
-                      child: Container(
-                        width: width * 0.11,
-                        height: height * 0.11,
-                        margin: EdgeInsets.all(15.0),
-                        child: Container(
-                          child: ConstrainedBox(
-                            constraints: BoxConstraints.expand(),
-                            child: Ink.image(
-                              image: AssetImage('assets/images/100.png'),
-                              child: InkWell(
-                                onTap: () {
-                                  BlocProvider.of<PaymentBloc>(context)
-                                      .add(AddToCash(money: 100));
-                                  _log.fine(100);
-                                },
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    )
-                  ],
-                )
+                const Currency(),
               ],
             ),
           );
@@ -249,5 +216,13 @@ class ToPay extends StatelessWidget {
             Text(title)
           ]),
         ));
+  }
+
+  double countTheTotal(Map<Item, num> order) {
+    double total = 0;
+    for (int i = 0; i < order.length; i++) {
+      total += order.keys.elementAt(i).price * order.values.elementAt(i);
+    }
+    return total;
   }
 }

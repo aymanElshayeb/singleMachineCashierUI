@@ -13,6 +13,11 @@ class AuthenticateUserEvent extends UserEvent {
   AuthenticateUserEvent(this.password) : super([password]);
 }
 
+class SecondAuthenticate extends UserEvent {
+  final String password;
+  SecondAuthenticate(this.password) : super([password]);
+}
+
 class GetAllUsers extends UserEvent {}
 
 class AddUser extends UserEvent {

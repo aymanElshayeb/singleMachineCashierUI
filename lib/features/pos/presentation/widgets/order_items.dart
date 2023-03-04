@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../bloc/category/category_bloc.dart';
 import '../bloc/category/category_state.dart';
+import 'cart_item.dart';
 
 class OrderItems extends StatelessWidget {
   const OrderItems({Key key}) : super(key: key);
@@ -22,17 +23,12 @@ class OrderItems extends StatelessWidget {
           child: ListView.builder(
               itemCount: state.orderstate.length,
               itemBuilder: (context, index) {
-                return Card(
-                  child: ListTile(
-                    title: Text(state.orderstate.keys.elementAt(index).name),
-                    subtitle: Text('×' +
-                        state.orderstate.values.elementAt(index).toString()),
-                    trailing: Text(
-                        state.orderstate.keys.elementAt(index).price.toString(),
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                        )),
-                  ),
+                return CartItem(
+                  index: index,
+                  state: state,
+                  isDiscount: state.orderstate.keys.elementAt(index).price > 0
+                      ? false
+                      : true,
                 );
               }),
         );

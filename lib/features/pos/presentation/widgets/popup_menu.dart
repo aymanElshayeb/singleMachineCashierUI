@@ -1,9 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:single_machine_cashier_ui/features/pos/presentation/screens/device_managament.dart';
 import 'package:single_machine_cashier_ui/features/pos/presentation/screens/seller_managament.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
+import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/user_permission_dialog.dart';
+
+import '../bloc/category/category_bloc.dart';
+import '../bloc/category/category_event.dart';
+import '../bloc/user/user_bloc.dart';
 
 // This is the type used by the popup menu below.
 enum SampleItem { itemOne, itemTwo, itemThree, itemFour, itemFive }
@@ -79,9 +86,22 @@ class _PopupMenuState extends State<PopupMenu> {
     switch (pageName) {
       case 'seller':
         {
+          final currentBloc = context.read<UserBloc>();
+          if (currentBloc.state.currentUser.role == 'ADMIN') {
+            Navigator.push(context,
+                CupertinoPageRoute(builder: (redContext) => SellerMangament()));
+          } else {
+            showDialog(
+                //barrierDismissible: false,
+                context: context,
+                builder: (((cc) {
+                  return BlocProvider.value(
+                    value: currentBloc,
+                    child: UserPermissionDialog(),
+                  );
+                })));
+          }
           // statements;
-          Navigator.push(context,
-              CupertinoPageRoute(builder: (redContext) => SellerMangament()));
         }
         break;
 

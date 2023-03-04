@@ -7,6 +7,8 @@ import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/categor
 import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/category/category_state.dart';
 import 'package:single_machine_cashier_ui/injection_container.dart';
 import '../../domain/entities/item.dart';
+import '../bloc/cart/cart_bloc.dart';
+import '../bloc/user/bloc.dart';
 import '../screens/constants.dart';
 
 class MenuItems extends StatelessWidget {

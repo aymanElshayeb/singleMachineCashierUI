@@ -19,9 +19,9 @@ class CartRepositoryImpl implements CartRepository {
   });
 
   @override
-  Future<Either<Failure, Cart>> addItems(Item item) async {
+  Future<Either<Failure, Cart>> addItems(Item item, num quantity) async {
     try {
-      Cart cart = await localDataSource.addItems(item);
+      Cart cart = await localDataSource.addItems(item, quantity);
       return Right(cart);
     } on CacheException {
       return Left(CacheFailure());
@@ -31,22 +31,26 @@ class CartRepositoryImpl implements CartRepository {
   @override
   Future<Either<Failure, Cart>> getCart() async {
     try {
-      final cart = await localDataSource.getCart();
+      //final cart = await localDataSource.getCart();
 
-      return Right(cart);
+      return Right(
+          Cart(items: [Item(name: 'aaaaaa', price: 20)], quantities: [1]));
     } on CacheException {
       return Left(CacheFailure());
     }
   }
 
   @override
-  Future<Either<Failure, double>> getTotalPrice() async {
+  Future<Either<Failure, num>> getTotalPrice() async {
     try {
-      double total;
+      num total = 0;
       final cart = await localDataSource.getCart();
 
       for (var item in cart.items) {
         total += item.price;
+      }
+      for (int i = 0; i < cart.items.length; i++) {
+        total += cart.items[i].price * cart.quantities[i];
       }
       return Right(total);
     } on CacheException {
@@ -58,9 +62,12 @@ class CartRepositoryImpl implements CartRepository {
   Future<Either<Failure, Cart>> removeItem(Item item) async {
     try {
       final cart = await localDataSource.getCart();
-
-      cart.items.remove(item);
-
+      for (int i = 0; i < cart.items.length; i++) {
+        if (cart.items.contains(item)) {
+          cart.items.remove(item);
+          cart.quantities.removeAt(i);
+        }
+      }
       return Right(cart);
     } on CacheException {
       return Left(CacheFailure());

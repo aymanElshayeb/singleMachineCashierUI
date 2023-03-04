@@ -30,7 +30,9 @@
     "returnn":"Return",
     "printreceipt":"Print receipt",
     "completepayment":"Complete payment",
-    "enteranitem":"Enter an item"
+    "enteranitem":"Enter an item",
+    "discount":"Discount",
+    "split":"Split"
 
    
   }

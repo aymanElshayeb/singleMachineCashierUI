@@ -3,12 +3,14 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/virtual_keyboard.dart';
 
 import '../bloc/category/category_bloc.dart';
 import '../bloc/category/category_event.dart';
 import '../bloc/category/category_state.dart';
 import 'num_pad.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:virtual_keyboard_multi_language/virtual_keyboard_multi_language.dart';
 
 class CustomDialog extends StatelessWidget {
   const CustomDialog({Key key}) : super(key: key);
@@ -41,6 +43,17 @@ class CustomDialog extends StatelessWidget {
                             size: 17,
                           ),
                         ),
+                        onTap: () {
+                          showModalBottomSheet<void>(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return Keyboard(
+                                controller: EanController,
+                                number: false,
+                              );
+                            },
+                          );
+                        },
                       ),
                       NumPad(
                         buttonSize: 50,

@@ -8,6 +8,7 @@ import '../bloc/user/user_state.dart';
 import '../widgets/login.dart';
 import 'menu.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 
 class LoginBuilder extends StatelessWidget {
   @override
@@ -24,40 +25,24 @@ class LoginBuilder extends StatelessWidget {
     var height = MediaQuery.of(context).size.height;
     String text;
 
-    _onKeyPress(VirtualKeyboardKey key) {
-      if (key.keyType == VirtualKeyboardKeyType.String) {
-        text = text + key.text;
-      } else if (key.keyType == VirtualKeyboardKeyType.Action) {
-        switch (key.action) {
-          case VirtualKeyboardKeyAction.Backspace:
-            if (text.length == 0) return;
-            text = text.substring(0, text.length - 1);
-            break;
-          case VirtualKeyboardKeyAction.Return:
-            text = text + '\n';
-            break;
-          case VirtualKeyboardKeyAction.Space:
-            text = text + key.text;
-            break;
-          case VirtualKeyboardKeyAction.Shift:
-            break;
-          default:
-        }
-      }
-    }
-
     return BlocProvider(
         create: (_) => sl<UserBloc>(),
         child: BlocConsumer<UserBloc, UserState>(
           listener: (context, state) {
             if (state is Authenticated) {
+              final currentBloc = context.read<UserBloc>();
               Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const MyHomePage()),
-              );
+                  context,
+                  MaterialPageRoute(
+                      builder: ((context) => BlocProvider.value(
+                            value: currentBloc,
+                            child: MyHomePage(),
+                          ))));
             } else {
-              ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text("Wrong Password")));
+              if (state.currentUser == null) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text("Wrong Password")));
+              }
             }
           },
           builder: (context, state) {
@@ -70,26 +55,6 @@ class LoginBuilder extends StatelessWidget {
                     padding: const EdgeInsets.all(10),
                     child: Login(),
                   ),
-                  Container(
-                    // Keyboard is transparent
-                    color: Colors.deepPurple,
-                    child: VirtualKeyboard(
-                        // Default height is 300
-                        height: 350,
-                        // Default height is will screen width
-                        width: 600,
-                        // Default is black
-                        textColor: Colors.white,
-                        // Default 14
-                        fontSize: 20,
-                        // the layouts supported
-                        //
-                        defaultLayouts: [VirtualKeyboardDefaultLayouts.English],
-                        // [A-Z, 0-9]
-                        type: VirtualKeyboardType.Alphanumeric,
-                        // Callback for key press event
-                        onKeyPress: _onKeyPress),
-                  )
                 ],
               ),
             );

@@ -5,16 +5,24 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/split_bill_dialog.dart';
+import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/user_permission_dialog.dart';
 
 import '../../domain/entities/item.dart';
+import '../bloc/cart/cart_bloc.dart';
+import '../bloc/cart/cart_event.dart';
+import '../bloc/cart/cart_state.dart';
 import '../bloc/category/category_bloc.dart';
 import '../bloc/category/category_event.dart';
 import '../bloc/category/category_state.dart';
+import '../bloc/user/user_bloc.dart';
 import '../screens/constants.dart';
 import '../screens/to_pay.dart';
 import 'package:provider/provider.dart';
 
+import 'confirm_dialog.dart';
 import 'different_item_dialog.dart';
+import 'discount_popup.dart';
 import 'ean_dialog.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -33,19 +41,33 @@ class BillButtons extends StatelessWidget {
         'icon': const Icon(Icons.payment),
         'function': () {
           final currentBloc = context.read<CategoryBloc>();
-
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: ((context) => ToPay(
-                        total: countTheTotal(currentBloc.state.orderstate),
+                  builder: ((context) => BlocProvider.value(
+                        value: currentBloc,
+                        child: ToPay(
+                          order: currentBloc.state.orderstate,
+                          isOrder: true,
+                        ),
                       ))));
         }
       },
       <String, dynamic>{
-        'title': AppLocalizations.of(context).fastpay,
-        'icon': const Icon(Icons.attach_money_rounded),
-        'function': () {}
+        'title': AppLocalizations.of(context).split,
+        'icon': const Icon(Icons.splitscreen),
+        'function': () {
+          final currentBloc = context.read<CategoryBloc>();
+          showDialog(
+              //barrierDismissible: false,
+              context: context,
+              builder: (((cc) {
+                return BlocProvider.value(
+                  value: currentBloc,
+                  child: SplitBill(),
+                );
+              })));
+        }
       },
       <String, dynamic>{
         'title': AppLocalizations.of(context).differentitem,
@@ -63,9 +85,23 @@ class BillButtons extends StatelessWidget {
         }
       },
       <String, dynamic>{
-        'title': AppLocalizations.of(context).remove,
-        'icon': const Icon(Icons.delete),
-        'function': () {}
+        'title': AppLocalizations.of(context).discount,
+        'icon': const Icon(Icons.discount),
+        'function': () {
+          final currentBloc = context.read<CategoryBloc>();
+          showDialog(
+              context: context,
+              builder: (((cc) {
+                return BlocProvider.value(
+                  value: currentBloc,
+                  child: BlocBuilder<CategoryBloc, CategoryState>(
+                    builder: (context, state) {
+                      return DiscountPopup();
+                    },
+                  ),
+                );
+              })));
+        }
       },
       <String, dynamic>{
         'title': AppLocalizations.of(context).eansearch,
@@ -85,7 +121,32 @@ class BillButtons extends StatelessWidget {
       <String, dynamic>{
         'title': AppLocalizations.of(context).cancel,
         'icon': const Icon(Icons.cancel),
-        'function': () {}
+        'function': () {
+          final currentBloc = context.read<CategoryBloc>();
+          if (currentBloc.state.orderstate.length != 0) {
+            final currentBloc2 = context.read<UserBloc>();
+            if (currentBloc2.state.currentUser.role == 'ADMIN') {
+              showDialog(
+                  context: context,
+                  builder: (((cc) {
+                    return BlocProvider.value(
+                      value: currentBloc,
+                      child: ConfirmDialog(),
+                    );
+                  })));
+            } else if (currentBloc2.state.currentUser.role == 'Cashier') {
+              showDialog(
+                  //barrierDismissible: false,
+                  context: context,
+                  builder: (((cc) {
+                    return BlocProvider.value(
+                      value: currentBloc2,
+                      child: UserPermissionDialog(),
+                    );
+                  })));
+            }
+          }
+        }
       },
     ];
     double width = MediaQuery.of(context).size.width;
@@ -94,7 +155,7 @@ class BillButtons extends StatelessWidget {
     return Container(
       height: 0.2 * height,
       child: GridView.builder(
-        itemCount: 6, //should be length of the items list
+        itemCount: buttons.length, //should be length of the items list
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             childAspectRatio: MediaQuery.of(context).size.width /
                 (MediaQuery.of(context).size.height),
@@ -127,13 +188,5 @@ class BillButtons extends StatelessWidget {
         },
       ),
     );
-  }
-
-  double countTheTotal(Map<Item, int> order) {
-    double total = 0;
-    for (int i = 0; i < order.length; i++) {
-      total += order.keys.elementAt(i).price * order.values.elementAt(i);
-    }
-    return total;
   }
 }

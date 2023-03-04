@@ -117,6 +117,7 @@ class _Login extends State<Login> {
           text = text.substring(0, text.length - 1);
           break;
         case VirtualKeyboardKeyAction.Return:
+          showKeyboard = false;
           text = text + '\n';
           break;
         case VirtualKeyboardKeyAction.Space:

@@ -7,6 +7,7 @@ import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/user/us
 import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/user/user_state.dart';
 import '../../../../../core/error/failures.dart';
 import '../../../domain/usecases/authenticate_user.dart';
+import 'package:logging/logging.dart';
 
 const String SERVER_FAILURE_MESSAGE = 'Server Failure';
 const String CACHE_FAILURE_MESSAGE = 'Cache Failure';
@@ -14,6 +15,7 @@ const String AUTHENTICATION_FAILURE_MESSAGE = 'Invalid password';
 
 class UserBloc extends Bloc<UserEvent, UserState> {
   final AuthenticateUser authenticateUser;
+  final _log = Logger('UserBloc');
 
   UserBloc(
       {@required this.authenticateUser}) /*: assert(authenticateUser != null)*/;
@@ -29,7 +31,10 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       );
       yield failureOrUser.fold(
         (failure) => Error(message: _mapFailureToMessage(failure)),
-        (user) => Authenticated(),
+        (user) {
+          _log.fine(user.fullname);
+          return Authenticated(current: user);
+        },
       );
     } else if (event is GetAllUsers) {
       final failureOrUsers = await authenticateUser.execgetAllUsers();
@@ -48,6 +53,19 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       );
 
       //yield UpdateUsers(our_users: state.users);
+    } else if (event is SecondAuthenticate) {
+      final failureOrUser = await authenticateUser.authenticate(
+        event.password,
+      );
+      yield failureOrUser.fold(
+        (failure) {
+          return Error(message: _mapFailureToMessage(failure));
+        },
+        (user) {
+          _log.fine(user.fullname);
+          return AuthenticatedAgain(current: user);
+        },
+      );
     }
   }
 

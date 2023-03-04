@@ -5,7 +5,7 @@ import '../entities/cart.dart';
 
 abstract class CartRepository {
   Future<Either<Failure, Cart>> getCart();
-  Future<Either<Failure, Cart>> addItems(Item item);
+  Future<Either<Failure, Cart>> addItems(Item item, num quantity);
   Future<Either<Failure, Cart>> removeItem(Item item);
-  Future<Either<Failure, double>>  getTotalPrice();
+  Future<Either<Failure, num>> getTotalPrice();
 }

@@ -45,6 +45,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   intl: any
+  artistic_multilingual_keyboards: ^0.0.4
 
 dev_dependencies:
   flutter_test:
@@ -72,7 +73,20 @@ flutter:
   # the material Icons class.
   uses-material-design: true
   assets:
-    - assets/images/100.png
+    - assets/images/euro/100.png
+    - assets/images/euro/200.png
+    - assets/images/euro/500.png
+    - assets/images/euro/10.png
+    - assets/images/euro/20.png
+    - assets/images/euro/50.png
+    - assets/images/euro/5.png
+    - assets/images/euro/1.png
+    - assets/images/euro/2.png
+    - assets/images/cent/1.png
+    - assets/images/cent/2.png
+    - assets/images/cent/5.png
+    - assets/images/cent/10.png
+    - assets/images/cent/20.png
   
 
   # An image asset can refer to one or more resolution-specific "variants", see
