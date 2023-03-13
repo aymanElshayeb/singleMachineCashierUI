@@ -4,11 +4,12 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/user/bloc.dart';
 import '../../../../injection_container.dart';
 
 import '../../domain/entities/user.dart';
 import '../bloc/user/user_bloc.dart';
+import '../bloc/user/user_event.dart';
+import '../bloc/user/user_state.dart';
 import '../widgets/main_app_bar.dart';
 import '../widgets/table.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -16,12 +17,12 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../widgets/virtual_keyboard.dart';
 
 class SellerMangament extends StatelessWidget {
-  SellerMangament({Key key}) : super(key: key);
+  SellerMangament({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final appBar =
-        AppBar(title: Text(AppLocalizations.of(context).sellermanagement));
+        AppBar(title: Text(AppLocalizations.of(context)!.sellermanagement));
     final screenwidth = MediaQuery.of(context).size.width;
     final screenheight = MediaQuery.of(context).size.height;
     final appBarHeight = appBar.preferredSize.height;
@@ -35,7 +36,6 @@ class SellerMangament extends StatelessWidget {
         builder: (context, state) {
           return Scaffold(
             appBar: appBar,
-            //backgroundColor: Colors.grey,
             body: Column(children: [
               Padding(
                 padding: const EdgeInsets.all(5.0),
@@ -43,13 +43,11 @@ class SellerMangament extends StatelessWidget {
                   height: (screenheight - appBarHeight) * 0.43,
                   width: screenwidth,
                   decoration: BoxDecoration(
-                      //color: Color.fromARGB(255, 228, 227, 227),
                       color: Theme.of(context).backgroundColor,
                       borderRadius: BorderRadius.circular(15)),
                   child: Column(children: [
                     Text(
-                      AppLocalizations.of(context).newusercredentials,
-                      //style: TextStyle(fontSize: 15, color: Colors.blueGrey),
+                      AppLocalizations.of(context)!.newusercredentials,
                     ),
                     SizedBox(
                       height: screenheight * 0.05,
@@ -60,7 +58,7 @@ class SellerMangament extends StatelessWidget {
                       child: TextField(
                         controller: controller1,
                         decoration: InputDecoration(
-                          labelText: AppLocalizations.of(context).fullname,
+                          labelText: AppLocalizations.of(context)?.fullname,
                           suffixIcon: Icon(
                             Icons.abc,
                             size: screenwidth * 0.014,
@@ -85,7 +83,7 @@ class SellerMangament extends StatelessWidget {
                       child: TextField(
                         controller: controller2,
                         decoration: InputDecoration(
-                          labelText: AppLocalizations.of(context).username,
+                          labelText: AppLocalizations.of(context)?.username,
                           suffixIcon: Icon(
                             Icons.abc,
                             size: screenwidth * 0.014,
@@ -111,7 +109,7 @@ class SellerMangament extends StatelessWidget {
                         obscureText: true,
                         controller: controller3,
                         decoration: InputDecoration(
-                          labelText: AppLocalizations.of(context).password,
+                          labelText: AppLocalizations.of(context)?.password,
                           suffixIcon: Icon(
                             Icons.remove_red_eye,
                             size: screenwidth * 0.014,
@@ -142,13 +140,13 @@ class SellerMangament extends StatelessWidget {
                             if (controller1.text != '' &&
                                 controller2.text != '' &&
                                 controller3.text != '') {
-                              BlocProvider.of<UserBloc>(context).add(AddUser(
-                                  User(
-                                      fullname: controller1.text,
-                                      role: 'Cashier',
-                                      userName: controller2.text,
-                                      password: controller3.text,
-                                      id: 5)));
+                              BlocProvider.of<UserBloc>(context)
+                                  .add(AddUser(User(
+                                fullname: controller1.text,
+                                role: 'Cashier',
+                                userName: controller2.text,
+                                password: controller3.text,
+                              )));
                               controller1.text = '';
                               controller2.text = '';
                               controller3.text = '';
@@ -160,30 +158,30 @@ class SellerMangament extends StatelessWidget {
                             }
                           },
                           child:
-                              Text(AppLocalizations.of(context).addanewuser)),
+                              Text(AppLocalizations.of(context)!.addanewuser)),
                     )
                   ]),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(5.0),
-                child: Container(
-                  height: (screenheight - appBarHeight) * 0.535,
-                  width: 450,
-                  alignment: Alignment.topCenter,
-                  decoration: BoxDecoration(
-                      //color: Color.fromARGB(255, 228, 227, 227),
-
-                      borderRadius: BorderRadius.circular(15)),
-                  child: SingleChildScrollView(
-                    child: MenuDataTable([
-                      AppLocalizations.of(context).fullname,
-                      AppLocalizations.of(context).username,
-                      AppLocalizations.of(context).role
-                    ], getUsersTable(state.users)),
-                  ),
-                ),
-              )
+              state is UsersLoading
+                  ? CircularProgressIndicator()
+                  : Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: Container(
+                        height: (screenheight - appBarHeight) * 0.535,
+                        width: 450,
+                        alignment: Alignment.topCenter,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(15)),
+                        child: SingleChildScrollView(
+                          child: MenuDataTable([
+                            AppLocalizations.of(context)!.fullname,
+                            AppLocalizations.of(context)!.username,
+                            AppLocalizations.of(context)!.role
+                          ], getUsersTable(state.users)),
+                        ),
+                      ),
+                    )
             ]),
           );
         },

@@ -3,13 +3,13 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/category/bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../bloc/category/category_bloc.dart';
+import '../bloc/category/category_event.dart';
 import '../bloc/category/category_state.dart';
 
 class ConfirmDialog extends StatelessWidget {
-  const ConfirmDialog({Key key}) : super(key: key);
+  const ConfirmDialog({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -17,13 +17,13 @@ class ConfirmDialog extends StatelessWidget {
       builder: (context, state) {
         return AlertDialog(
           title: Text('Alert'),
-          content: Text('Would you like to continue canceling the order?'),
+          content: Text(AppLocalizations.of(context)!.cancelorder),
           actions: [
             MaterialButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text(AppLocalizations.of(context).cancel),
+              child: Text(AppLocalizations.of(context)!.cancel),
             ),
             MaterialButton(
               onPressed: () {
@@ -34,7 +34,7 @@ class ConfirmDialog extends StatelessWidget {
                 }
                 Navigator.of(context).pop();
               },
-              child: Text('Continue'),
+              child: Text(AppLocalizations.of(context)!.continuee),
             )
           ],
         );

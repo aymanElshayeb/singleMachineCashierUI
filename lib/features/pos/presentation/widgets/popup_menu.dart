@@ -1,16 +1,17 @@
+import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/user_permission_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:single_machine_cashier_ui/features/pos/presentation/screens/device_managament.dart';
-import 'package:single_machine_cashier_ui/features/pos/presentation/screens/seller_managament.dart';
+
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
-import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/user_permission_dialog.dart';
 
 import '../bloc/category/category_bloc.dart';
 import '../bloc/category/category_event.dart';
 import '../bloc/user/user_bloc.dart';
+import '../screens/device_managament.dart';
+import '../screens/seller_managament.dart';
 
 // This is the type used by the popup menu below.
 enum SampleItem { itemOne, itemTwo, itemThree, itemFour, itemFive }
@@ -21,7 +22,7 @@ class PopupMenu extends StatefulWidget {
 }
 
 class _PopupMenuState extends State<PopupMenu> {
-  SampleItem selectedMenu;
+  SampleItem? selectedMenu;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +33,6 @@ class _PopupMenuState extends State<PopupMenu> {
       width: width * 0.1,
       margin: EdgeInsets.all(5),
       decoration: BoxDecoration(
-          //color: Colors.grey,
           color: Theme.of(context).primaryColor,
           borderRadius: BorderRadius.circular(5)),
       child: PopupMenuButton<SampleItem>(
@@ -42,17 +42,14 @@ class _PopupMenuState extends State<PopupMenu> {
           children: [
             Icon(
               Icons.settings,
-              //color: Colors.white,
             ),
             SizedBox(
               width: 5,
             ),
             Text(
-              AppLocalizations.of(context).office,
+              AppLocalizations.of(context)!.office,
               style: TextStyle(
-                  //color: Colors.white,
-                  fontSize: 0.011 * width,
-                  fontStyle: FontStyle.normal),
+                  fontSize: 0.011 * width, fontStyle: FontStyle.normal),
             ),
           ],
         ),
@@ -66,14 +63,14 @@ class _PopupMenuState extends State<PopupMenu> {
             value: SampleItem.itemOne,
             child: ListTile(
                 leading: const Icon(Icons.person),
-                title: Text(AppLocalizations.of(context).sellermanagement),
+                title: Text(AppLocalizations.of(context)!.sellermanagement),
                 onTap: () => gotoPage('seller')),
           ),
           PopupMenuItem<SampleItem>(
             value: SampleItem.itemTwo,
             child: ListTile(
               leading: const Icon(Icons.device_hub),
-              title: Text(AppLocalizations.of(context).devicemanagement),
+              title: Text(AppLocalizations.of(context)!.devicemanagement),
               onTap: () => gotoPage('device'),
             ),
           ),
@@ -92,7 +89,6 @@ class _PopupMenuState extends State<PopupMenu> {
                 CupertinoPageRoute(builder: (redContext) => SellerMangament()));
           } else {
             showDialog(
-                //barrierDismissible: false,
                 context: context,
                 builder: (((cc) {
                   return BlocProvider.value(
@@ -101,13 +97,11 @@ class _PopupMenuState extends State<PopupMenu> {
                   );
                 })));
           }
-          // statements;
         }
         break;
 
       case 'device':
         {
-          //statements;
           Navigator.push(context,
               CupertinoPageRoute(builder: (redContext) => DeviceMangament()));
         }

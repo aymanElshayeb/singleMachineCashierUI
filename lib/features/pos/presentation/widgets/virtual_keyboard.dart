@@ -8,7 +8,7 @@ import 'package:virtual_keyboard_multi_language/virtual_keyboard_multi_language.
 class Keyboard extends StatelessWidget {
   final TextEditingController controller;
   final number;
-  const Keyboard({Key key, @required this.controller, @required this.number})
+  const Keyboard({Key? key, required this.controller, required this.number})
       : super(key: key);
 
   @override

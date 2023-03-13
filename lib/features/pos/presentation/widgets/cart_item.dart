@@ -1,10 +1,10 @@
+import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/quantity_dialog.dart';
+import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/user_permission_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/quantity_dialog.dart';
-import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/user_permission_dialog.dart';
 
 import '../bloc/category/category_bloc.dart';
 import '../bloc/category/category_event.dart';
@@ -21,10 +21,10 @@ class CartItem extends StatelessWidget {
   final bool isDiscount;
 
   const CartItem(
-      {Key key,
-      @required this.index,
-      @required this.state,
-      @required this.isDiscount})
+      {Key? key,
+      required this.index,
+      required this.state,
+      required this.isDiscount})
       : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -43,7 +43,7 @@ class CartItem extends StatelessWidget {
                 dense: true,
                 visualDensity: VisualDensity(vertical: 4),
                 title: Text(
-                  state.orderstate.keys.elementAt(index).name,
+                  state.orderstate!.keys.elementAt(index).name,
                   style: TextStyle(
                       fontWeight: FontWeight.bold, fontSize: height * 0.022),
                 ),
@@ -51,7 +51,10 @@ class CartItem extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                        state.orderstate.keys.elementAt(index).price.toString(),
+                        state.orderstate!.keys
+                            .elementAt(index)
+                            .price
+                            .toString(),
                         style: TextStyle(fontSize: height * 0.022)),
                     InkWell(
                       child: Icon(Icons.discount, size: height * 0.027),
@@ -65,9 +68,9 @@ class CartItem extends StatelessWidget {
                                 child: BlocBuilder<CategoryBloc, CategoryState>(
                                   builder: (context, state) {
                                     return ItemDiscountDialog(
-                                      item: state.orderstate.keys
+                                      item: state.orderstate!.keys
                                           .elementAt(index),
-                                      quantity: state.orderstate.values
+                                      quantity: state.orderstate!.values
                                           .elementAt(index),
                                     );
                                   },
@@ -89,11 +92,10 @@ class CartItem extends StatelessWidget {
                         if (currentBloc.state.currentUser.role == 'ADMIN') {
                           BlocProvider.of<CategoryBloc>(context).add(
                               DeleteFromOrder(
-                                  state.orderstate.keys.elementAt(index)));
+                                  state.orderstate!.keys.elementAt(index)));
                         } else if (currentBloc.state.currentUser.role ==
                             'Cashier') {
                           showDialog(
-                              //barrierDismissible: false,
                               context: context,
                               builder: (((cc) {
                                 return BlocProvider.value(
@@ -110,8 +112,8 @@ class CartItem extends StatelessWidget {
                       }),
                     ),
                     Text(
-                        (state.orderstate.keys.elementAt(index).price *
-                                state.orderstate.values.elementAt(index))
+                        (state.orderstate!.keys.elementAt(index).price *
+                                state.orderstate!.values.elementAt(index))
                             .toString(),
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
@@ -133,12 +135,11 @@ class CartItem extends StatelessWidget {
                                     'ADMIN') {
                                   BlocProvider.of<CategoryBloc>(context)
                                       .add(SubtractFromOrder(
-                                    state.orderstate.keys.elementAt(index),
+                                    state.orderstate!.keys.elementAt(index),
                                   ));
                                 } else if (currentBloc.state.currentUser.role ==
                                     'Cashier') {
                                   showDialog(
-                                      //barrierDismissible: false,
                                       context: context,
                                       builder: (((cc) {
                                         return BlocProvider.value(
@@ -156,7 +157,7 @@ class CartItem extends StatelessWidget {
                             ),
                             InkWell(
                               child: Text(
-                                  '${state.orderstate.values.elementAt(index).toString()}'),
+                                  '${state.orderstate!.values.elementAt(index).toString()}'),
                               onTap: (() {
                                 final currentBloc2 = context.read<UserBloc>();
                                 if (currentBloc2.state.currentUser.role ==
@@ -169,9 +170,9 @@ class CartItem extends StatelessWidget {
                                         return BlocProvider.value(
                                           value: currentBloc,
                                           child: QuantityDialog(
-                                              quantity: state.orderstate.values
+                                              quantity: state.orderstate!.values
                                                   .elementAt(index),
-                                              item: state.orderstate.keys
+                                              item: state.orderstate!.keys
                                                   .elementAt(index)),
                                         );
                                       })));
@@ -179,7 +180,6 @@ class CartItem extends StatelessWidget {
                                         .state.currentUser.role ==
                                     'Cashier') {
                                   showDialog(
-                                      //barrierDismissible: false,
                                       context: context,
                                       builder: (((cc) {
                                         return BlocProvider.value(
@@ -195,7 +195,7 @@ class CartItem extends StatelessWidget {
                               onTap: () {
                                 BlocProvider.of<CategoryBloc>(context).add(
                                     UpdateOrderEvent(
-                                        state.orderstate.keys.elementAt(index),
+                                        state.orderstate!.keys.elementAt(index),
                                         state.categoryitems));
                                 if (state.gotitems == false) {
                                   BlocProvider.of<CategoryBloc>(context)
@@ -210,12 +210,12 @@ class CartItem extends StatelessWidget {
               )
             : ListTile(
                 title: Text(
-                  state.orderstate.keys.elementAt(index).name,
+                  state.orderstate!.keys.elementAt(index).name,
                   style: TextStyle(
                       fontWeight: FontWeight.bold, fontSize: height * 0.022),
                 ),
                 subtitle: Text(
-                    state.orderstate.keys.elementAt(index).price.toString(),
+                    state.orderstate!.keys.elementAt(index).price.toString(),
                     style: TextStyle(fontSize: height * 0.022)),
                 trailing: InkWell(
                   child: Icon(Icons.delete, size: height * 0.029),
@@ -224,11 +224,10 @@ class CartItem extends StatelessWidget {
                     if (currentBloc.state.currentUser.role == 'ADMIN') {
                       BlocProvider.of<CategoryBloc>(context).add(
                           DeleteFromOrder(
-                              state.orderstate.keys.elementAt(index)));
+                              state.orderstate!.keys.elementAt(index)));
                     } else if (currentBloc.state.currentUser.role ==
                         'Cashier') {
                       showDialog(
-                          //barrierDismissible: false,
                           context: context,
                           builder: (((cc) {
                             return BlocProvider.value(

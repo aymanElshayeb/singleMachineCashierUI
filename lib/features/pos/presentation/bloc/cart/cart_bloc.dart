@@ -1,35 +1,44 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:bloc/bloc.dart';
+import 'package:single_machine_cashier_ui/main.dart';
 import 'package:meta/meta.dart';
 import '../../../../../core/error/failures.dart';
 import '../../../domain/entities/cart.dart';
 import '../../../domain/entities/item.dart';
-import '../../../domain/usecases/cart.dart';
 import '../../../domain/usecases/items.dart';
 import '../user/user_state.dart';
 import 'cart_event.dart';
 import 'cart_state.dart';
+import 'package:logging/logging.dart';
 
 const String SERVER_FAILURE_MESSAGE = 'Server Failure';
 const String CACHE_FAILURE_MESSAGE = 'Cache Failure';
 const String AUTHENTICATION_FAILURE_MESSAGE = 'Invalid password';
 
 class CartBloc extends Bloc<CartEvent, CartState> {
-  final CartActions cart;
-
-  CartBloc({@required this.cart}) /*: assert(cart != null)*/;
+  final _log = Logger('CartBloc');
+  CartBloc();
 
   @override
   CartState get initialState => ItemInitial();
 
   @override
   Stream<CartState> mapEventToState(CartEvent event) async* {
-    if (event is GetCartItems) {
-    } else if (event is AddToOrder) {}
-  }
+    if (event is SaveOrder) {
+      List<double> quantities = [];
+      event.items.values.forEach((element) {
+        quantities.add(element.toDouble());
+      });
 
-  num getTotalPrice(Map<Item, num> order) {
-    return 5;
+      Cart cart = Cart(
+          items: json.encode(event.items.keys.toList()),
+          quantities: quantities);
+      objectBox.cartBox.put(cart);
+      for (var cart in objectBox.cartBox.getAll()) {
+        _log.fine('${cart.items},${cart.quantities},id:${cart.id}');
+      }
+    }
   }
 
   String _mapFailureToMessage(Failure failure) {

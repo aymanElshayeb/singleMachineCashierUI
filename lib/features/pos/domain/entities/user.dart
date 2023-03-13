@@ -1,25 +1,30 @@
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
+import 'package:objectbox/objectbox.dart';
 
+@Entity()
 class User extends Equatable {
   final String userName;
-  final int id;
+
+  int id;
+
   final String role;
+
   final String password;
+
   final String fullname;
 
   User(
-      {@required this.userName,
-      @required this.id,
-      @required this.role,
-      @required this.password,
-      @required this.fullname})
-      : super([userName, id, role, password, fullname]);
+      {this.id = 0,
+      required this.userName,
+      required this.role,
+      required this.password,
+      required this.fullname})
+      : super([userName, role, password, fullname]);
 
   factory User.fromJson(Map<String, dynamic> jsonMap) {
     return User(
         userName: jsonMap['userName'],
-        id: jsonMap['id'],
         role: jsonMap['role'],
         password: jsonMap['password'],
         fullname: jsonMap['fullname']);
@@ -27,7 +32,6 @@ class User extends Equatable {
   Map<String, dynamic> toJson() {
     return {
       'userName': userName,
-      'id': id,
       'role': role,
       'password': password,
       'fullname': fullname

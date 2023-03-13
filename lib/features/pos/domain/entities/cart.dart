@@ -1,26 +1,22 @@
-import 'package:equatable/equatable.dart';
-import 'item.dart';
-import 'package:meta/meta.dart';
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'dart:convert';
 
+import 'package:equatable/equatable.dart';
+import 'package:meta/meta.dart';
+import 'package:objectbox/objectbox.dart';
+
+import 'item.dart';
+
+@Entity()
 class Cart extends Equatable {
-  List<Item> items;
-  List<num> quantities;
+  @Id()
+  int id;
+  String items;
+  List<double> quantities;
 
   Cart({
-    @required this.items,
-    @required this.quantities,
-  }) : super([items, quantities]);
-
-  // Future<List<Item>> addItem(Item item) async {
-  //   items.add(item);
-  //   return items;
-  // }
-
-  factory Cart.fromJson(Map<String, Object> jsonMap) {
-    return Cart(items: jsonMap['items'], quantities: jsonMap['quantities']);
-  }
-
-  Map<Object, Object> toJson() {
-    return {'items': items, 'quantites': quantities};
-  }
+    this.items = '',
+    this.quantities = const [],
+    this.id = 0,
+  }) : super([]);
 }

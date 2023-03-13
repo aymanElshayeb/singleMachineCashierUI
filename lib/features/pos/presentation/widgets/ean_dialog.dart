@@ -1,9 +1,9 @@
+import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/virtual_keyboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/virtual_keyboard.dart';
 
 import '../bloc/category/category_bloc.dart';
 import '../bloc/category/category_event.dart';
@@ -13,7 +13,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:virtual_keyboard_multi_language/virtual_keyboard_multi_language.dart';
 
 class CustomDialog extends StatelessWidget {
-  const CustomDialog({Key key}) : super(key: key);
+  const CustomDialog({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +23,7 @@ class CustomDialog extends StatelessWidget {
     return BlocBuilder<CategoryBloc, CategoryState>(
       builder: (context, state) {
         return AlertDialog(
-          title: Text(AppLocalizations.of(context).eansearch),
+          title: Text(AppLocalizations.of(context)!.eansearch),
           content: Container(
             width: width * 0.6 + 10,
             height: height * 0.6,
@@ -57,11 +57,9 @@ class CustomDialog extends StatelessWidget {
                       ),
                       NumPad(
                         buttonSize: 50,
-                        //buttonColor: Colors.grey,
-                        //iconColor: Colors.blueGrey,
+
                         buttonColor: Theme.of(context).canvasColor,
-                        iconColor:
-                            Theme.of(context).appBarTheme.foregroundColor,
+                        iconColor: Theme.of(context).primaryColor,
 
                         controller: EanController,
                         delete: () {
@@ -90,7 +88,6 @@ class CustomDialog extends StatelessWidget {
                   height: height * 0.6,
                   width: (width * 0.6) * 0.65,
                   decoration: BoxDecoration(
-                      //color: Color.fromARGB(255, 228, 227, 227),
                       color: Theme.of(context).backgroundColor,
                       borderRadius: BorderRadius.circular(15)),
                   child: ListView.builder(

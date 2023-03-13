@@ -1,9 +1,6 @@
 import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/category/bloc.dart';
-import 'package:single_machine_cashier_ui/features/pos/presentation/screens/to_pay.dart';
-import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/table.dart';
 import '../../domain/entities/item.dart';
 
 import '../bloc/category/category_bloc.dart';
@@ -29,11 +26,15 @@ class Bill extends StatelessWidget {
         padding: EdgeInsets.all(width * 0.02),
         decoration: BoxDecoration(
             color: Theme.of(context).backgroundColor,
-            //color: seconderyColor,
             borderRadius: BorderRadius.circular(15)),
         child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[const OrderItems(), BillButtons()]),
+            children: <Widget>[
+              OrderItems(),
+              BillButtons(
+                context: context,
+              )
+            ]),
       );
     });
   }

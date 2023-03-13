@@ -8,15 +8,16 @@ part 'payment_event.dart';
 part 'payment_state.dart';
 
 class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
+  PaymentBloc();
+
   @override
-  // TODO: implement initialState
   PaymentState get initialState => PaymentInitial();
 
   @override
   Stream<PaymentState> mapEventToState(PaymentEvent event) async* {
     if (event is getCash) {
       yield UpdatePaymentState(
-          final_cash: getTotalCash(event.digit_string),
+          final_cash: getTotalCash(event.digit_string!),
           final_total: state.total,
           final_return: state.inreturn,
           final_selected: state.selectedMethod);
@@ -72,6 +73,12 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
           final_total: state.total,
           final_return: state.inreturn,
           final_selected: state.selectedMethod);
+    } else if (event is NewPayment) {
+      yield UpdatePaymentState(
+          final_cash: 0,
+          final_total: 0,
+          final_return: 0,
+          final_selected: state.selectedMethod);
     }
   }
 
@@ -86,8 +93,9 @@ class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
   num subtractFromCash(num cash) {
     String cashString = cash.toString();
     if (cashString.length > 3) {
-      if (cashString[cashString.length - 1] == '0')
+      if (cashString[cashString.length - 1] == '0') {
         return num.parse(cashString.substring(0, cashString.length - 3));
+      }
       cashString = cashString.substring(0, cashString.length - 1);
     } else {
       return 0;

@@ -14,13 +14,13 @@ class NumPad extends StatelessWidget {
   final Function onSubmit;
 
   const NumPad({
-    Key key,
+    Key? key,
     this.buttonSize = 70,
     this.buttonColor = Colors.indigo,
     this.iconColor = Colors.amber,
-    @required this.delete,
-    @required this.onSubmit,
-    @required this.controller,
+    required this.delete,
+    required this.onSubmit,
+    required this.controller,
   }) : super(key: key);
 
   @override
@@ -148,11 +148,11 @@ class NumberButton extends StatelessWidget {
   final TextEditingController controller;
 
   const NumberButton({
-    Key key,
-    @required this.number,
-    @required this.size,
-    @required this.color,
-    @required this.controller,
+    Key? key,
+    required this.number,
+    required this.size,
+    required this.color,
+    required this.controller,
   }) : super(key: key);
 
   @override

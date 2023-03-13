@@ -6,5 +6,5 @@ abstract class LocaleBlocEvent {}
 class LoadLanguage extends LocaleBlocEvent {
   final Locale locale;
 
-  LoadLanguage({this.locale});
+  LoadLanguage({required this.locale});
 }

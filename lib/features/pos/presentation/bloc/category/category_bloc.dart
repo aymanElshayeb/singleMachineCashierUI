@@ -1,13 +1,16 @@
 import 'dart:async';
-//import 'dart:html';
 import 'package:bloc/bloc.dart';
+import 'package:single_machine_cashier_ui/main.dart';
 import 'package:meta/meta.dart';
-import 'package:single_machine_cashier_ui/features/pos/domain/entities/category.dart';
-import 'package:single_machine_cashier_ui/features/pos/domain/usecases/categories.dart';
 import '../../../../../core/error/failures.dart';
+import '../../../../../objectbox.g.dart';
+import '../../../domain/entities/cart.dart';
 import '../../../domain/entities/item.dart';
+import '../../../domain/usecases/categories.dart';
 import 'category_event.dart';
 import 'category_state.dart';
+import 'package:objectbox/objectbox.dart';
+import 'package:path_provider/path_provider.dart';
 
 const String SERVER_FAILURE_MESSAGE = 'Server Failure';
 const String CACHE_FAILURE_MESSAGE = 'Cache Failure';
@@ -17,8 +20,8 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
   final Categories categories;
 
   CategoryBloc({
-    @required this.categories,
-  }) /*: assert(categories != null)*/;
+    required this.categories,
+  });
 
   @override
   CategoryState get initialState => Initial();
@@ -50,9 +53,9 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
             subOrder: state.subOrderState),
       );
     } else if (event is UpdateOrderEvent) {
-      Map<Item, num> orders = {};
+      Map<Item, num>? orders = {};
       orders = state.orderstate;
-      if (orders.containsKey(event.item)) {
+      if (orders!.containsKey(event.item)) {
         orders.update(event.item, (value) => value + 1);
       } else {
         orders[event.item] = 1;
@@ -72,17 +75,22 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
           subOrder: state.subOrderState);
     } else if (event is AddToOrder) {
       Map<Item, num> orders = {};
-      orders = state.orderstate;
+      orders = state.orderstate!;
+
       if (orders.containsKey(event.item)) {
-        orders[event.item] += event.quantity;
+        var a = event.quantity!;
+        var b = orders[event.item]!;
+        var c = a + b;
+        orders[event.item] = c;
       } else {
-        orders[event.item] = event.quantity;
+        orders[event.item] = event.quantity!;
       }
 
       yield UpdateOrderState(
           order: orders,
           items: state.categoryitems,
-          subOrder: state.subOrderState);
+          subOrder: state.subOrderState,
+          finalEanItems: state.eanitems);
       yield CategoryItemsFound(
           categoriesNames: _mapCategoriesToList(state.categoryitems),
           boolitems: state.gotitems,
@@ -98,10 +106,10 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
               finalEanItems: itemsList,
               got_items: state.gotitems,
               items: state.categoryitems,
-              order: state.orderstate));
+              order: state.orderstate!));
     } else if (event is SubtractFromOrder) {
       Map<Item, num> orders = {};
-      orders = state.orderstate;
+      orders = state.orderstate!;
       if (orders.containsKey(event.item)) {
         orders.update(event.item, (value) {
           if (value > 1)
@@ -124,8 +132,7 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
       }
     } else if (event is DeleteFromOrder) {
       Map<Item, num> orders = {};
-      orders = state.orderstate;
-      //orders.remove(event.item);
+      orders = state.orderstate!;
       List<Item> toRemove = [];
       if (event.item.name.contains('Discount')) {
         orders.remove(event.item);
@@ -154,15 +161,19 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
       Map<Item, num> suborder = {};
       suborder = state.subOrderState;
       if (suborder.containsKey(event.item)) {
-        suborder[event.item] += event.quantity;
+        var a = event.quantity;
+        var b = suborder[event.item]!;
+        var c = a + b;
+        suborder[event.item] = c;
       } else {
         suborder[event.item] = event.quantity;
       }
 
       yield UpdateOrderState(
-          order: state.orderstate,
+          order: state.orderstate!,
           items: state.categoryitems,
-          subOrder: state.subOrderState);
+          subOrder: state.subOrderState,
+          finalEanItems: state.eanitems);
       yield CategoryItemsFound(
           categoriesNames: _mapCategoriesToList(state.categoryitems),
           boolitems: state.gotitems,
@@ -183,7 +194,7 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
       orders.removeWhere((key, value) => toRemove.contains(key));
 
       yield UpdateOrderState(
-          order: state.orderstate,
+          order: state.orderstate!,
           items: state.categoryitems,
           finalEanItems: state.eanitems,
           subOrder: orders);
@@ -205,7 +216,7 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
             return value;
         });
         yield UpdateOrderState(
-            order: state.orderstate,
+            order: state.orderstate!,
             items: state.categoryitems,
             finalEanItems: state.eanitems,
             subOrder: orders);
@@ -233,7 +244,7 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
             subOrder: state.subOrderState);
       } else {
         yield UpdateOrderState(
-            order: state.orderstate,
+            order: state.orderstate!,
             items: state.categoryitems,
             finalEanItems: state.eanitems,
             subOrder: {});

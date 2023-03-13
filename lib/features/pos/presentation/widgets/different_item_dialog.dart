@@ -1,9 +1,9 @@
+import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/virtual_keyboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/virtual_keyboard.dart';
 
 import '../../domain/entities/item.dart';
 import '../bloc/category/category_bloc.dart';
@@ -12,7 +12,7 @@ import '../bloc/category/category_state.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class DifferentItem extends StatelessWidget {
-  const DifferentItem({Key key}) : super(key: key);
+  const DifferentItem({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +24,7 @@ class DifferentItem extends StatelessWidget {
     TextEditingController EanController = TextEditingController();
     return BlocBuilder<CategoryBloc, CategoryState>(builder: (context, state) {
       return AlertDialog(
-        title: Text(AppLocalizations.of(context).enteranitem),
+        title: Text(AppLocalizations.of(context)!.enteranitem),
         content: Container(
           height: height * 0.25,
           child: Column(children: [
@@ -34,7 +34,7 @@ class DifferentItem extends StatelessWidget {
               child: TextField(
                 controller: customController,
                 decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context).name,
+                  labelText: AppLocalizations.of(context)?.name,
                   suffixIcon: Icon(
                     Icons.fastfood,
                     size: width * 0.014,
@@ -59,7 +59,7 @@ class DifferentItem extends StatelessWidget {
               child: TextField(
                 controller: customController2,
                 decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context).price,
+                  labelText: AppLocalizations.of(context)?.price,
                   suffixIcon: Icon(
                     Icons.price_change,
                     size: width * 0.014,
@@ -84,7 +84,7 @@ class DifferentItem extends StatelessWidget {
               child: TextField(
                 controller: customController3,
                 decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context).quantity,
+                  labelText: AppLocalizations.of(context)?.quantity,
                   suffixIcon: Icon(
                     Icons.add,
                     size: width * 0.014,
@@ -110,8 +110,12 @@ class DifferentItem extends StatelessWidget {
             onPressed: () {
               Item item = Item(
                   name: customController.text,
-                  price: double.parse(customController2.text));
-              int quantity = int.parse(customController3.text);
+                  price: double.parse(customController2.text),
+                  PLU_EAN: '',
+                  category: 1000,
+                  kilo: true,
+                  unit: '');
+              num quantity = num.parse(customController3.text);
               BlocProvider.of<CategoryBloc>(context)
                   .add(AddToOrder(item, quantity));
               if (state.gotitems == false) {
@@ -119,7 +123,7 @@ class DifferentItem extends StatelessWidget {
               }
               Navigator.of(context).pop();
             },
-            child: Text(AppLocalizations.of(context).submit),
+            child: Text(AppLocalizations.of(context)!.submit),
           )
         ],
       );

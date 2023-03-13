@@ -8,10 +8,9 @@ part 'locale_bloc_event.dart';
 part 'locale_bloc_state.dart';
 
 class LocaleBlocBloc extends Bloc<LocaleBlocEvent, LocaleBlocState> {
-  LocaleBlocBloc(LocaleBlocState initialState) : super();
+  LocaleBlocBloc(LocaleBlocState initialState);
 
   @override
-  // TODO: implement initialState
   LocaleBlocState get initialState => LocaleBlocState.initial();
 
   @override

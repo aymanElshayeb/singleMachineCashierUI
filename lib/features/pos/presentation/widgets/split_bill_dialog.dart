@@ -3,17 +3,16 @@ import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:single_machine_cashier_ui/features/pos/domain/entities/item.dart';
-import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/category/bloc.dart';
 
 import '../bloc/category/category_bloc.dart';
+import '../bloc/category/category_event.dart';
 import '../bloc/category/category_state.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import '../screens/to_pay.dart';
 
 class SplitBill extends StatelessWidget {
-  const SplitBill({Key key}) : super(key: key);
+  const SplitBill({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -47,9 +46,8 @@ class SplitBill extends StatelessWidget {
                                 isOrder: false,
                               ),
                             ))));
-                //Navigator.of(context).pop();
               },
-              child: Text(AppLocalizations.of(context).pay),
+              child: Text(AppLocalizations.of(context)!.pay),
             )
           ],
         );
@@ -67,22 +65,21 @@ class SplitBill extends StatelessWidget {
           padding: EdgeInsets.all(width * 0.02),
           decoration: BoxDecoration(
               color: Theme.of(context).backgroundColor,
-              //color: seconderyColor,
               borderRadius: BorderRadius.circular(15)),
-          child: state.orderstate.length > 0
+          child: state.orderstate!.length > 0
               ? ListView.builder(
-                  itemCount: state.orderstate.length,
+                  itemCount: state.orderstate!.length,
                   itemBuilder: (cc, index) {
                     return Card(
                       child: ListTile(
                         title:
-                            Text(state.orderstate.keys.elementAt(index).name),
-                        subtitle: Text(state.orderstate.keys
+                            Text(state.orderstate!.keys.elementAt(index).name),
+                        subtitle: Text(state.orderstate!.keys
                             .elementAt(index)
                             .price
                             .toString()),
                         trailing: Column(children: [
-                          Text(state.orderstate.values
+                          Text(state.orderstate!.values
                               .elementAt(index)
                               .toString()),
                           InkWell(
@@ -90,21 +87,21 @@ class SplitBill extends StatelessWidget {
                             onTap: () {
                               BlocProvider.of<CategoryBloc>(context).add(
                                   AddToSubOrder(
-                                      state.orderstate.keys.elementAt(index),
-                                      state.orderstate.values
+                                      state.orderstate!.keys.elementAt(index),
+                                      state.orderstate!.values
                                                   .elementAt(index) >=
                                               1
                                           ? 1
-                                          : state.orderstate.values
+                                          : state.orderstate!.values
                                               .elementAt(index)));
-                              if (state.orderstate.values.elementAt(index) >
+                              if (state.orderstate!.values.elementAt(index) >
                                   1) {
                                 BlocProvider.of<CategoryBloc>(context).add(
-                                    SubtractFromOrder(state.orderstate.keys
+                                    SubtractFromOrder(state.orderstate!.keys
                                         .elementAt(index)));
                               } else {
                                 BlocProvider.of<CategoryBloc>(context).add(
-                                    DeleteFromOrder(state.orderstate.keys
+                                    DeleteFromOrder(state.orderstate!.keys
                                         .elementAt(index)));
                               }
                             },
@@ -113,11 +110,11 @@ class SplitBill extends StatelessWidget {
                         onTap: () {
                           BlocProvider.of<CategoryBloc>(context).add(
                               AddToSubOrder(
-                                  state.orderstate.keys.elementAt(index),
-                                  state.orderstate.values.elementAt(index)));
+                                  state.orderstate!.keys.elementAt(index),
+                                  state.orderstate!.values.elementAt(index)));
                           BlocProvider.of<CategoryBloc>(context).add(
                               DeleteFromOrder(
-                                  state.orderstate.keys.elementAt(index)));
+                                  state.orderstate!.keys.elementAt(index)));
                         },
                       ),
                     );
@@ -140,7 +137,6 @@ class SplitBill extends StatelessWidget {
           padding: EdgeInsets.all(width * 0.02),
           decoration: BoxDecoration(
               color: Theme.of(context).backgroundColor,
-              //color: seconderyColor,
               borderRadius: BorderRadius.circular(15)),
           child: state.subOrderState.length > 0
               ? ListView.builder(
@@ -164,7 +160,13 @@ class SplitBill extends StatelessWidget {
                               BlocProvider.of<CategoryBloc>(context).add(
                                   AddToOrder(
                                       state.subOrderState.keys.elementAt(index),
-                                      1));
+                                      state
+                                                  .subOrderState.values
+                                                  .elementAt(index) >=
+                                              1
+                                          ? 1
+                                          : state.subOrderState.values
+                                              .elementAt(index)));
                               if (state.subOrderState.values.elementAt(index) >
                                   1) {
                                 BlocProvider.of<CategoryBloc>(context).add(

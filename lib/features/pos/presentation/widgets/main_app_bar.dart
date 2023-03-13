@@ -1,10 +1,9 @@
+import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/popup_menu.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:single_machine_cashier_ui/features/pos/presentation/screens/constants.dart';
-import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/popup_menu.dart';
 
 import '../../domain/entities/item.dart';
 import '../bloc/Locale/locale_bloc_bloc.dart';
@@ -17,7 +16,7 @@ import 'Language_popup.dart';
 import 'Language_popup.dart';
 
 class MainAppBar extends StatelessWidget {
-  const MainAppBar({Key key}) : super(key: key);
+  const MainAppBar({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -29,10 +28,7 @@ class MainAppBar extends StatelessWidget {
           padding: EdgeInsets.all(5),
           width: double.infinity,
           height: height * 0.07,
-          decoration: BoxDecoration(
-              //color: seconderyColor,
-
-              borderRadius: BorderRadius.circular(5)),
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(5)),
           child: Row(
             children: <Widget>[
               SizedBox(
@@ -40,13 +36,11 @@ class MainAppBar extends StatelessWidget {
               ),
               Container(
                 width: width * 0.082,
-                decoration: BoxDecoration(
-                    //color: Colors.grey,
-
-                    borderRadius: BorderRadius.circular(6)),
+                decoration:
+                    BoxDecoration(borderRadius: BorderRadius.circular(6)),
                 child: Center(
                   child: Text(
-                    countTheTotal(state.orderstate),
+                    countTheTotal(state.orderstate!),
                     style: TextStyle(
                         fontSize: width * 0.025, fontWeight: FontWeight.bold),
                   ),
@@ -58,7 +52,6 @@ class MainAppBar extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.only(right: width * 0.02),
                 child: Row(
-                  // mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
                     PopupMenu(),
                     menu_button(
@@ -66,7 +59,7 @@ class MainAppBar extends StatelessWidget {
                         width,
                         height,
                         Icons.home,
-                        AppLocalizations.of(context).home,
+                        AppLocalizations.of(context)!.home,
                         state, () {
                       BlocProvider.of<CategoryBloc>(context).add(InitEvent());
                     }),
@@ -75,7 +68,7 @@ class MainAppBar extends StatelessWidget {
                         width,
                         height,
                         Icons.power_settings_new,
-                        AppLocalizations.of(context).exit,
+                        AppLocalizations.of(context)!.exit,
                         state,
                         () {}),
                     LangPopup(),
@@ -98,24 +91,18 @@ class MainAppBar extends StatelessWidget {
   }
 
   Container menu_button(Color color, double width, double height, IconData icon,
-      String label, CategoryState state, Function function) {
+      String label, CategoryState state, Function() function) {
     return Container(
       height: height * 0.2,
       width: width * 0.1,
       margin: EdgeInsets.all(5),
-      //padding: EdgeInsets.all(width * 0.01),
       child: ElevatedButton.icon(
         icon: Icon(icon), //icon data for elevated button
         label: Text(label), //label text
         style: ElevatedButton.styleFrom(
-          //primary: Colors.grey.withOpacity(0.6),
           backgroundColor: color,
-
-          textStyle: TextStyle(
-              //color: Colors.white,
-
-              fontSize: 0.011 * width,
-              fontStyle: FontStyle.normal),
+          textStyle:
+              TextStyle(fontSize: 0.011 * width, fontStyle: FontStyle.normal),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
         ),
         onPressed: ((function)),
