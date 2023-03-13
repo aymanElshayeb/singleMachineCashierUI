@@ -1,17 +1,24 @@
-import 'package:single_machine_cashier_ui/features/pos/domain/entities/user.dart';
+
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
+import '../../../domain/entities/item.dart';
+
 @immutable
-abstract class ItemState  extends Equatable{
+abstract class ItemState extends Equatable {
   ItemState([List props = const <dynamic>[]]) : super(props);
 }
 
-class ItemInitial extends ItemState {}
+class ItemsLoading extends ItemState {}
 
+class ItemsLoaded extends ItemState {
+  final List<Item> items;
 
-class Error extends ItemState{
+  ItemsLoaded(this.items) : super([items]);
+}
+
+class ItemError extends ItemState {
   final String message;
 
-  Error({@required this.message}) : super([message]);
+  ItemError({required this.message}) : super([message]);
 }

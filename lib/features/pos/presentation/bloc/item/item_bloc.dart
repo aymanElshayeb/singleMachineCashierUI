@@ -14,16 +14,21 @@ const String AUTHENTICATION_FAILURE_MESSAGE = 'Invalid password';
 class ItemBloc extends Bloc<ItemEvent, ItemState> {
   final Items items;
 
-  ItemBloc({@required this.items}): assert(items != null);
-
-
-  @override
-  ItemState get initialState => ItemInitial();
+  ItemBloc({required this.items});
 
   @override
-  Stream<ItemState> mapEventToState(ItemEvent event) async*{
-    if (event != null ){
-      ;
+  ItemState get initialState => ItemsLoading();
+
+  @override
+  Stream<ItemState> mapEventToState(ItemEvent event) async* {
+    if (event is LoadItems) {
+      yield ItemsLoading();
+      final failureOrCategory =
+          await items.getItemsByCategory(event.categoryId);
+      yield failureOrCategory.fold(
+        (failure) => ItemError(message: _mapFailureToMessage(failure)),
+        (itemList) => ItemsLoaded(itemList),
+      );
     }
   }
 

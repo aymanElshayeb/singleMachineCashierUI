@@ -1,7 +1,6 @@
+import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/virtual_keyboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/category/bloc.dart';
-import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/virtual_keyboard.dart';
 
 import '../../domain/entities/item.dart';
 import '../bloc/Locale/locale_bloc_bloc.dart';
@@ -10,6 +9,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../bloc/category/category_bloc.dart';
 import '../bloc/category/category_event.dart';
 import 'package:provider/provider.dart';
+
+import '../bloc/category/category_state.dart';
 
 class DiscountPopup extends StatefulWidget {
   @override
@@ -69,7 +70,7 @@ class _DiscountPopupState extends State<DiscountPopup> {
                 TextField(
                   controller: customController,
                   decoration: InputDecoration(
-                    labelText: AppLocalizations.of(context).discount,
+                    labelText: AppLocalizations.of(context)?.discount,
                     suffixIcon: Icon(
                       Icons.discount,
                       size: width * 0.014,
@@ -95,11 +96,16 @@ class _DiscountPopupState extends State<DiscountPopup> {
               double discount = double.parse(customController.text);
               final currentBloc = context.read<CategoryBloc>();
 
-              double total = countTheTotal(currentBloc.state.orderstate);
+              double total = countTheTotal(currentBloc.state.orderstate!);
               if (selectval == 'Percentage') {
                 if (total - discount > 0 && discount <= 100) {
                   Item item = Item(
-                      name: 'Discount', price: -((discount / 100) * total));
+                      name: 'Discount',
+                      price: -((discount / 100) * total),
+                      PLU_EAN: '',
+                      category: 1000,
+                      kilo: true,
+                      unit: '');
 
                   BlocProvider.of<CategoryBloc>(context)
                       .add(AddToOrder(item, 1));
@@ -114,7 +120,13 @@ class _DiscountPopupState extends State<DiscountPopup> {
                 }
               } else {
                 if (total - discount > 0) {
-                  Item item = Item(name: 'Discount', price: -discount);
+                  Item item = Item(
+                      name: 'Discount',
+                      price: -discount,
+                      PLU_EAN: '',
+                      category: 1000,
+                      kilo: true,
+                      unit: '');
 
                   BlocProvider.of<CategoryBloc>(context)
                       .add(AddToOrder(item, 1));
@@ -129,7 +141,7 @@ class _DiscountPopupState extends State<DiscountPopup> {
                 }
               }
             },
-            child: Text(AppLocalizations.of(context).submit),
+            child: Text(AppLocalizations.of(context)!.submit),
           )
         ],
       );

@@ -12,7 +12,7 @@ class UserRepositoryImpl implements UserRepository {
   final UserLocalDataSource localDataSource;
 
   UserRepositoryImpl({
-    @required this.localDataSource,
+    required this.localDataSource,
   });
 
   @override
@@ -20,7 +20,7 @@ class UserRepositoryImpl implements UserRepository {
   Future<Either<Failure, User>> authenticateUser(String password) async {
     try {
       final users = await localDataSource.getUsers();
-      User _user;
+      User? _user;
 
       for (var user in users) {
         if (user.password == password) {

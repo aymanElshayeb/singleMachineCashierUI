@@ -1,6 +1,6 @@
 {
-    "name": "singlemachinecashierui",
-    "short_name": "singlemachinecashierui",
+    "name": "single_machine_cashier_ui",
+    "short_name": "single_machine_cashier_ui",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

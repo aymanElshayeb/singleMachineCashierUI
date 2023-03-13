@@ -23,13 +23,13 @@
   <!-- iOS meta tags & icons -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="singlemachinecashierui">
+  <meta name="apple-mobile-web-app-title" content="single_machine_cashier_ui">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
 
-  <title>singlemachinecashierui</title>
+  <title>single_machine_cashier_ui</title>
   <link rel="manifest" href="manifest.json">
 
   <script>
@@ -54,6 +54,30 @@
         }
       });
     });
+  </script>
+  
+  <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-analytics.js";
+    // TODO: Add SDKs for Firebase products that you want to use
+    // https://firebase.google.com/docs/web/setup#available-libraries
+  
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+      apiKey: "AIzaSyBGoD64Fm9rC-zjQoZWL0ri1DW02fCmp5I",
+      authDomain: "flutter-chat-e5c62.firebaseapp.com",
+      projectId: "flutter-chat-e5c62",
+      storageBucket: "flutter-chat-e5c62.appspot.com",
+      messagingSenderId: "976228520694",
+      appId: "1:976228520694:web:31b8ec3ccedff28046d2d7",
+      measurementId: "G-SX013MY3PW"
+    };
+  
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app);
   </script>
 </body>
 </html>

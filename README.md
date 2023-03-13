@@ -1,4 +1,4 @@
-# singlemachinecashierui
+# single_machine_cashier_ui
 
 A new Flutter project.
 

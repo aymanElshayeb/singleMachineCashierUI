@@ -2,12 +2,11 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/category/category_bloc.dart';
-import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/category/category_event.dart';
-import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/category/category_state.dart';
-import 'package:single_machine_cashier_ui/injection_container.dart';
 import '../../domain/entities/item.dart';
 import '../bloc/cart/cart_bloc.dart';
+import '../bloc/category/category_bloc.dart';
+import '../bloc/category/category_event.dart';
+import '../bloc/category/category_state.dart';
 import '../bloc/user/bloc.dart';
 import '../screens/constants.dart';
 
@@ -26,7 +25,6 @@ class MenuItems extends StatelessWidget {
           alignment: Alignment.topLeft,
           padding: EdgeInsets.all(width * 0.02),
           decoration: BoxDecoration(
-              //color: seconderyColor,
               color: Theme.of(context).backgroundColor,
               borderRadius: BorderRadius.circular(15)),
           child: GridView.builder(
@@ -44,12 +42,9 @@ class MenuItems extends StatelessWidget {
                   width: 10,
                   child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        //backgroundColor: Theme.of(context).primaryColor,
                         backgroundColor:
                             Colors.primaries[index].withOpacity(0.5),
-                        //shadowColor: primaryColor,
                         textStyle: TextStyle(
-                          //color: seconderyColor.withOpacity(1.0),
                           fontSize: 16,
                         ),
                         shape: RoundedRectangleBorder(

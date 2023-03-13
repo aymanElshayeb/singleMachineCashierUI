@@ -1,19 +1,19 @@
+import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/virtual_keyboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/category/bloc.dart';
-import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/virtual_keyboard.dart';
 
 import '../bloc/category/category_bloc.dart';
+import '../bloc/category/category_event.dart';
 import '../bloc/category/category_state.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class QuantityDialog extends StatelessWidget {
   final quantity;
   final item;
-  const QuantityDialog({Key key, @required this.quantity, @required this.item})
+  const QuantityDialog({Key? key, required this.quantity, required this.item})
       : super(key: key);
 
   @override
@@ -25,7 +25,7 @@ class QuantityDialog extends StatelessWidget {
     return BlocBuilder<CategoryBloc, CategoryState>(
       builder: (context, state) {
         return AlertDialog(
-          title: Text('Edit item quantity'),
+          title: Text(AppLocalizations.of(context)!.editquantity),
           content: Container(
               height: height * 0.071,
               child: Column(
@@ -59,7 +59,7 @@ class QuantityDialog extends StatelessWidget {
 
                 Navigator.of(context).pop();
               },
-              child: Text(AppLocalizations.of(context).submit),
+              child: Text(AppLocalizations.of(context)!.submit),
             )
           ],
         );

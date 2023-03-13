@@ -1,6 +1,4 @@
 import 'package:dartz/dartz.dart';
-import 'package:single_machine_cashier_ui/features/pos/data/datasources/item_local_data_source.dart';
-import 'package:single_machine_cashier_ui/features/pos/domain/usecases/items.dart';
 
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/error/failures.dart';
@@ -14,14 +12,16 @@ import '../datasources/category_local_data_source.dart';
 import 'package:meta/meta.dart';
 import 'package:logging/logging.dart';
 
+import '../datasources/item_local_data_source.dart';
+
 class CategoryRepositoryImpl implements CategoryRepository {
   final ItemLocalDataSource itemLocalDataSource;
   final CategoryLocalDataSource localDataSource;
   final _log = Logger('CategoryRepositoryImpl');
 
   CategoryRepositoryImpl({
-    @required this.localDataSource,
-    @required this.itemLocalDataSource,
+    required this.localDataSource,
+    required this.itemLocalDataSource,
   });
 
   @override
@@ -39,6 +39,7 @@ class CategoryRepositoryImpl implements CategoryRepository {
   Future<Either<Failure, List<Item>>> getCategoryItems(int category) async {
     try {
       final items = await itemLocalDataSource.getItems();
+
       List<Item> tempItems = [];
 
       for (var item in items) {

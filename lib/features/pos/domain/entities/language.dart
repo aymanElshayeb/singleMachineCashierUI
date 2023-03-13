@@ -7,9 +7,9 @@ class Language extends Equatable {
   final String flag;
   final String languagecode;
   Language({
-    @required this.name,
-    @required this.flag,
-    @required this.languagecode,
+    required this.name,
+    required this.flag,
+    required this.languagecode,
   });
 
   @override
