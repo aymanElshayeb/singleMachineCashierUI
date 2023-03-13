@@ -9,7 +9,7 @@ import '../bloc/PaymentBloc/payment_bloc.dart';
 import 'package:provider/provider.dart';
 
 class Currency extends StatelessWidget {
-  const Currency({Key key}) : super(key: key);
+  const Currency({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +40,6 @@ class Currency extends StatelessWidget {
           height: height,
           margin: EdgeInsets.all(8.0),
           decoration: BoxDecoration(
-              //color: Color.fromARGB(255, 227, 229, 230),
               color: Theme.of(context).backgroundColor,
               borderRadius: BorderRadius.all(Radius.circular(11.0))),
         ),

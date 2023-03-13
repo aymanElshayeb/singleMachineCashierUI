@@ -1,30 +1,45 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
-import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/category/bloc.dart';
-import 'package:single_machine_cashier_ui/features/pos/presentation/screens/menu.dart';
+import 'package:single_machine_cashier_ui/features/pos/domain/entities/invoice.dart';
+
 import 'package:virtual_keyboard_multi_language/virtual_keyboard_multi_language.dart';
 
+import '../../domain/entities/customer.dart';
 import '../../domain/entities/item.dart';
+import '../../domain/entities/supplier.dart';
+import '../../domain/usecases/invoice_api.dart';
+import '../../domain/usecases/pdf_api.dart';
 import '../bloc/PaymentBloc/payment_bloc.dart';
+import '../bloc/cart/cart_bloc.dart';
+import '../bloc/cart/cart_event.dart';
 import '../bloc/category/category_bloc.dart';
+import '../bloc/category/category_event.dart';
 import '../bloc/category/category_state.dart';
 import '../widgets/currency.dart';
 import '../widgets/num_pad.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:printing/printing.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
 
 class ToPay extends StatelessWidget {
   final Map<Item, num> order;
   final isOrder;
-  const ToPay({Key key, @required this.order, @required this.isOrder})
+  const ToPay({Key? key, required this.order, required this.isOrder})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final controller = TextEditingController();
     num total = countTheTotal(order);
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
@@ -37,36 +52,33 @@ class ToPay extends StatelessWidget {
         builder: (context, state) {
           return Scaffold(
             appBar: AppBar(
-              title: Text(AppLocalizations.of(context).paymentpage),
-              //backgroundColor: Colors.grey,
+              title: Text(AppLocalizations.of(context)!.paymentpage),
             ),
-            //backgroundColor: Color.fromARGB(255, 243, 243, 243),
             body: Row(
               children: [
                 Column(mainAxisAlignment: MainAxisAlignment.start, children: [
                   Container(
                     margin: EdgeInsets.all(8.0),
                     decoration: BoxDecoration(
-                        //color: Color.fromARGB(255, 227, 229, 230),
                         color: Theme.of(context).backgroundColor,
                         borderRadius: BorderRadius.all(Radius.circular(11.0))),
                     child: Column(children: [
                       numberBar(
                           Theme.of(context).primaryColor,
                           state.total,
-                          AppLocalizations.of(context).total,
+                          AppLocalizations.of(context)!.total,
                           width * 0.230,
                           height * 0.077),
                       numberBar(
                           Theme.of(context).primaryColor,
                           state.cash,
-                          AppLocalizations.of(context).cash,
+                          AppLocalizations.of(context)!.cash,
                           width * 0.230,
                           height * 0.077),
                       numberBar(
                           Theme.of(context).primaryColor,
                           state.inreturn,
-                          AppLocalizations.of(context).returnn,
+                          AppLocalizations.of(context)!.returnn,
                           width * 0.230,
                           height * 0.077),
                     ]),
@@ -80,8 +92,6 @@ class ToPay extends StatelessWidget {
                     margin: EdgeInsets.all(8.0),
                     alignment: AlignmentDirectional.center,
                     decoration: BoxDecoration(
-
-                        //color: Colors.blue,
                         borderRadius: BorderRadius.all(Radius.circular(5.0))),
                     child: DropdownButton(
                       items: ["Cash", "Visa"]
@@ -104,22 +114,73 @@ class ToPay extends StatelessWidget {
                       value: state.selectedMethod,
                     ),
                   ),
-                  paymentButton(
-                      Theme.of(context).primaryColor,
-                      Icons.print,
-                      AppLocalizations.of(context).printreceipt,
-                      () {},
-                      width * 0.221,
-                      height * 0.07),
                   SizedBox(
                     height: height * 0.02,
                   ),
                   paymentButton(Theme.of(context).primaryColor, Icons.payment,
-                      AppLocalizations.of(context).completepayment, () {
-                    BlocProvider.of<PaymentBloc>(context)
-                        .add(getTotal(total: 0));
-                    BlocProvider.of<CategoryBloc>(context)
-                        .add(FinishOrder(isOrder));
+                      AppLocalizations.of(context)!.completepayment, () async {
+                    if (state.cash >= state.total) {
+                      if (state.total == 0) return;
+                      BlocProvider.of<PaymentBloc>(context)
+                          .add(getTotal(total: 0));
+                      BlocProvider.of<CategoryBloc>(context)
+                          .add(FinishOrder(isOrder));
+                      final currentBloc = context.read<CategoryBloc>();
+                      Map<Item, num> order;
+
+                      if (isOrder) {
+                        BlocProvider.of<CartBloc>(context).add(
+                            SaveOrder(items: currentBloc.state.orderstate!));
+                        order = currentBloc.state.orderstate!;
+                      } else {
+                        BlocProvider.of<CartBloc>(context).add(
+                            SaveOrder(items: currentBloc.state.subOrderState));
+                        order = currentBloc.state.subOrderState;
+                      }
+                      BlocProvider.of<PaymentBloc>(context).add(NewPayment());
+
+                      List<InvoiceItem> invoiceItems = [];
+                      order.forEach((key, value) => invoiceItems.add(
+                          InvoiceItem(
+                              description: key.name,
+                              date: DateTime.now(),
+                              quantity: value,
+                              unitPrice: key.price)));
+                      final date = DateTime.now();
+                      final dueDate = date.add(Duration(days: 7));
+                      final invoice = Invoice(
+                          info: InvoiceInfo(
+                              dueDate: dueDate,
+                              date: date,
+                              description: 'My description...',
+                              number: '${DateTime.now().year}-9999'),
+                          supplier: const Supplier(
+                              name: 'Sarah Field',
+                              address: 'Sarah Street 9, Beijing, China',
+                              paymentInfo: 'https://paypal.me/sarahfieldzz'),
+                          customer: const Customer(
+                            name: 'Apple Inc.',
+                            address: 'Apple Street, Cupertino, CA 95014',
+                          ),
+                          items: invoiceItems);
+                      final pdfFile = await PdfInvoiceApi.generate(invoice);
+
+                      PdfApi.openFile(pdfFile);
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("Not Enough Cash!")));
+                    }
+                  }, width * 0.221, height * 0.07),
+                  SizedBox(
+                    height: height * 0.02,
+                  ),
+                  paymentButton(
+                      Theme.of(context).primaryColor,
+                      Icons.monetization_on,
+                      AppLocalizations.of(context)!.opendrawer, () async {
+                    pw.Document pdf = pw.Document();
+                    await Printing.layoutPdf(
+                        onLayout: ((format) async => pdf.save()));
                   }, width * 0.221, height * 0.07),
                 ]),
                 SizedBox(
@@ -128,30 +189,29 @@ class ToPay extends StatelessWidget {
                 Align(
                   alignment: AlignmentDirectional.topCenter,
                   child: Container(
-                    width: width * 0.2,
-                    height: height * 0.45,
-                    margin: EdgeInsets.all(8.0),
-                    decoration: BoxDecoration(
-                        //color: Color.fromARGB(255, 227, 229, 230),
-                        color: Theme.of(context).backgroundColor,
-                        borderRadius: BorderRadius.all(Radius.circular(11.0))),
-                    child: NumPad(
-                      buttonSize: width * 0.04,
-                      //buttonColor: Colors.grey,
-                      //iconColor: Colors.blueGrey,
-                      buttonColor: Theme.of(context).canvasColor,
-                      iconColor: Theme.of(context).appBarTheme.foregroundColor,
-                      controller: _myController,
-                      delete: () {
-                        BlocProvider.of<PaymentBloc>(context)
-                            .add(DeleteFromCash());
-                        BlocProvider.of<PaymentBloc>(context)
-                            .add(AddToCash(money: 0));
-                      },
-                      // do something with the input numbers
-                      onSubmit: () {},
-                    ),
-                  ),
+                      width: width * 0.2,
+                      height: height * 0.45,
+                      margin: EdgeInsets.all(8.0),
+                      decoration: BoxDecoration(
+                          color: Theme.of(context).backgroundColor,
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(11.0))),
+                      child: NumPad(
+                        buttonSize: width * 0.04,
+
+                        buttonColor: Theme.of(context).canvasColor,
+
+                        iconColor: Theme.of(context).primaryColorLight,
+                        controller: _myController,
+                        delete: () {
+                          BlocProvider.of<PaymentBloc>(context)
+                              .add(DeleteFromCash());
+                          BlocProvider.of<PaymentBloc>(context)
+                              .add(AddToCash(money: 0));
+                        },
+                        // do something with the input numbers
+                        onSubmit: () {},
+                      )),
                 ),
                 const Currency(),
               ],
@@ -170,9 +230,7 @@ class ToPay extends StatelessWidget {
       padding: EdgeInsets.all(3.0),
       margin: EdgeInsets.all(8.0),
       decoration: BoxDecoration(
-          //color: Colors.blueGrey,
-          color: color,
-          borderRadius: BorderRadius.all(Radius.circular(5.0))),
+          color: color, borderRadius: BorderRadius.all(Radius.circular(5.0))),
       child: Center(
           child:
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
@@ -180,7 +238,7 @@ class ToPay extends StatelessWidget {
           children: [
             Text(title,
                 style: TextStyle(
-                  fontSize: 20, //color: Colors.white
+                  fontSize: 20,
                 )),
           ],
         ),
@@ -190,7 +248,7 @@ class ToPay extends StatelessWidget {
                 : Text(
                     number.toString(),
                     style: TextStyle(
-                      fontSize: 40, //color: Colors.black
+                      fontSize: 40,
                     ),
                   ))
       ])),
@@ -198,7 +256,7 @@ class ToPay extends StatelessWidget {
   }
 
   Container paymentButton(Color color, IconData icon, String title,
-      Function function, double width, double height) {
+      Function() function, double width, double height) {
     return Container(
         width: width,
         height: height,

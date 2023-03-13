@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.singlemachinecashierui">
+    package="com.example.single_machine_cashier_ui">
    <application
-        android:label="singlemachinecashierui"
+        android:label="single_machine_cashier_ui"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

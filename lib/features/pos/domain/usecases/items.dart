@@ -1,7 +1,7 @@
-import 'package:single_machine_cashier_ui/core/error/failures.dart';
-import 'package:single_machine_cashier_ui/core/usecases/usecase.dart';
+
 import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
+import '../../../../core/error/failures.dart';
 import '../entities/item.dart';
 import '../repositories/item_repository.dart';
 
@@ -13,8 +13,7 @@ class Items {
     return await repository.getItem(id);
   }
 
-  Future<Either<Failure, Item>> getItemByCategory(int category) async{
-    return await repository.getItem(category);
+  Future<Either<Failure, List<Item>>> getItemsByCategory(int category) async {
+    return await repository.getCategoryItems(category);
   }
 }
-

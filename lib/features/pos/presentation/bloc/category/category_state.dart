@@ -1,18 +1,18 @@
 import 'package:flutter/foundation.dart';
-import 'package:single_machine_cashier_ui/features/pos/domain/entities/user.dart';
 
-import 'package:single_machine_cashier_ui/features/pos/domain/entities/item.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
+
+import '../../../domain/entities/item.dart';
 
 @immutable
 abstract class CategoryState extends Equatable {
   CategoryState([List props = const <dynamic>[]]) : super(props);
 
   List<String> get categories => [];
-  bool get gotitems => null;
+  bool get gotitems => false;
   List<Item> get categoryitems => [];
-  Map<Item, num> get orderstate => {};
+  Map<Item, num>? get orderstate => {};
   List<Item> get eanitems => [];
   Map<Item, num> get subOrderState => {};
 }
@@ -25,7 +25,7 @@ class CategoryInitial extends CategoryState {
   List<String> get categories => categoriesNames;
 
   CategoryInitial({
-    @required this.categoriesNames,
+    required this.categoriesNames,
   }) : super([categoriesNames]);
 }
 
@@ -35,7 +35,7 @@ class UpdateSubOrder extends CategoryState {
   Map<Item, num> get subOrderState => subOrder;
 
   UpdateSubOrder({
-    @required this.subOrder,
+    required this.subOrder,
   }) : super([subOrder]);
 }
 
@@ -43,7 +43,7 @@ class CategoryItemsFound extends CategoryState {
   final List<String> categoriesNames;
   final List<Item> categoriesitems;
   final bool boolitems;
-  Map<Item, num> orders;
+  Map<Item, num>? orders;
   final List<Item> finalEanItems;
   final Map<Item, num> subOrder;
   @override
@@ -56,17 +56,17 @@ class CategoryItemsFound extends CategoryState {
   @override
   List<Item> get categoryitems => categoriesitems;
   @override
-  Map<Item, num> get orderstate => orders;
+  Map<Item, num>? get orderstate => orders;
   @override
   List<Item> get eanitems => finalEanItems;
 
   CategoryItemsFound(
-      {@required this.orders,
-      @required this.categoriesNames,
-      @required this.boolitems,
-      @required this.categoriesitems,
-      @required this.finalEanItems,
-      @required this.subOrder})
+      {required this.orders,
+      required this.categoriesNames,
+      required this.boolitems,
+      required this.categoriesitems,
+      required this.finalEanItems,
+      required this.subOrder})
       : super([
           categoriesNames,
           boolitems,
@@ -80,7 +80,7 @@ class CategoryItemsFound extends CategoryState {
 class CategoryError extends CategoryState {
   final String message;
 
-  CategoryError({@required this.message}) : super([message]);
+  CategoryError({required this.message}) : super([message]);
 }
 
 class UpdateOrderState extends CategoryState {
@@ -102,10 +102,10 @@ class UpdateOrderState extends CategoryState {
   List<Item> get eanitems => finalEanItems;
 
   UpdateOrderState(
-      {@required this.order,
-      @required this.items,
-      @required this.finalEanItems,
-      @required this.subOrder})
+      {required this.order,
+      required this.items,
+      required this.finalEanItems,
+      required this.subOrder})
       : super([order, items, finalEanItems, subOrder]);
 }
 
@@ -125,10 +125,10 @@ class getItems extends CategoryState {
   @override
   List<Item> get eanitems => finalEanItems;
   getItems({
-    @required this.finalEanItems,
-    @required this.order,
-    @required this.items,
-    @required this.got_items,
+    required this.finalEanItems,
+    required this.order,
+    required this.items,
+    required this.got_items,
   }) : super([finalEanItems, order, items, got_items]);
 }
 

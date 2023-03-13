@@ -1,38 +1,60 @@
+import 'package:single_machine_cashier_ui/features/pos/domain/entities/cart.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
+import 'package:objectbox/objectbox.dart';
 
+import 'category.dart';
+
+@Entity()
 class Item extends Equatable {
-  final int id;
+  @Id()
+  int id;
+
   final String name;
+
   final String unit;
+
   final bool kilo;
   final int category;
-  final num price;
+
+  final underCategory = ToOne<Category>();
+
+  final underCart = ToMany<Cart>();
+
+  final double price;
+
   final String PLU_EAN;
 
   Item(
-      {@required this.PLU_EAN,
-      @required this.name,
-      @required this.unit,
-      @required this.category,
-      @required this.price,
-      @required this.kilo,
-      @required this.id})
+      {required this.PLU_EAN,
+      required this.name,
+      required this.unit,
+      required this.category,
+      required this.price,
+      required this.kilo,
+      this.id = 0})
       : super([PLU_EAN, name, unit, kilo, category, price, id]);
 
   factory Item.fromJson(Map<String, dynamic> jsonMap) {
     return Item(
-        name: jsonMap['name'],
-        id: jsonMap['id'],
-        unit: jsonMap['unit'],
-        kilo: jsonMap['kilo'],
-        category: jsonMap['category'],
-        price: jsonMap['price'],
-        PLU_EAN: jsonMap['PLU_EAN']);
+      name: jsonMap['name'],
+      category: jsonMap['category'],
+      PLU_EAN: jsonMap['PLU_EAN'],
+      price: jsonMap['price'],
+      kilo: jsonMap['kilo'],
+      unit: jsonMap['unit'],
+    );
   }
 
   Map<String, dynamic> toJson() {
-    return {};
+    return {
+      'name': name,
+      'category': category,
+      'PLU_EAN': PLU_EAN,
+      'price': price,
+      'kilo': kilo,
+      'unit': unit
+    };
   }
 }
 

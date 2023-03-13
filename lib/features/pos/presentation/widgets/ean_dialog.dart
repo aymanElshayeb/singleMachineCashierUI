@@ -1,9 +1,9 @@
+import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/virtual_keyboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/foundation/key.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/virtual_keyboard.dart';
 
 import '../bloc/category/category_bloc.dart';
 import '../bloc/category/category_event.dart';
@@ -13,7 +13,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:virtual_keyboard_multi_language/virtual_keyboard_multi_language.dart';
 
 class CustomDialog extends StatelessWidget {
-  const CustomDialog({Key key}) : super(key: key);
+  const CustomDialog({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,25 +23,22 @@ class CustomDialog extends StatelessWidget {
     return BlocBuilder<CategoryBloc, CategoryState>(
       builder: (context, state) {
         return AlertDialog(
-          title: Text(AppLocalizations.of(context).eansearch),
+          title: Text(AppLocalizations.of(context)!.eansearch),
           content: Container(
-            width: width * 0.6 + 10,
-            height: height * 0.6,
-            child: Row(
+            width: width * 0.4,
+            height: height * 0.7,
+            child: Column(
               children: [
-                Container(
-                  height: height * 0.6,
-                  width: (width * 0.6) * 0.35,
-                  child: Column(
-                    children: [
-                      TextField(
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: width * 0.38,
+                      height: height * 0.08,
+                      child: TextField(
                         controller: EanController,
                         decoration: InputDecoration(
-                          labelText: 'EAN',
-                          suffixIcon: Icon(
-                            Icons.code,
-                            size: 17,
-                          ),
+                          labelText: AppLocalizations.of(context)?.eansearch,
                         ),
                         onTap: () {
                           showModalBottomSheet<void>(
@@ -55,42 +52,26 @@ class CustomDialog extends StatelessWidget {
                           );
                         },
                       ),
-                      NumPad(
-                        buttonSize: 50,
-                        //buttonColor: Colors.grey,
-                        //iconColor: Colors.blueGrey,
-                        buttonColor: Theme.of(context).canvasColor,
-                        iconColor:
-                            Theme.of(context).appBarTheme.foregroundColor,
-
-                        controller: EanController,
-                        delete: () {
-                          if (EanController.text.length > 0) {
-                            EanController.text = EanController.text
-                                .substring(0, EanController.text.length - 1);
-                          }
-                        },
-                        // do something with the input numbers
-                        onSubmit: () {
+                    ),
+                    InkWell(
+                      child: Icon(Icons.search),
+                      onTap: (() {
+                        if (EanController.text.isNotEmpty) {
                           BlocProvider.of<CategoryBloc>(context)
                               .add(GetEAN(EanController.text));
                           if (!state.gotitems) {
                             BlocProvider.of<CategoryBloc>(context)
                                 .add(InitEvent());
                           }
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  width: 10,
+                        }
+                      }),
+                    )
+                  ],
                 ),
                 Container(
                   height: height * 0.6,
                   width: (width * 0.6) * 0.65,
                   decoration: BoxDecoration(
-                      //color: Color.fromARGB(255, 228, 227, 227),
                       color: Theme.of(context).backgroundColor,
                       borderRadius: BorderRadius.circular(15)),
                   child: ListView.builder(

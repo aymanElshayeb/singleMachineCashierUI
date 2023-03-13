@@ -32,5 +32,11 @@
     "completepayment":"Zur vollständigen Bezahlung",
     "enteranitem":"einen Artikel eingeben",
     "discount":"Rabatt",
-    "split":"Teilt"
+    "split":"Teilt",
+    "opendrawer":"Geldschublade öffnen",
+    "welcomeback":"Willkommen zurück",
+    "continuee":"Weitermachen",
+    "cancelorder":"Möchten Sie die Bestellung weiterhin stornieren?",
+    "editquantity":"Artikelmenge bearbeiten",
+    "adminpassword":"Bitte geben Sie das Admin-Passwort ein"
 }

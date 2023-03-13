@@ -32,7 +32,13 @@
     "completepayment":"Complete payment",
     "enteranitem":"Enter an item",
     "discount":"Discount",
-    "split":"Split"
+    "split":"Split",
+    "opendrawer":"Open money drawer",
+    "welcomeback":"Welcome Back",
+    "continuee":"Continue",
+    "cancelorder":"Would you like to continue canceling the order?",
+    "editquantity":"Edit item quantity",
+    "adminpassword":"Please, Enter Admin password"
 
    
   }

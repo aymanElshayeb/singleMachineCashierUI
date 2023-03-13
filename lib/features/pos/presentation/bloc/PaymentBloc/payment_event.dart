@@ -4,27 +4,29 @@ part of 'payment_bloc.dart';
 abstract class PaymentEvent {}
 
 class getCash extends PaymentEvent {
-  final String digit_string;
+  final String? digit_string;
 
-  getCash({@required this.digit_string});
+  getCash({required this.digit_string});
 }
+
+class NewPayment extends PaymentEvent {}
 
 class AddToCash extends PaymentEvent {
   final num money;
 
-  AddToCash({@required this.money});
+  AddToCash({required this.money});
 }
 
 class DeleteFromCash extends PaymentEvent {}
 
 class UpdateMethod extends PaymentEvent {
-  final String method;
+  final String? method;
 
-  UpdateMethod({@required this.method});
+  UpdateMethod({required this.method});
 }
 
 class getTotal extends PaymentEvent {
   final num total;
 
-  getTotal({@required this.total});
+  getTotal({required this.total});
 }

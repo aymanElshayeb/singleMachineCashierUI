@@ -5,9 +5,9 @@ part of 'locale_bloc_bloc.dart';
 class LocaleBlocState extends Equatable {
   final Locale locale;
 
-  LocaleBlocState({this.locale});
+  LocaleBlocState({required this.locale});
   factory LocaleBlocState.initial() => LocaleBlocState(locale: Locale('en'));
-  LocaleBlocState copywith({Locale locale}) =>
+  LocaleBlocState copywith({Locale? locale}) =>
       LocaleBlocState(locale: locale ?? this.locale);
 
   @override

@@ -9,7 +9,7 @@ import '../bloc/category/category_state.dart';
 import 'cart_item.dart';
 
 class OrderItems extends StatelessWidget {
-  const OrderItems({Key key}) : super(key: key);
+  const OrderItems({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -21,12 +21,12 @@ class OrderItems extends StatelessWidget {
           height: height * 0.6,
           width: double.infinity,
           child: ListView.builder(
-              itemCount: state.orderstate.length,
+              itemCount: state.orderstate!.length,
               itemBuilder: (context, index) {
                 return CartItem(
                   index: index,
                   state: state,
-                  isDiscount: state.orderstate.keys.elementAt(index).price > 0
+                  isDiscount: state.orderstate!.keys.elementAt(index).price > 0
                       ? false
                       : true,
                 );

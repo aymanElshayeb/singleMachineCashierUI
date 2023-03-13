@@ -1,7 +1,7 @@
-import 'package:single_machine_cashier_ui/core/error/failures.dart';
-import 'package:dartz/dartz.dart';
-import 'package:single_machine_cashier_ui/features/pos/domain/usecases/items.dart';
 
+import 'package:dartz/dartz.dart';
+
+import '../../../../core/error/failures.dart';
 import '../entities/category.dart';
 import '../entities/item.dart';
 

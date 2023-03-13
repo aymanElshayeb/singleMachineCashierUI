@@ -1,4 +1,4 @@
-import 'package:single_machine_cashier_ui/features/pos/domain/entities/user.dart';
+
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
@@ -24,9 +24,9 @@ class UpdateCart extends CartState {
   @override
   List<bool> get isDiscount => isDis;
   UpdateCart({
-    @required this.order_items,
-    @required this.price,
-    @required this.isDis,
+    required this.order_items,
+    required this.price,
+    required this.isDis,
   }) : super([
           order_items,
           price,
@@ -37,5 +37,5 @@ class UpdateCart extends CartState {
 class CartError extends CartState {
   final String message;
 
-  CartError({@required this.message}) : super([message]);
+  CartError({required this.message}) : super([message]);
 }

@@ -5,7 +5,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class DeviceMangament extends StatelessWidget {
-  const DeviceMangament({Key key}) : super(key: key);
+  const DeviceMangament({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -13,17 +13,15 @@ class DeviceMangament extends StatelessWidget {
     final screenheight = MediaQuery.of(context).size.height;
     final selectedMethod = 'printer1';
     final selectedMethod2 = 'drawer1';
-    //final appBarHeight = appBar.preferredSize.height;
     final statusBarHeight = MediaQuery.of(context).padding.top;
     return Scaffold(
       appBar:
-          AppBar(title: Text(AppLocalizations.of(context).devicemanagement)),
+          AppBar(title: Text(AppLocalizations.of(context)!.devicemanagement)),
       body: Center(
         child: Container(
           width: screenwidth * 0.7,
           height: screenheight * 0.9,
           decoration: BoxDecoration(
-              //color: Color.fromARGB(255, 228, 227, 227),
               color: Theme.of(context).backgroundColor,
               borderRadius: BorderRadius.circular(15)),
           child: Column(children: [
@@ -31,7 +29,7 @@ class DeviceMangament extends StatelessWidget {
               alignment: AlignmentDirectional.topStart,
               padding: EdgeInsets.all(8),
               child: Text(
-                AppLocalizations.of(context).printersettings,
+                AppLocalizations.of(context)!.printersettings,
                 style: TextStyle(fontSize: 17),
               ),
             ),
@@ -43,7 +41,6 @@ class DeviceMangament extends StatelessWidget {
                   alignment: AlignmentDirectional.center,
                   margin: EdgeInsets.all(8.0),
                   decoration: BoxDecoration(
-                      //color: Color.fromARGB(255, 218, 218, 218),
                       borderRadius: BorderRadius.all(Radius.circular(5.0))),
                   child: DropdownButton(
                     items: ["printer1", "printer2"]
@@ -69,14 +66,14 @@ class DeviceMangament extends StatelessWidget {
                 MaterialButton(
                     color: Theme.of(context).primaryColor,
                     onPressed: () {},
-                    child: Text(AppLocalizations.of(context).test))
+                    child: Text(AppLocalizations.of(context)!.test))
               ],
             ),
             Container(
               alignment: AlignmentDirectional.topStart,
               padding: EdgeInsets.all(8),
               child: Text(
-                AppLocalizations.of(context).drawersettings,
+                AppLocalizations.of(context)!.drawersettings,
                 style: TextStyle(fontSize: 17),
               ),
             ),
@@ -88,8 +85,6 @@ class DeviceMangament extends StatelessWidget {
                   alignment: AlignmentDirectional.center,
                   margin: EdgeInsets.all(8.0),
                   decoration: BoxDecoration(
-                      //color: Color.fromARGB(255, 218, 218, 218),
-
                       borderRadius: BorderRadius.all(Radius.circular(5.0))),
                   child: DropdownButton(
                     items: ["drawer1", "drawer2"]
@@ -115,7 +110,7 @@ class DeviceMangament extends StatelessWidget {
                 MaterialButton(
                     color: Theme.of(context).primaryColor,
                     onPressed: () {},
-                    child: Text(AppLocalizations.of(context).test))
+                    child: Text(AppLocalizations.of(context)!.test))
               ],
             )
           ]),

@@ -62,7 +62,7 @@ class CancelOrder extends CategoryEvent {}
 
 class AddToOrder extends CategoryEvent {
   final Item item;
-  final num quantity;
+  final num? quantity;
 
   AddToOrder(this.item, this.quantity) : super([item, quantity]);
 }
