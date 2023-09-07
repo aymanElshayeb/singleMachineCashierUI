@@ -8,7 +8,9 @@ abstract class UserState extends Equatable {
   List<User> get users => [];
   User get currentUser =>
       User(fullname: '', role: '', password: '', userName: '');
-  UserState([List props = const <dynamic>[]]) : super(props);
+  const UserState();
+  @override
+  List<Object> get props => [];
 }
 
 class UserInitial extends UserState {}
@@ -17,7 +19,7 @@ class Authenticated extends UserState {
   final User current;
   @override
   User get currentUser => current;
-  Authenticated({required this.current}) : super([current]);
+  const Authenticated({required this.current});
 }
 
 class UsersLoading extends UserState {}
@@ -26,7 +28,7 @@ class AuthenticatedAgain extends UserState {
   final User current;
   @override
   User get currentUser => current;
-  AuthenticatedAgain({required this.current}) : super([current]);
+  const AuthenticatedAgain({required this.current});
 }
 
 class UpdateUsers extends UserState {
@@ -34,11 +36,11 @@ class UpdateUsers extends UserState {
   @override
   List<User> get users => our_users;
 
-  UpdateUsers({required this.our_users}) : super([our_users]);
+  const UpdateUsers({required this.our_users});
 }
 
 class Error extends UserState {
   final String message;
 
-  Error({required this.message}) : super([message]);
+  const Error({required this.message});
 }

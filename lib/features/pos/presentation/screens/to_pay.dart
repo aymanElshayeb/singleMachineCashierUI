@@ -1,16 +1,7 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 import 'package:single_machine_cashier_ui/features/pos/domain/entities/invoice.dart';
-
-import 'package:virtual_keyboard_multi_language/virtual_keyboard_multi_language.dart';
-
 import '../../domain/entities/customer.dart';
 import '../../domain/entities/item.dart';
 import '../../domain/entities/supplier.dart';
@@ -21,15 +12,11 @@ import '../bloc/cart/cart_bloc.dart';
 import '../bloc/cart/cart_event.dart';
 import '../bloc/category/category_bloc.dart';
 import '../bloc/category/category_event.dart';
-import '../bloc/category/category_state.dart';
 import '../widgets/currency.dart';
 import '../widgets/num_pad.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:provider/provider.dart';
 import 'package:printing/printing.dart';
-import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:printing/printing.dart';
 
 class ToPay extends StatelessWidget {
   final Map<Item, num> order;
@@ -39,13 +26,12 @@ class ToPay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = TextEditingController();
     num total = countTheTotal(order);
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     final TextEditingController _myController = TextEditingController();
     final _log = Logger('ToPay');
-    String selectedMethod = 'Cash';
+
     return BlocProvider(
       create: (context) => PaymentBloc()..add(getTotal(total: total)),
       child: BlocBuilder<PaymentBloc, PaymentState>(
@@ -60,7 +46,7 @@ class ToPay extends StatelessWidget {
                   Container(
                     margin: EdgeInsets.all(8.0),
                     decoration: BoxDecoration(
-                        color: Theme.of(context).backgroundColor,
+                        color: Theme.of(context).colorScheme.background,
                         borderRadius: BorderRadius.all(Radius.circular(11.0))),
                     child: Column(children: [
                       numberBar(

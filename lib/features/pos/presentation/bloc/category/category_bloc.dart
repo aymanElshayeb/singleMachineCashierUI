@@ -1,16 +1,10 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
-import 'package:single_machine_cashier_ui/main.dart';
-import 'package:meta/meta.dart';
 import '../../../../../core/error/failures.dart';
-import '../../../../../objectbox.g.dart';
-import '../../../domain/entities/cart.dart';
 import '../../../domain/entities/item.dart';
 import '../../../domain/usecases/categories.dart';
 import 'category_event.dart';
 import 'category_state.dart';
-import 'package:objectbox/objectbox.dart';
-import 'package:path_provider/path_provider.dart';
 
 const String SERVER_FAILURE_MESSAGE = 'Server Failure';
 const String CACHE_FAILURE_MESSAGE = 'Cache Failure';
@@ -21,7 +15,7 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
 
   CategoryBloc({
     required this.categories,
-  });
+  }) : super(Initial());
 
   @override
   CategoryState get initialState => Initial();

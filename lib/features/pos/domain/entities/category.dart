@@ -16,7 +16,7 @@ class Category extends Equatable {
   Category({
     required this.name,
     this.id = 0,
-  }) : super([name, id]);
+  });
   factory Category.fromJson(Map<String, dynamic> jsonMap) {
     return Category(name: jsonMap['name'], id: jsonMap['id']);
   }
@@ -27,4 +27,7 @@ class Category extends Equatable {
       'id': id,
     };
   }
+
+  @override
+  List<Object?> get props => [name, id];
 }

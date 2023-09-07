@@ -1,12 +1,17 @@
 part of 'payment_bloc.dart';
 
-@immutable
 abstract class PaymentState extends Equatable {
-  PaymentState([List props = const <dynamic>[]]) : super(props);
+  const PaymentState();
   num get total => 0;
   num get cash => 0;
   num get inreturn => 0;
   String? get selectedMethod => "Cash";
+  @override
+  List<Object> get props => [
+        total,
+        cash,
+        inreturn,
+      ];
 }
 
 class PaymentInitial extends PaymentState {}
@@ -28,6 +33,5 @@ class UpdatePaymentState extends PaymentState {
       {required this.final_cash,
       required this.final_total,
       required this.final_return,
-      required this.final_selected})
-      : super([final_cash, final_total, final_return, final_selected]);
+      required this.final_selected});
 }

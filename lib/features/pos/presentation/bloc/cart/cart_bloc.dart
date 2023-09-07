@@ -2,12 +2,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:bloc/bloc.dart';
 import 'package:single_machine_cashier_ui/main.dart';
-import 'package:meta/meta.dart';
 import '../../../../../core/error/failures.dart';
 import '../../../domain/entities/cart.dart';
-import '../../../domain/entities/item.dart';
-import '../../../domain/usecases/items.dart';
-import '../user/user_state.dart';
 import 'cart_event.dart';
 import 'cart_state.dart';
 import 'package:logging/logging.dart';
@@ -18,7 +14,7 @@ const String AUTHENTICATION_FAILURE_MESSAGE = 'Invalid password';
 
 class CartBloc extends Bloc<CartEvent, CartState> {
   final _log = Logger('CartBloc');
-  CartBloc();
+  CartBloc() : super(ItemInitial());
 
   @override
   CartState get initialState => ItemInitial();

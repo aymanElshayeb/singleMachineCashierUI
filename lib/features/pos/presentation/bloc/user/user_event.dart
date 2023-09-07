@@ -5,17 +5,19 @@ import '../../../domain/entities/user.dart';
 
 @immutable
 abstract class UserEvent extends Equatable {
-  UserEvent([List props = const <dynamic>[]]) : super(props);
+  const UserEvent();
+  @override
+  List<Object> get props => [];
 }
 
 class AuthenticateUserEvent extends UserEvent {
   final String password;
-  AuthenticateUserEvent(this.password) : super([password]);
+  const AuthenticateUserEvent(this.password);
 }
 
 class SecondAuthenticate extends UserEvent {
   final String password;
-  SecondAuthenticate(this.password) : super([password]);
+  const SecondAuthenticate(this.password);
 }
 
 class GetAllUsers extends UserEvent {}
@@ -23,5 +25,5 @@ class GetAllUsers extends UserEvent {}
 class AddUser extends UserEvent {
   final User user;
 
-  AddUser(this.user) : super([user]);
+  const AddUser(this.user);
 }

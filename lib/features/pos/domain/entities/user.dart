@@ -19,8 +19,7 @@ class User extends Equatable {
       required this.userName,
       required this.role,
       required this.password,
-      required this.fullname})
-      : super([userName, role, password, fullname]);
+      required this.fullname});
 
   factory User.fromJson(Map<String, dynamic> jsonMap) {
     return User(
@@ -37,4 +36,7 @@ class User extends Equatable {
       'fullname': fullname
     };
   }
+
+  @override
+  List<Object?> get props => [userName, role, password, fullname];
 }

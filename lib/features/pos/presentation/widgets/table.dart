@@ -8,8 +8,6 @@ class MenuDataTable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenwidth = MediaQuery.of(context).size.width;
-    final screenheight = MediaQuery.of(context).size.height;
-    final appBarHeight = AppBar().preferredSize.height;
     return DataTable(
       headingRowColor: MaterialStateProperty.resolveWith(
           (states) => Colors.grey.withOpacity(0.4)),

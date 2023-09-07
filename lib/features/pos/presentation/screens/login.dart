@@ -1,16 +1,10 @@
-import 'package:single_machine_cashier_ui/features/pos/domain/usecases/authenticate_user.dart';
 import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/user/user_state.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:provider/provider.dart';
 import '../../domain/entities/user.dart';
 import '../bloc/user/user_bloc.dart';
 import '../bloc/user/user_event.dart';
-import '../widgets/Language_popup.dart';
 import '../widgets/virtual_keyboard.dart';
 import 'menu.dart';
 

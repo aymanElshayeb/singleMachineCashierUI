@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../domain/entities/item.dart';
-import '../bloc/Locale/locale_bloc_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../bloc/category/category_bloc.dart';
@@ -29,7 +28,6 @@ class _DiscountPopupState extends State<DiscountPopup> {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     TextEditingController customController = TextEditingController();
-    num index = 0;
     return BlocBuilder<CategoryBloc, CategoryState>(builder: (context, state) {
       return AlertDialog(
         title: Text('Discount'),

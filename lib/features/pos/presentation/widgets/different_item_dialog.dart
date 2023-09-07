@@ -1,8 +1,5 @@
 import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/virtual_keyboard.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../domain/entities/item.dart';
@@ -21,7 +18,6 @@ class DifferentItem extends StatelessWidget {
     TextEditingController customController = TextEditingController();
     TextEditingController customController2 = TextEditingController();
     TextEditingController customController3 = TextEditingController();
-    TextEditingController EanController = TextEditingController();
     return BlocBuilder<CategoryBloc, CategoryState>(builder: (context, state) {
       return AlertDialog(
         title: Text(AppLocalizations.of(context)!.enteranitem),

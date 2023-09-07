@@ -14,7 +14,7 @@ const String AUTHENTICATION_FAILURE_MESSAGE = 'Invalid password';
 class ItemBloc extends Bloc<ItemEvent, ItemState> {
   final Items items;
 
-  ItemBloc({required this.items});
+  ItemBloc({required this.items}) : super(ItemsLoading());
 
   @override
   ItemState get initialState => ItemsLoading();

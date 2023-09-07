@@ -6,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 
 import '../bloc/PaymentBloc/payment_bloc.dart';
-import 'package:provider/provider.dart';
 
 class Currency extends StatelessWidget {
   const Currency({Key? key}) : super(key: key);

@@ -12,7 +12,6 @@ import '../bloc/category/category_state.dart';
 import 'package:provider/provider.dart';
 
 import '../bloc/user/user_bloc.dart';
-import '../bloc/user/user_state.dart';
 import 'item_discount_dialog.dart';
 
 class CartItem extends StatelessWidget {

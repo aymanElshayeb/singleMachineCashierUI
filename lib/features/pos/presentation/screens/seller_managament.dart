@@ -1,8 +1,4 @@
-import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../injection_container.dart';
 
@@ -10,14 +6,13 @@ import '../../domain/entities/user.dart';
 import '../bloc/user/user_bloc.dart';
 import '../bloc/user/user_event.dart';
 import '../bloc/user/user_state.dart';
-import '../widgets/main_app_bar.dart';
 import '../widgets/table.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../widgets/virtual_keyboard.dart';
 
 class SellerMangament extends StatelessWidget {
-  SellerMangament({Key? key}) : super(key: key);
+  const SellerMangament({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +21,6 @@ class SellerMangament extends StatelessWidget {
     final screenwidth = MediaQuery.of(context).size.width;
     final screenheight = MediaQuery.of(context).size.height;
     final appBarHeight = appBar.preferredSize.height;
-    final statusBarHeight = MediaQuery.of(context).padding.top;
     final TextEditingController controller1 = TextEditingController();
     final TextEditingController controller2 = TextEditingController();
     final TextEditingController controller3 = TextEditingController();
@@ -43,7 +37,7 @@ class SellerMangament extends StatelessWidget {
                   height: (screenheight - appBarHeight) * 0.43,
                   width: screenwidth,
                   decoration: BoxDecoration(
-                      color: Theme.of(context).backgroundColor,
+                      color: Theme.of(context).colorScheme.background,
                       borderRadius: BorderRadius.circular(15)),
                   child: Column(children: [
                     Text(

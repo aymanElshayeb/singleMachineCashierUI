@@ -1,4 +1,5 @@
 import 'package:get_it/get_it.dart';
+import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/bloc/auth_bloc.dart';
 
 import 'features/pos/data/datasources/category_local_data_source.dart';
 import 'features/pos/data/datasources/item_local_data_source.dart';
@@ -17,6 +18,7 @@ import 'features/pos/presentation/bloc/user/user_bloc.dart';
 final sl = GetIt.instance;
 
 Future<void> init() async {
+  sl.registerFactory(() => AuthBloc(authenticateUser: sl()));
   sl.registerFactory(() => UserBloc(authenticateUser: sl()));
 
   sl.registerFactory(() => CategoryBloc(categories: sl()));

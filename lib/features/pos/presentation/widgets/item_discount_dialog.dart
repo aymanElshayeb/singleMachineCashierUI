@@ -1,8 +1,5 @@
 import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/virtual_keyboard.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../domain/entities/item.dart';
@@ -23,7 +20,6 @@ class ItemDiscountDialog extends StatelessWidget {
     TextEditingController customController = TextEditingController();
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-    bool isPercent = true;
     return BlocBuilder<CategoryBloc, CategoryState>(
       builder: (context, state) {
         return AlertDialog(

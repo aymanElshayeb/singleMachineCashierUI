@@ -4,7 +4,7 @@
 // With a Dart package, run `dart run build_runner build`.
 // See also https://docs.objectbox.io/getting-started#generate-objectbox-code
 
-// ignore_for_file: camel_case_types
+// ignore_for_file: camel_case_types, depend_on_referenced_packages
 // coverage:ignore-file
 
 import 'dart:typed_data';
@@ -136,7 +136,7 @@ final _entities = <ModelEntity>[
   ModelEntity(
       id: const IdUid(5, 1909415043919664349),
       name: 'Cart',
-      lastPropertyId: const IdUid(4, 8434989292390240412),
+      lastPropertyId: const IdUid(5, 8762742603129317257),
       flags: 0,
       properties: <ModelProperty>[
         ModelProperty(
@@ -148,13 +148,24 @@ final _entities = <ModelEntity>[
             id: const IdUid(4, 8434989292390240412),
             name: 'items',
             type: 9,
+            flags: 0),
+        ModelProperty(
+            id: const IdUid(5, 8762742603129317257),
+            name: 'quantities',
+            type: 29,
             flags: 0)
       ],
       relations: <ModelRelation>[],
       backlinks: <ModelBacklink>[])
 ];
 
-/// Open an ObjectBox store with the model declared in this file.
+/// Shortcut for [Store.new] that passes [getObjectBoxModel] and for Flutter
+/// apps by default a [directory] using `defaultStoreDirectory()` from the
+/// ObjectBox Flutter library.
+///
+/// Note: for desktop apps it is recommended to specify a unique [directory].
+///
+/// See [Store.new] for an explanation of all parameters.
 Future<Store> openStore(
         {String? directory,
         int? maxDBSizeInKB,
@@ -170,7 +181,8 @@ Future<Store> openStore(
         queriesCaseSensitiveDefault: queriesCaseSensitiveDefault,
         macosApplicationGroup: macosApplicationGroup);
 
-/// ObjectBox model definition, pass it to [Store] - Store(getObjectBoxModel())
+/// Returns the ObjectBox model definition for this project for use with
+/// [Store.new].
 ModelDefinition getObjectBoxModel() {
   final model = ModelInfo(
       entities: _entities,
@@ -219,26 +231,33 @@ ModelDefinition getObjectBoxModel() {
         objectFromFB: (Store store, ByteData fbData) {
           final buffer = fb.BufferContext(fbData);
           final rootOffset = buffer.derefObject(0);
-
+          final PLU_EANParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 14, '');
+          final nameParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 6, '');
+          final unitParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 8, '');
+          final categoryParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 12, 0);
+          final priceParam =
+              const fb.Float64Reader().vTableGet(buffer, rootOffset, 16, 0);
+          final kiloParam =
+              const fb.BoolReader().vTableGet(buffer, rootOffset, 10, false);
+          final idParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
           final object = Item(
-              PLU_EAN: const fb.StringReader(asciiOptimization: true)
-                  .vTableGet(buffer, rootOffset, 14, ''),
-              name: const fb.StringReader(asciiOptimization: true)
-                  .vTableGet(buffer, rootOffset, 6, ''),
-              unit: const fb.StringReader(asciiOptimization: true)
-                  .vTableGet(buffer, rootOffset, 8, ''),
-              category:
-                  const fb.Int64Reader().vTableGet(buffer, rootOffset, 12, 0),
-              price:
-                  const fb.Float64Reader().vTableGet(buffer, rootOffset, 16, 0),
-              kilo: const fb.BoolReader()
-                  .vTableGet(buffer, rootOffset, 10, false),
-              id: const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0));
+              PLU_EAN: PLU_EANParam,
+              name: nameParam,
+              unit: unitParam,
+              category: categoryParam,
+              price: priceParam,
+              kilo: kiloParam,
+              id: idParam);
           object.underCategory.targetId =
               const fb.Int64Reader().vTableGet(buffer, rootOffset, 18, 0);
           object.underCategory.attach(store);
-          InternalToManyAccess.setRelInfo(object.underCart, store,
-              RelInfo<Item>.toMany(2, object.id), store.box<Item>());
+          InternalToManyAccess.setRelInfo<Item>(
+              object.underCart, store, RelInfo<Item>.toMany(2, object.id));
           return object;
         }),
     Category: EntityDefinition<Category>(
@@ -263,17 +282,16 @@ ModelDefinition getObjectBoxModel() {
         objectFromFB: (Store store, ByteData fbData) {
           final buffer = fb.BufferContext(fbData);
           final rootOffset = buffer.derefObject(0);
-
-          final object = Category(
-              name: const fb.StringReader(asciiOptimization: true)
-                  .vTableGet(buffer, rootOffset, 4, ''),
-              id: const fb.Int64Reader().vTableGet(buffer, rootOffset, 6, 0));
-          InternalToManyAccess.setRelInfo(
+          final nameParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 4, '');
+          final idParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 6, 0);
+          final object = Category(name: nameParam, id: idParam);
+          InternalToManyAccess.setRelInfo<Category>(
               object.items,
               store,
               RelInfo<Item>.toOneBacklink(
-                  8, object.id, (Item srcObject) => srcObject.underCategory),
-              store.box<Category>());
+                  8, object.id, (Item srcObject) => srcObject.underCategory));
           return object;
         }),
     User: EntityDefinition<User>(
@@ -301,17 +319,22 @@ ModelDefinition getObjectBoxModel() {
         objectFromFB: (Store store, ByteData fbData) {
           final buffer = fb.BufferContext(fbData);
           final rootOffset = buffer.derefObject(0);
-
+          final idParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 6, 0);
+          final userNameParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 4, '');
+          final roleParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 8, '');
+          final passwordParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 10, '');
+          final fullnameParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 12, '');
           final object = User(
-              id: const fb.Int64Reader().vTableGet(buffer, rootOffset, 6, 0),
-              userName: const fb.StringReader(asciiOptimization: true)
-                  .vTableGet(buffer, rootOffset, 4, ''),
-              role: const fb.StringReader(asciiOptimization: true)
-                  .vTableGet(buffer, rootOffset, 8, ''),
-              password: const fb.StringReader(asciiOptimization: true)
-                  .vTableGet(buffer, rootOffset, 10, ''),
-              fullname: const fb.StringReader(asciiOptimization: true)
-                  .vTableGet(buffer, rootOffset, 12, ''));
+              id: idParam,
+              userName: userNameParam,
+              role: roleParam,
+              password: passwordParam,
+              fullname: fullnameParam);
 
           return object;
         }),
@@ -325,20 +348,26 @@ ModelDefinition getObjectBoxModel() {
         },
         objectToFB: (Cart object, fb.Builder fbb) {
           final itemsOffset = fbb.writeString(object.items);
-          fbb.startTable(5);
+          final quantitiesOffset = fbb.writeListFloat64(object.quantities);
+          fbb.startTable(6);
           fbb.addInt64(0, object.id);
           fbb.addOffset(3, itemsOffset);
+          fbb.addOffset(4, quantitiesOffset);
           fbb.finish(fbb.endTable());
           return object.id;
         },
         objectFromFB: (Store store, ByteData fbData) {
           final buffer = fb.BufferContext(fbData);
           final rootOffset = buffer.derefObject(0);
-
-          final object = Cart(
-              items: const fb.StringReader(asciiOptimization: true)
-                  .vTableGet(buffer, rootOffset, 10, ''),
-              id: const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0));
+          final itemsParam = const fb.StringReader(asciiOptimization: true)
+              .vTableGet(buffer, rootOffset, 10, '');
+          final quantitiesParam =
+              const fb.ListReader<double>(fb.Float64Reader(), lazy: false)
+                  .vTableGet(buffer, rootOffset, 12, []);
+          final idParam =
+              const fb.Int64Reader().vTableGet(buffer, rootOffset, 4, 0);
+          final object =
+              Cart(items: itemsParam, quantities: quantitiesParam, id: idParam);
 
           return object;
         })
@@ -414,4 +443,8 @@ class Cart_ {
 
   /// see [Cart.items]
   static final items = QueryStringProperty<Cart>(_entities[3].properties[1]);
+
+  /// see [Cart.quantities]
+  static final quantities =
+      QueryDoubleVectorProperty<Cart>(_entities[3].properties[2]);
 }

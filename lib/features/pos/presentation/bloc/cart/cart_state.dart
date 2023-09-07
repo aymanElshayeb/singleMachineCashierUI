@@ -1,4 +1,3 @@
-
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
@@ -6,11 +5,13 @@ import '../../../domain/entities/item.dart';
 
 @immutable
 abstract class CartState extends Equatable {
-  CartState([List props = const <dynamic>[]]) : super(props);
+  CartState();
   Map<Item, num> get orderItems => {};
   num get totalPrice => 0;
   List<bool> get isDiscount => [];
   List<num> get quantities => [];
+  @override
+  List<Object> get props => [orderItems, totalPrice, isDiscount, quantities];
 }
 
 class ItemInitial extends CartState {}
@@ -27,15 +28,11 @@ class UpdateCart extends CartState {
     required this.order_items,
     required this.price,
     required this.isDis,
-  }) : super([
-          order_items,
-          price,
-          isDis,
-        ]);
+  });
 }
 
 class CartError extends CartState {
   final String message;
 
-  CartError({required this.message}) : super([message]);
+  CartError({required this.message});
 }

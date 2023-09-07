@@ -1,21 +1,16 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../domain/entities/item.dart';
-import '../bloc/cart/cart_bloc.dart';
 import '../bloc/category/category_bloc.dart';
 import '../bloc/category/category_event.dart';
 import '../bloc/category/category_state.dart';
-import '../bloc/user/bloc.dart';
-import '../screens/constants.dart';
 
 class MenuItems extends StatelessWidget {
+  const MenuItems({super.key});
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-    int newindex;
 
     return BlocBuilder<CategoryBloc, CategoryState>(
       builder: (context, state) {
@@ -25,7 +20,7 @@ class MenuItems extends StatelessWidget {
           alignment: Alignment.topLeft,
           padding: EdgeInsets.all(width * 0.02),
           decoration: BoxDecoration(
-              color: Theme.of(context).backgroundColor,
+              color: Theme.of(context).colorScheme.background,
               borderRadius: BorderRadius.circular(15)),
           child: GridView.builder(
             itemCount:
@@ -37,7 +32,6 @@ class MenuItems extends StatelessWidget {
                 crossAxisSpacing: 4.0,
                 mainAxisSpacing: 4.0),
             itemBuilder: (BuildContext context, int index) {
-              newindex = index;
               return Container(
                   width: 10,
                   child: ElevatedButton(

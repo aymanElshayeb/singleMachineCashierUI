@@ -13,7 +13,6 @@ class DeviceMangament extends StatelessWidget {
     final screenheight = MediaQuery.of(context).size.height;
     final selectedMethod = 'printer1';
     final selectedMethod2 = 'drawer1';
-    final statusBarHeight = MediaQuery.of(context).padding.top;
     return Scaffold(
       appBar:
           AppBar(title: Text(AppLocalizations.of(context)!.devicemanagement)),
@@ -22,7 +21,7 @@ class DeviceMangament extends StatelessWidget {
           width: screenwidth * 0.7,
           height: screenheight * 0.9,
           decoration: BoxDecoration(
-              color: Theme.of(context).backgroundColor,
+              color: Theme.of(context).colorScheme.background,
               borderRadius: BorderRadius.circular(15)),
           child: Column(children: [
             Container(

@@ -32,8 +32,7 @@ class Item extends Equatable {
       required this.category,
       required this.price,
       required this.kilo,
-      this.id = 0})
-      : super([PLU_EAN, name, unit, kilo, category, price, id]);
+      this.id = 0});
 
   factory Item.fromJson(Map<String, dynamic> jsonMap) {
     return Item(
@@ -56,6 +55,10 @@ class Item extends Equatable {
       'unit': unit
     };
   }
+
+  @override
+  // TODO: implement props
+  List<Object?> get props => [PLU_EAN, name, unit, kilo, category, price, id];
 }
 
 // CREATE TABLE TBL_ARTIKEL ([ID] autoincrement, PLU varchar(24), ProdNr varchar(50),

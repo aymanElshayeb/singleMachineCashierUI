@@ -28,7 +28,7 @@ class ItemRepositoryImpl implements ItemsRepository {
         }
       }
 
-      return Right(tempItems);
+      return Right(tempItems!);
     } on CacheException {
       return Left(CacheFailure());
     }
@@ -46,7 +46,7 @@ class ItemRepositoryImpl implements ItemsRepository {
         }
       }
 
-      return Right(tempItem);
+      return Right(tempItem!);
     } on CacheException {
       return Left(CacheFailure());
     }

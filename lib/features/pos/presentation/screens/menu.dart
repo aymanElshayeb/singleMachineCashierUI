@@ -1,30 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../../injection_container.dart';
-import '../../domain/entities/item.dart';
 import '../bloc/category/category_bloc.dart';
 import '../bloc/category/category_state.dart';
-import '../bloc/user/user_bloc.dart';
 import '../widgets/bill.dart';
 import '../widgets/main_app_bar.dart';
 import '../widgets/menu_items.dart';
-import '../widgets/popup_menu.dart';
-import '../widgets/table.dart';
-import 'constants.dart';
-import 'package:provider/provider.dart';
 
 class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
     return BlocBuilder<CategoryBloc, CategoryState>(builder: (context, state) {
-      return Scaffold(
+      return const Scaffold(
           body: Column(children: <Widget>[
-        const MainAppBar(),
+        MainAppBar(),
         Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: EdgeInsets.all(8.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

@@ -1,18 +1,13 @@
 import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/popup_menu.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../domain/entities/item.dart';
-import '../bloc/Locale/locale_bloc_bloc.dart';
 import '../bloc/category/category_bloc.dart';
 import '../bloc/category/category_event.dart';
 import '../bloc/category/category_state.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'Language_popup.dart';
 import 'Language_popup.dart';
 
 class MainAppBar extends StatelessWidget {

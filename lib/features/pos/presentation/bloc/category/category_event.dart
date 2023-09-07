@@ -5,7 +5,9 @@ import '../../../domain/entities/item.dart';
 
 @immutable
 abstract class CategoryEvent extends Equatable {
-  CategoryEvent([List props = const <dynamic>[]]) : super(props);
+  CategoryEvent();
+  @override
+  List<Object> get props => [];
 }
 
 class InitEvent extends CategoryEvent {}
@@ -14,7 +16,7 @@ class GetCategoryItems extends CategoryEvent {
   final int id;
   GetCategoryItems(
     this.id,
-  ) : super([id]);
+  );
 }
 
 class GetCategoryNumber extends CategoryEvent {}
@@ -23,39 +25,39 @@ class UpdateOrderEvent extends CategoryEvent {
   final Item item;
   final List<Item> items;
 
-  UpdateOrderEvent(this.item, this.items) : super([item, items]);
+  UpdateOrderEvent(this.item, this.items);
 }
 
 class SubtractFromOrder extends CategoryEvent {
   final Item item;
-  SubtractFromOrder(this.item) : super([item]);
+  SubtractFromOrder(this.item);
 }
 
 class SubtractFromSubOrder extends CategoryEvent {
   final Item item;
-  SubtractFromSubOrder(this.item) : super([item]);
+  SubtractFromSubOrder(this.item);
 }
 
 class DeleteFromSubOrder extends CategoryEvent {
   final Item item;
-  DeleteFromSubOrder(this.item) : super([item]);
+  DeleteFromSubOrder(this.item);
 }
 
 class FinishOrder extends CategoryEvent {
   final bool isOrder;
-  FinishOrder(this.isOrder) : super([isOrder]);
+  FinishOrder(this.isOrder);
 }
 
 class AddToSubOrder extends CategoryEvent {
   final Item item;
   final num quantity;
 
-  AddToSubOrder(this.item, this.quantity) : super([item, quantity]);
+  AddToSubOrder(this.item, this.quantity);
 }
 
 class DeleteFromOrder extends CategoryEvent {
   final Item item;
-  DeleteFromOrder(this.item) : super([item]);
+  DeleteFromOrder(this.item);
 }
 
 class CancelOrder extends CategoryEvent {}
@@ -64,12 +66,12 @@ class AddToOrder extends CategoryEvent {
   final Item item;
   final num? quantity;
 
-  AddToOrder(this.item, this.quantity) : super([item, quantity]);
+  AddToOrder(this.item, this.quantity);
 }
 
 class GetEAN extends CategoryEvent {
   final String ean;
   GetEAN(
     this.ean,
-  ) : super([ean]);
+  );
 }

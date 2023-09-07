@@ -18,5 +18,8 @@ class Cart extends Equatable {
     this.items = '',
     this.quantities = const [],
     this.id = 0,
-  }) : super([]);
+  });
+
+  @override
+  List<Object?> get props => [id, items, quantities];
 }

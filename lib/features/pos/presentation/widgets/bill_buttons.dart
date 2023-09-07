@@ -1,25 +1,12 @@
-import 'dart:math';
-
 import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/split_bill_dialog.dart';
 import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/user_permission_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../domain/entities/item.dart';
-import '../bloc/cart/cart_bloc.dart';
-import '../bloc/cart/cart_event.dart';
-import '../bloc/cart/cart_state.dart';
 import '../bloc/category/category_bloc.dart';
-import '../bloc/category/category_event.dart';
 import '../bloc/category/category_state.dart';
 import '../bloc/user/user_bloc.dart';
 import '../screens/constants.dart';
 import '../screens/to_pay.dart';
-import 'package:provider/provider.dart';
-
 import 'confirm_dialog.dart';
 import 'different_item_dialog.dart';
 import 'discount_popup.dart';
@@ -32,9 +19,6 @@ class BillButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController customController = TextEditingController();
-    TextEditingController customController2 = TextEditingController();
-    TextEditingController customController3 = TextEditingController();
     List<Map<String, dynamic>> buttons = <Map<String, dynamic>>[
       <String, dynamic>{
         'title': AppLocalizations.of(context)?.pay,

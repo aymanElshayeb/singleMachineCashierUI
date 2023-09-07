@@ -5,7 +5,9 @@ import '../../../domain/entities/item.dart';
 
 @immutable
 abstract class CartEvent extends Equatable {
-  CartEvent([List props = const <dynamic>[]]) : super(props);
+  CartEvent();
+  @override
+  List<Object> get props => [];
 }
 
 class SaveOrder extends CartEvent {

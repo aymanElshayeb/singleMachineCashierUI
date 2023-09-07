@@ -15,7 +15,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   final AuthenticateUser authenticateUser;
   final _log = Logger('UserBloc');
 
-  UserBloc({required this.authenticateUser});
+  UserBloc({required this.authenticateUser}) : super(UserInitial());
 
   @override
   UserState get initialState => UserInitial();

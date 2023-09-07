@@ -1,16 +1,11 @@
-import 'package:single_machine_cashier_ui/core/error/failures.dart';
 import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/virtual_keyboard.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../bloc/user/user_bloc.dart';
 import '../bloc/user/user_event.dart';
 import '../bloc/user/user_state.dart';
-import 'package:provider/provider.dart';
 
 class UserPermissionDialog extends StatelessWidget {
   const UserPermissionDialog({Key? key}) : super(key: key);

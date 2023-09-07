@@ -7,7 +7,7 @@ import '../../../domain/entities/item.dart';
 
 @immutable
 abstract class CategoryState extends Equatable {
-  CategoryState([List props = const <dynamic>[]]) : super(props);
+  CategoryState([List props = const <dynamic>[]]);
 
   List<String> get categories => [];
   bool get gotitems => false;
@@ -15,6 +15,15 @@ abstract class CategoryState extends Equatable {
   Map<Item, num>? get orderstate => {};
   List<Item> get eanitems => [];
   Map<Item, num> get subOrderState => {};
+  @override
+  List<Object> get props => [
+        categories,
+        gotitems,
+        categoryitems,
+        orderstate ?? {},
+        eanitems,
+        subOrderState
+      ];
 }
 
 class Initial extends CategoryState {}

@@ -1,14 +1,11 @@
-import 'dart:math';
-
 import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
-
+import 'package:equatable/equatable.dart';
 part 'payment_event.dart';
 part 'payment_state.dart';
 
 class PaymentBloc extends Bloc<PaymentEvent, PaymentState> {
-  PaymentBloc();
+  PaymentBloc() : super(PaymentInitial());
 
   @override
   PaymentState get initialState => PaymentInitial();
