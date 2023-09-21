@@ -1,7 +1,4 @@
-import 'dart:convert';
-import 'package:meta/meta.dart';
 import '../../../../core/error/exceptions.dart';
-import '../../../../main.dart';
 import '../../domain/entities/user.dart';
 
 abstract class UserLocalDataSource {

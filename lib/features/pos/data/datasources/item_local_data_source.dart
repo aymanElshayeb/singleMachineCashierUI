@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'package:single_machine_cashier_ui/main.dart';
-import 'package:meta/meta.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../domain/entities/item.dart';
 
