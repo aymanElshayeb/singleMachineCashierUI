@@ -1,40 +1,81 @@
 import 'package:equatable/equatable.dart';
-import 'package:meta/meta.dart';
-import 'package:objectbox/objectbox.dart';
+import 'package:firedart/firedart.dart';
 
-@Entity()
+enum Role {
+  admin,
+  user,
+}
+
 class User extends Equatable {
-  final String userName;
+  final String id;
+  final String email;
+  final Role role;
+  final Map<String, bool> systemAccess;
 
-  int id;
-
-  final String role;
-
-  final String password;
-
-  final String fullname;
-
-  User(
-      {this.id = 0,
-      required this.userName,
-      required this.role,
-      required this.password,
-      required this.fullname})
-      : super([userName, role, password, fullname]);
-
-  factory User.fromJson(Map<String, dynamic> jsonMap) {
-    return User(
-        userName: jsonMap['userName'],
-        role: jsonMap['role'],
-        password: jsonMap['password'],
-        fullname: jsonMap['fullname']);
+  const User({
+    required this.email,
+    required this.role,
+    required this.systemAccess,
+    this.id = '0',
+  });
+  factory User.empty() {
+    return const User(email: '', role: Role.user, systemAccess: {
+      'Expense management': false,
+      'POS': false,
+      'Workers scheduler': false,
+      'Users management': false,
+    });
   }
-  Map<String, dynamic> toJson() {
-    return {
-      'userName': userName,
-      'role': role,
-      'password': password,
-      'fullname': fullname
+
+  @override
+  List<Object?> get props => [
+        id,
+        email,
+        role,
+        systemAccess,
+      ];
+  static User fromSnapshot(Document snap) {
+    switch (snap['user']['role']) {
+      case 'admin':
+        User user = User(
+          email: snap['user']['email'],
+          role: Role.admin,
+          id: snap.id,
+          systemAccess: Map<String, bool>.from(snap['user']['systemAccess']),
+        );
+        return user;
+      case 'user':
+        User user = User(
+          email: snap['user']['email'],
+          role: Role.user,
+          id: snap.id,
+          systemAccess: Map<String, bool>.from(snap['user']['systemAccess']),
+        );
+        return user;
+
+      default:
+        throw ArgumentError('Invalid role value: ${snap['user']['role']}');
+    }
+  }
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'email': email,
+      'role': role.toString().split('.').last,
+      'systemAccess': systemAccess,
     };
+  }
+
+  User copyWith({
+    String? email,
+    Role? role,
+    Map<String, bool>? systemAccess,
+  }) {
+    return User(
+      id: this.id,
+      email: email ?? this.email,
+      role: role ?? this.role,
+      systemAccess: systemAccess ?? Map.from(this.systemAccess),
+    );
   }
 }

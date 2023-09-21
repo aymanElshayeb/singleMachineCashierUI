@@ -1,44 +1,32 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import '../bloc/category/category_bloc.dart';
-import '../bloc/category/category_event.dart';
-import '../bloc/category/category_state.dart';
+import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/order/order_bloc.dart';
 
 class ConfirmDialog extends StatelessWidget {
   const ConfirmDialog({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CategoryBloc, CategoryState>(
-      builder: (context, state) {
-        return AlertDialog(
-          title: Text('Alert'),
-          content: Text(AppLocalizations.of(context)!.cancelorder),
-          actions: [
-            MaterialButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: Text(AppLocalizations.of(context)!.cancel),
-            ),
-            MaterialButton(
-              onPressed: () {
-                BlocProvider.of<CategoryBloc>(context).add(CancelOrder());
+    return AlertDialog(
+      title: const Text('Alert'),
+      content: Text(AppLocalizations.of(context)!.cancelorder),
+      actions: [
+        MaterialButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          child: Text(AppLocalizations.of(context)!.cancel),
+        ),
+        MaterialButton(
+          onPressed: () {
+            BlocProvider.of<OrderBloc>(context).add(DeleteOrder());
 
-                if (state.gotitems == false) {
-                  BlocProvider.of<CategoryBloc>(context).add(InitEvent());
-                }
-                Navigator.of(context).pop();
-              },
-              child: Text(AppLocalizations.of(context)!.continuee),
-            )
-          ],
-        );
-      },
+            Navigator.of(context).pop();
+          },
+          child: Text(AppLocalizations.of(context)!.continuee),
+        )
+      ],
     );
   }
 }

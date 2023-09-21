@@ -4,11 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:provider/provider.dart';
-
-import '../bloc/category/category_bloc.dart';
-import '../bloc/category/category_event.dart';
 import '../bloc/user/user_bloc.dart';
 import '../screens/device_managament.dart';
 import '../screens/seller_managament.dart';
@@ -111,7 +106,6 @@ class _PopupMenuState extends State<PopupMenu> {
         {
           throw new Exception();
         }
-        break;
     }
   }
 }

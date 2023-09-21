@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:meta/meta.dart';
+import 'package:firedart/firestore/models.dart';
 
 import 'package:objectbox/objectbox.dart';
 
@@ -7,24 +7,27 @@ import 'item.dart';
 
 @Entity()
 class Category extends Equatable {
+  final String id;
   final String name;
-  @Id()
-  int id;
-  @Backlink()
-  final items = ToMany<Item>();
 
-  Category({
+  const Category({
     required this.name,
-    this.id = 0,
-  }) : super([name, id]);
-  factory Category.fromJson(Map<String, dynamic> jsonMap) {
-    return Category(name: jsonMap['name'], id: jsonMap['id']);
+    this.id = '0',
+  });
+
+  factory Category.empty() {
+    return const Category(name: 'empty', id: '0');
   }
 
-  Map<String, dynamic> toJson() {
-    return {
+  @override
+  List<Object?> get props => [id, name];
+  static Category fromSnapshot(Document snap) {
+    return Category(name: snap['category']['name'], id: snap.id);
+  }
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
       'name': name,
-      'id': id,
     };
   }
 }

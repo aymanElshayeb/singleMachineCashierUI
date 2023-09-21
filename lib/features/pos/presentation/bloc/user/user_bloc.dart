@@ -15,25 +15,14 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   final AuthenticateUser authenticateUser;
   final _log = Logger('UserBloc');
 
-  UserBloc({required this.authenticateUser});
+  UserBloc({required this.authenticateUser}) : super(UserInitial());
 
   @override
   UserState get initialState => UserInitial();
 
   @override
   Stream<UserState> mapEventToState(UserEvent event) async* {
-    if (event is AuthenticateUserEvent) {
-      final failureOrUser = await authenticateUser.authenticate(
-        event.password,
-      );
-      yield failureOrUser.fold(
-        (failure) => Error(message: _mapFailureToMessage(failure)),
-        (user) {
-          _log.fine(user.fullname);
-          return Authenticated(current: user);
-        },
-      );
-    } else if (event is GetAllUsers) {
+    if (event is GetAllUsers) {
       final failureOrUsers = await authenticateUser.execgetAllUsers();
 
       yield failureOrUsers.fold(
@@ -46,19 +35,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       yield failureOrUsers.fold(
         (failure) => Error(message: _mapFailureToMessage(failure)),
         (users) => UpdateUsers(our_users: users),
-      );
-    } else if (event is SecondAuthenticate) {
-      final failureOrUser = await authenticateUser.authenticate(
-        event.password,
-      );
-      yield failureOrUser.fold(
-        (failure) {
-          return Error(message: _mapFailureToMessage(failure));
-        },
-        (user) {
-          _log.fine(user.fullname);
-          return AuthenticatedAgain(current: user);
-        },
       );
     }
   }

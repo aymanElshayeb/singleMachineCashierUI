@@ -1,41 +1,29 @@
-import 'package:dartx/dartx.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../domain/entities/item.dart';
-
-import '../bloc/category/category_bloc.dart';
-import '../bloc/category/category_state.dart';
-import '../screens/constants.dart';
-import 'bill_buttons.dart';
-import 'different_item_dialog.dart';
-import 'num_pad.dart';
-import 'ean_dialog.dart';
-import 'package:provider/provider.dart';
-
+import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/bill_buttons.dart';
 import 'order_items.dart';
 
 class Bill extends StatelessWidget {
+  const Bill({super.key});
+
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-    return BlocBuilder<CategoryBloc, CategoryState>(builder: (context, state) {
-      return Container(
-        height: height * 0.9,
-        width: width * 0.3,
-        padding: EdgeInsets.all(width * 0.02),
-        decoration: BoxDecoration(
-            color: Theme.of(context).backgroundColor,
-            borderRadius: BorderRadius.circular(15)),
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: <Widget>[
-              OrderItems(),
-              BillButtons(
-                context: context,
-              )
-            ]),
-      );
-    });
+    return Container(
+      height: height * 0.9,
+      width: width * 0.3,
+      padding: EdgeInsets.all(width * 0.02),
+      decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.background,
+          borderRadius: BorderRadius.circular(15)),
+      child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            const OrderItems(),
+            BillButtons(
+              context: context,
+            )
+          ]),
+    );
   }
 }

@@ -1,67 +1,115 @@
-import 'package:single_machine_cashier_ui/features/pos/domain/entities/cart.dart';
 import 'package:equatable/equatable.dart';
-import 'package:meta/meta.dart';
-import 'package:objectbox/objectbox.dart';
+import 'package:firedart/firestore/models.dart';
+import 'package:uuid/uuid.dart';
 
 import 'category.dart';
 
-@Entity()
 class Item extends Equatable {
-  @Id()
-  int id;
-
+  final String id;
   final String name;
-
-  final String unit;
-
-  final bool kilo;
-  final int category;
-
-  final underCategory = ToOne<Category>();
-
-  final underCart = ToMany<Cart>();
-
-  final double price;
-
   final String PLU_EAN;
+  final String categoryId;
+  final double price;
+  final String unit;
+  final double quantity;
+  final List<double>? discountsPercentage;
 
-  Item(
-      {required this.PLU_EAN,
-      required this.name,
-      required this.unit,
-      required this.category,
-      required this.price,
-      required this.kilo,
-      this.id = 0})
-      : super([PLU_EAN, name, unit, kilo, category, price, id]);
-
-  factory Item.fromJson(Map<String, dynamic> jsonMap) {
+  const Item({
+    required this.name,
+    this.id = '0',
+    required this.PLU_EAN,
+    required this.categoryId,
+    required this.price,
+    required this.unit,
+    this.quantity = 1,
+    this.discountsPercentage,
+  });
+  factory Item.custom(
+      {required String name, required double price, required double quantity}) {
     return Item(
-      name: jsonMap['name'],
-      category: jsonMap['category'],
-      PLU_EAN: jsonMap['PLU_EAN'],
-      price: jsonMap['price'],
-      kilo: jsonMap['kilo'],
-      unit: jsonMap['unit'],
+        id: const Uuid().v4(),
+        name: name,
+        PLU_EAN: 'custom',
+        categoryId: 'custom',
+        price: price,
+        unit: 'custom',
+        quantity: quantity);
+  }
+
+  @override
+  List<Object?> get props =>
+      [id, name, PLU_EAN, categoryId, price, unit, discountsPercentage];
+  static Item fromSnapshot(Document snap) {
+    return Item(
+      name: snap['item']['name'] ?? 'Unknown',
+      id: snap.id,
+      PLU_EAN: snap['item']['PLU_EAN'] ?? '',
+      categoryId: snap['item']['categoryId'] ?? '',
+      price: (snap['item']['price'] as num?)?.toDouble() ?? 0.0,
+      unit: snap['item']['unit'] ?? '',
+      quantity: snap['item']['quantity'] ?? 1,
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
       'name': name,
-      'category': category,
       'PLU_EAN': PLU_EAN,
-      'price': price,
-      'kilo': kilo,
-      'unit': unit
+      'categoryId': categoryId,
+      'price': price.toString(),
+      'unit': unit,
+      'quantity': quantity,
+      'discounts': discountsPercentage
     };
   }
+
+  double getTotalPrice() {
+    double totalDiscounts = 1;
+    if (discountsPercentage != null) {
+      for (var i = 0; i < discountsPercentage!.length; i++) {
+        totalDiscounts *= 1 - discountsPercentage![i];
+      }
+    }
+    return price * quantity * totalDiscounts;
+  }
+
+  Item copyWith({
+    String? name,
+    String? PLU_EAN,
+    String? categoryId,
+    double? price,
+    String? unit,
+    double? quantity,
+    List<double>? discountsPercentage,
+  }) {
+    return Item(
+        id: id,
+        name: name ?? this.name,
+        PLU_EAN: PLU_EAN ?? this.PLU_EAN,
+        categoryId: categoryId ?? this.categoryId,
+        price: price ?? this.price,
+        unit: unit ?? this.unit,
+        quantity: quantity ?? this.quantity,
+        discountsPercentage: discountsPercentage ?? this.discountsPercentage);
+  }
+
+  Item.copyWithQuantity(Item source, double newQuantity)
+      : id = source.id,
+        name = source.name,
+        price = source.price,
+        quantity = newQuantity,
+        PLU_EAN = source.PLU_EAN,
+        categoryId = source.categoryId,
+        discountsPercentage = source.discountsPercentage,
+        unit = source.unit;
+
+  Item.copyWithDiscount(Item source, List<double> newDiscounts)
+      : id = source.id,
+        name = source.name,
+        price = source.price,
+        quantity = source.quantity,
+        PLU_EAN = source.PLU_EAN,
+        categoryId = source.categoryId,
+        discountsPercentage = newDiscounts,
+        unit = source.unit;
 }
-
-// CREATE TABLE TBL_ARTIKEL ([ID] autoincrement, PLU varchar(24), ProdNr varchar(50),
-// ProdName varchar(150), CatID int, Price double, bestand double, ProdTaxID int, ProdTax
-// double, ProdColor varchar(50), SortID int, PfandID int, LieferantID int, EinheitID int,
-// EKPrice double, LagerPlatz1 varchar(12), LagerPlatz2 varchar(12), OPTION1 int, OPTION2
-// int, IsSerienNr int, mBestellmenge double, mBestand double, setArtikel int, ProdTax2
-// double);
-

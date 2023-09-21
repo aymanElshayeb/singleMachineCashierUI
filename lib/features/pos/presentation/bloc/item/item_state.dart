@@ -1,4 +1,3 @@
-
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
@@ -6,19 +5,23 @@ import '../../../domain/entities/item.dart';
 
 @immutable
 abstract class ItemState extends Equatable {
-  ItemState([List props = const <dynamic>[]]) : super(props);
+  const ItemState();
+  @override
+  List<Object?> get props => [];
 }
+
+class ItemsInitial extends ItemState {}
 
 class ItemsLoading extends ItemState {}
 
 class ItemsLoaded extends ItemState {
   final List<Item> items;
 
-  ItemsLoaded(this.items) : super([items]);
+  ItemsLoaded(this.items);
 }
 
 class ItemError extends ItemState {
   final String message;
 
-  ItemError({required this.message}) : super([message]);
+  ItemError({required this.message});
 }

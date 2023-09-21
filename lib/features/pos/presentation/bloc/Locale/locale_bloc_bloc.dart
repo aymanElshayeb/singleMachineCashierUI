@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:bloc/bloc.dart';
@@ -8,15 +9,13 @@ part 'locale_bloc_event.dart';
 part 'locale_bloc_state.dart';
 
 class LocaleBlocBloc extends Bloc<LocaleBlocEvent, LocaleBlocState> {
-  LocaleBlocBloc(LocaleBlocState initialState);
+  LocaleBlocBloc(LocaleBlocState initialState)
+      : super(LocaleBlocState.initial()) {
+    on<LoadLanguage>(_onLoadLanguage);
+  }
 
-  @override
-  LocaleBlocState get initialState => LocaleBlocState.initial();
-
-  @override
-  Stream<LocaleBlocState> mapEventToState(LocaleBlocEvent event) async* {
-    if (event is LoadLanguage) {
-      yield LocaleBlocState(locale: event.locale);
-    }
+  FutureOr<void> _onLoadLanguage(
+      LoadLanguage event, Emitter<LocaleBlocState> emit) {
+    emit(LocaleBlocState(locale: event.locale));
   }
 }

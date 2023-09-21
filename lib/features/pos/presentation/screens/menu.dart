@@ -1,39 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../../injection_container.dart';
-import '../../domain/entities/item.dart';
-import '../bloc/category/category_bloc.dart';
-import '../bloc/category/category_state.dart';
-import '../bloc/user/user_bloc.dart';
+import 'package:single_machine_cashier_ui/components/menu_background.dart';
+import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/categories/category_bloc.dart';
+import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/items_list.dart';
 import '../widgets/bill.dart';
 import '../widgets/main_app_bar.dart';
-import '../widgets/menu_items.dart';
-import '../widgets/popup_menu.dart';
-import '../widgets/table.dart';
-import 'constants.dart';
-import 'package:provider/provider.dart';
+import '../widgets/category_list.dart';
 
 class MyHomePage extends StatelessWidget {
+  const MyHomePage({super.key});
+
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
-    double height = MediaQuery.of(context).size.height;
-    return BlocBuilder<CategoryBloc, CategoryState>(builder: (context, state) {
-      return Scaffold(
-          body: Column(children: <Widget>[
-        const MainAppBar(),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Bill(),
-              MenuItems(),
-            ],
-          ),
-        )
-      ]));
-    });
+    return Scaffold(
+        body: Column(children: <Widget>[
+      const MainAppBar(),
+      Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Bill(),
+            BlocBuilder<CategoryBloc, CategoryState>(
+              builder: (context, state) {
+                return MenuBackground(
+                    content: state is NavigateToItemsState
+                        ? ItemsList(
+                            categoryId: state.categoryId,
+                          )
+                        : const CategoryList());
+              },
+            )
+          ],
+        ),
+      )
+    ]));
   }
 }

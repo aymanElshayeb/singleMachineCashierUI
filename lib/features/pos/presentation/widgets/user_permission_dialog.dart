@@ -1,16 +1,11 @@
-import 'package:single_machine_cashier_ui/core/error/failures.dart';
 import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/virtual_keyboard.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../bloc/user/user_bloc.dart';
 import '../bloc/user/user_event.dart';
 import '../bloc/user/user_state.dart';
-import 'package:provider/provider.dart';
 
 class UserPermissionDialog extends StatelessWidget {
   const UserPermissionDialog({Key? key}) : super(key: key);
@@ -31,7 +26,7 @@ class UserPermissionDialog extends StatelessWidget {
           title: Column(
             children: [
               Text(AppLocalizations.of(context)!.adminpassword),
-              Container(
+              SizedBox(
                 width: width * 0.19,
                 height: height * 0.08,
                 child: TextField(
@@ -62,7 +57,7 @@ class UserPermissionDialog extends StatelessWidget {
           actions: [
             MaterialButton(
               onPressed: () {
-                if (controller.text.length > 0) {
+                if (controller.text.isNotEmpty) {
                   BlocProvider.of<UserBloc>(context)
                       .add(SecondAuthenticate(controller.text));
                 }
