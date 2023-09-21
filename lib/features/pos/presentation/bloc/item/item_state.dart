@@ -5,7 +5,7 @@ import '../../../domain/entities/item.dart';
 
 @immutable
 abstract class ItemState extends Equatable {
-  ItemState();
+  const ItemState();
   @override
   List<Object?> get props => [];
 }

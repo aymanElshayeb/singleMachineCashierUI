@@ -1,6 +1,11 @@
 import 'package:equatable/equatable.dart';
 import 'package:firedart/firestore/models.dart';
 
+import 'package:objectbox/objectbox.dart';
+
+import 'item.dart';
+
+@Entity()
 class Category extends Equatable {
   final String id;
   final String name;

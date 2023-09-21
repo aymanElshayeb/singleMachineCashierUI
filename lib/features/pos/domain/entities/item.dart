@@ -1,6 +1,9 @@
+import 'package:single_machine_cashier_ui/features/pos/domain/entities/cart.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firedart/firestore/models.dart';
 import 'package:uuid/uuid.dart';
+
+import 'category.dart';
 
 class Item extends Equatable {
   final String id;

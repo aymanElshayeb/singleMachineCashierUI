@@ -15,5 +15,4 @@ class ItemLocalDataSourceImpl implements ItemLocalDataSource {
   Future<List<Item>> getItems() async {
     List<Item> items2 = [];
     return Future.value(items2);
-  }
 }

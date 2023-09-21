@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/user/user_event.dart';
 import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/user/user_state.dart';
+import 'package:meta/meta.dart';
 import '../../../../../core/error/failures.dart';
 import '../../../domain/usecases/authenticate_user.dart';
 import 'package:logging/logging.dart';
