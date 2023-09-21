@@ -135,12 +135,7 @@ class SellerMangament extends StatelessWidget {
                                 controller2.text != '' &&
                                 controller3.text != '') {
                               BlocProvider.of<UserBloc>(context)
-                                  .add(AddUser(User(
-                                fullname: controller1.text,
-                                role: 'Cashier',
-                                userName: controller2.text,
-                                password: controller3.text,
-                              )));
+                                  .add(AddUser(User.empty()));
                               controller1.text = '';
                               controller2.text = '';
                               controller3.text = '';
@@ -186,7 +181,7 @@ class SellerMangament extends StatelessWidget {
   List<List<String>> getUsersTable(List<User> users) {
     List<List<String>> table = [];
     for (var i = 0; i < users.length; i++) {
-      table.add([users[i].fullname, users[i].userName, users[i].role]);
+      table.add([users[i].email, users[i].id, users[i].role.name]);
     }
     return table;
   }

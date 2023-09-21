@@ -17,7 +17,7 @@ class CategoryLocalDataSourceImpl implements CategoryLocalDataSource {
 
   @override
   Future<List<Category>> getCategories() async {
-    List<Category> categories2 = objectBox.categoryBox.getAll();
+    List<Category> categories2 = [];
     return Future.value(categories2);
   }
 }

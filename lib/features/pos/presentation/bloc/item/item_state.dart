@@ -10,6 +10,8 @@ abstract class ItemState extends Equatable {
   List<Object?> get props => [];
 }
 
+class ItemsInitial extends ItemState {}
+
 class ItemsLoading extends ItemState {}
 
 class ItemsLoaded extends ItemState {

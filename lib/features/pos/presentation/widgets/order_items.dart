@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../bloc/category/category_bloc.dart';
-import '../bloc/category/category_state.dart';
+import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/order/order_bloc.dart';
+import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/discount_list.dart';
 import 'cart_item.dart';
 
 class OrderItems extends StatelessWidget {
@@ -11,22 +10,33 @@ class OrderItems extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
-    return BlocBuilder<CategoryBloc, CategoryState>(
+    return BlocBuilder<OrderBloc, OrderState>(
       builder: (context, state) {
-        return Container(
-          height: height * 0.6,
-          width: double.infinity,
-          child: ListView.builder(
-              itemCount: state.orderstate!.length,
-              itemBuilder: (context, index) {
-                return CartItem(
-                  index: index,
-                  state: state,
-                  isDiscount: state.orderstate!.keys.elementAt(index).price > 0
-                      ? false
-                      : true,
-                );
-              }),
+        return Column(
+          children: [
+            SizedBox(
+              height: height * 0.4,
+              width: double.infinity,
+              child: ListView.builder(
+                  itemCount: state.orderItems.length,
+                  itemBuilder: (context, index) {
+                    return Column(
+                      children: [
+                        CartItem(orderItem: state.orderItems[index]),
+                        if (state.orderItems[index].discountsPercentage != null)
+                          DiscountList(
+                            item: state.orderItems[index],
+                            discounts:
+                                state.orderItems[index].discountsPercentage!,
+                          )
+                      ],
+                    );
+                  }),
+            ),
+            SizedBox(
+                height: height * 0.2,
+                child: DiscountList(discounts: state.orderDiscounts)),
+          ],
         );
       },
     );

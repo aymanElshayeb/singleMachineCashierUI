@@ -1,9 +1,7 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
-import 'package:meta/meta.dart';
 import '../../../../../core/error/failures.dart';
 import '../../../domain/usecases/items.dart';
-import '../user/user_state.dart';
 import 'item_event.dart';
 import 'item_state.dart';
 
@@ -14,22 +12,8 @@ const String AUTHENTICATION_FAILURE_MESSAGE = 'Invalid password';
 class ItemBloc extends Bloc<ItemEvent, ItemState> {
   final Items items;
 
-  ItemBloc({required this.items}) : super(ItemsLoading());
-
-  @override
-  ItemState get initialState => ItemsLoading();
-
-  @override
-  Stream<ItemState> mapEventToState(ItemEvent event) async* {
-    if (event is LoadItems) {
-      yield ItemsLoading();
-      final failureOrCategory =
-          await items.getItemsByCategory(event.categoryId);
-      yield failureOrCategory.fold(
-        (failure) => ItemError(message: _mapFailureToMessage(failure)),
-        (itemList) => ItemsLoaded(itemList),
-      );
-    }
+  ItemBloc({required this.items}) : super(ItemsInitial()) {
+    on<LoadItems>(_onLoadItems);
   }
 
   String _mapFailureToMessage(Failure failure) {
@@ -42,6 +26,19 @@ class ItemBloc extends Bloc<ItemEvent, ItemState> {
         return CACHE_FAILURE_MESSAGE;
       default:
         return 'Unexpected error';
+    }
+  }
+
+  FutureOr<void> _onLoadItems(LoadItems event, Emitter<ItemState> emit) async {
+    try {
+      emit(ItemsLoading());
+      final response =
+          await items.getItemsByCategory(categoryId: event.categoryId);
+      response.fold(
+          (failure) => emit(ItemError(message: _mapFailureToMessage(failure))),
+          (items) => emit(ItemsLoaded(items)));
+    } catch (e) {
+      emit(ItemError(message: 'Error fetching users: $e'));
     }
   }
 }

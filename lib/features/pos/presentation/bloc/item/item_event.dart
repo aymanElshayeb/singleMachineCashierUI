@@ -9,7 +9,7 @@ abstract class ItemEvent extends Equatable {
 }
 
 class LoadItems extends ItemEvent {
-  final int categoryId;
+  final String categoryId;
 
   const LoadItems(this.categoryId);
 }

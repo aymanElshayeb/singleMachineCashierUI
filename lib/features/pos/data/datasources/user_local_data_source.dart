@@ -17,13 +17,12 @@ class UserLocalDataSourceImpl implements UserLocalDataSource {
 
   @override
   Future<List<User>> getUsers() async {
-    List<User> myUsers = objectBox.userBox.getAll();
+    List<User> myUsers = [];
     return Future.value(myUsers);
   }
 
   @override
   Future<List<User>> addUsers(User user) {
-    objectBox.userBox.put(user);
-    return Future.value(objectBox.userBox.getAll());
+    return Future.value([]);
   }
 }

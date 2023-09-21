@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 
-import '../bloc/PaymentBloc/payment_bloc.dart';
-
 class Currency extends StatelessWidget {
-  const Currency({Key? key}) : super(key: key);
+  final Function(double) updateTotalCash;
+
+  const Currency({Key? key, required this.updateTotalCash}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -37,12 +33,12 @@ class Currency extends StatelessWidget {
         Container(
           width: width * 0.499,
           height: height,
-          margin: EdgeInsets.all(8.0),
+          margin: const EdgeInsets.all(8.0),
           decoration: BoxDecoration(
-              color: Theme.of(context).backgroundColor,
-              borderRadius: BorderRadius.all(Radius.circular(11.0))),
+              color: Theme.of(context).colorScheme.background,
+              borderRadius: const BorderRadius.all(Radius.circular(11.0))),
         ),
-        Container(
+        SizedBox(
           width: width * 0.499,
           child: GridView.builder(
             itemCount: currencies.length, //should be length of the items list
@@ -59,20 +55,18 @@ class Currency extends StatelessWidget {
                 child: Container(
                   width: width * 0.11,
                   height: height * 0.11,
-                  margin: EdgeInsets.all(15.0),
-                  child: Container(
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints.expand(),
-                      child: Ink.image(
-                        image: AssetImage(
-                            'assets/images/${currencies[index]['title']}.png'),
-                        child: InkWell(
-                          onTap: () {
-                            BlocProvider.of<PaymentBloc>(context).add(
-                                AddToCash(money: currencies[index]['value']));
-                            _log.fine(currencies[index]['value']);
-                          },
-                        ),
+                  margin: const EdgeInsets.all(15.0),
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints.expand(),
+                    child: Ink.image(
+                      image: AssetImage(
+                          'assets/images/${currencies[index]['title']}.png'),
+                      child: InkWell(
+                        onTap: () {
+                          var value = currencies[index]['value'];
+                          updateTotalCash(value.toDouble());
+                          _log.fine(currencies[index]['value']);
+                        },
                       ),
                     ),
                   ),

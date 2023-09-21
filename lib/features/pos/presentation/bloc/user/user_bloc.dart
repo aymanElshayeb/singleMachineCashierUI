@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/user/user_event.dart';
 import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/user/user_state.dart';
-import 'package:meta/meta.dart';
 import '../../../../../core/error/failures.dart';
 import '../../../domain/usecases/authenticate_user.dart';
 import 'package:logging/logging.dart';
@@ -22,18 +21,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
   @override
   Stream<UserState> mapEventToState(UserEvent event) async* {
-    if (event is AuthenticateUserEvent) {
-      final failureOrUser = await authenticateUser.authenticate(
-        event.password,
-      );
-      yield failureOrUser.fold(
-        (failure) => Error(message: _mapFailureToMessage(failure)),
-        (user) {
-          _log.fine(user.fullname);
-          return Authenticated(current: user);
-        },
-      );
-    } else if (event is GetAllUsers) {
+    if (event is GetAllUsers) {
       final failureOrUsers = await authenticateUser.execgetAllUsers();
 
       yield failureOrUsers.fold(
@@ -46,19 +34,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       yield failureOrUsers.fold(
         (failure) => Error(message: _mapFailureToMessage(failure)),
         (users) => UpdateUsers(our_users: users),
-      );
-    } else if (event is SecondAuthenticate) {
-      final failureOrUser = await authenticateUser.authenticate(
-        event.password,
-      );
-      yield failureOrUser.fold(
-        (failure) {
-          return Error(message: _mapFailureToMessage(failure));
-        },
-        (user) {
-          _log.fine(user.fullname);
-          return AuthenticatedAgain(current: user);
-        },
       );
     }
   }

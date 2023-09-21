@@ -6,8 +6,7 @@ import '../../../domain/entities/user.dart';
 @immutable
 abstract class UserState extends Equatable {
   List<User> get users => [];
-  User get currentUser =>
-      User(fullname: '', role: '', password: '', userName: '');
+  User get currentUser => User.empty();
   const UserState();
   @override
   List<Object> get props => [];

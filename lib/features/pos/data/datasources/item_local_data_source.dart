@@ -16,7 +16,7 @@ class ItemLocalDataSourceImpl implements ItemLocalDataSource {
 
   @override
   Future<List<Item>> getItems() async {
-    List<Item> items2 = await objectBox.getItems().first;
+    List<Item> items2 = [];
     return Future.value(items2);
   }
 }

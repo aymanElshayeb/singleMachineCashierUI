@@ -1,7 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class DeviceMangament extends StatelessWidget {
@@ -11,8 +8,8 @@ class DeviceMangament extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenwidth = MediaQuery.of(context).size.width;
     final screenheight = MediaQuery.of(context).size.height;
-    final selectedMethod = 'printer1';
-    final selectedMethod2 = 'drawer1';
+    const selectedMethod = 'printer1';
+    const selectedMethod2 = 'drawer1';
     return Scaffold(
       appBar:
           AppBar(title: Text(AppLocalizations.of(context)!.devicemanagement)),
@@ -26,10 +23,10 @@ class DeviceMangament extends StatelessWidget {
           child: Column(children: [
             Container(
               alignment: AlignmentDirectional.topStart,
-              padding: EdgeInsets.all(8),
+              padding: const EdgeInsets.all(8),
               child: Text(
                 AppLocalizations.of(context)!.printersettings,
-                style: TextStyle(fontSize: 17),
+                style: const TextStyle(fontSize: 17),
               ),
             ),
             Row(
@@ -38,28 +35,28 @@ class DeviceMangament extends StatelessWidget {
                   width: 150,
                   height: 50,
                   alignment: AlignmentDirectional.center,
-                  margin: EdgeInsets.all(8.0),
-                  decoration: BoxDecoration(
+                  margin: const EdgeInsets.all(8.0),
+                  decoration: const BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(5.0))),
                   child: DropdownButton(
                     items: ["printer1", "printer2"]
                         .map((e) => DropdownMenuItem(
+                              value: e,
                               child: Text(
-                                "$e",
-                                style: TextStyle(
+                                e,
+                                style: const TextStyle(
                                   fontSize: 17,
                                 ),
                               ),
-                              value: e,
                             ))
                         .toList(),
                     onChanged: (val) {
-                      print(val);
+                      debugPrint(val);
                     },
                     value: selectedMethod,
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 20,
                 ),
                 MaterialButton(
@@ -70,10 +67,10 @@ class DeviceMangament extends StatelessWidget {
             ),
             Container(
               alignment: AlignmentDirectional.topStart,
-              padding: EdgeInsets.all(8),
+              padding: const EdgeInsets.all(8),
               child: Text(
                 AppLocalizations.of(context)!.drawersettings,
-                style: TextStyle(fontSize: 17),
+                style: const TextStyle(fontSize: 17),
               ),
             ),
             Row(
@@ -82,28 +79,28 @@ class DeviceMangament extends StatelessWidget {
                   width: 150,
                   height: 50,
                   alignment: AlignmentDirectional.center,
-                  margin: EdgeInsets.all(8.0),
-                  decoration: BoxDecoration(
+                  margin: const EdgeInsets.all(8.0),
+                  decoration: const BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(5.0))),
                   child: DropdownButton(
                     items: ["drawer1", "drawer2"]
                         .map((e) => DropdownMenuItem(
+                              value: e,
                               child: Text(
-                                "$e",
-                                style: TextStyle(
+                                e,
+                                style: const TextStyle(
                                   fontSize: 17,
                                 ),
                               ),
-                              value: e,
                             ))
                         .toList(),
                     onChanged: (val) {
-                      print(val);
+                      debugPrint(val);
                     },
                     value: selectedMethod2,
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 20,
                 ),
                 MaterialButton(

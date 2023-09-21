@@ -1,63 +1,69 @@
+import 'dart:io';
+import 'package:firedart/auth/firebase_auth.dart';
+import 'package:firedart/auth/token_store.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
-import 'package:single_machine_cashier_ui/features/pos/domain/repositories/user_repository.dart';
-import 'package:single_machine_cashier_ui/features/pos/domain/usecases/authenticate_user.dart';
-import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/bloc/auth_bloc.dart';
-import 'package:single_machine_cashier_ui/features/pos/presentation/screens/login_screen.dart';
-import 'features/pos/data/objectbox.dart';
+import 'package:single_machine_cashier_ui/features/pos/data/repositories/auth_repository_impl.dart';
+import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/auth/auth_bloc.dart';
+import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/bloc/ean_bloc.dart';
+import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/order/order_bloc.dart';
+import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/item/bloc.dart';
+import 'package:single_machine_cashier_ui/features/pos/presentation/screens/auth.dart';
 import 'features/pos/presentation/bloc/Locale/locale_bloc_bloc.dart';
-import 'features/pos/presentation/bloc/cart/cart_bloc.dart';
-import 'features/pos/presentation/bloc/category/category_bloc.dart';
-import 'features/pos/presentation/bloc/category/category_event.dart';
+import 'features/pos/presentation/bloc/categories/category_bloc.dart';
 import 'features/pos/presentation/bloc/user/user_bloc.dart';
-import 'features/pos/presentation/screens/login.dart';
 import 'injection_container.dart' as di;
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:path_provider/path_provider.dart';
 import 'injection_container.dart';
+import 'package:google_sign_in_dartio/google_sign_in_dartio.dart';
 
-late ObjectBox objectBox;
+// late ObjectBox objectBox;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  objectBox = await ObjectBox.create();
+  if (Platform.isWindows) {
+    GoogleSignInDart.register(
+        clientId:
+            '11927002349-t0tnt1178rju3tt4js5qvajmjphm8rk0.apps.googleusercontent.com');
+  }
+  FirebaseAuth.initialize(
+      'AIzaSyAO2bpCzMMEXabEh2JZuBFc3QhWFXS4Kn8', VolatileStore());
   Logger.root.level = Level
       .ALL; // defaults to Level.INFO (so it overrides the log level to be able to view fine logs )
   Logger.root.onRecord.listen((record) {
-    print(
+    debugPrint(
         '[${record.loggerName}] -- ${record.level.name} -- ${record.time} -- ${record.message}');
   });
 
   await di.init();
 
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp();
+  const MyApp({super.key});
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        BlocProvider(create: (_) => AuthBloc(authRepository: AuthRepository())),
+        BlocProvider(create: (_) => sl<OrderBloc>()),
+        BlocProvider(create: (_) => sl<ItemBloc>()),
         BlocProvider(
-          create: (_) => sl<AuthBloc>(),
+          create: (_) => sl<EanBloc>(),
         ),
         BlocProvider(
           create: (_) => sl<UserBloc>(),
         ),
         BlocProvider(
-          create: (context) => sl<CategoryBloc>()..add(InitEvent()),
+          create: (context) => sl<CategoryBloc>(),
         ),
         BlocProvider(
           create: (BuildContext context) {
             return LocaleBlocBloc(LocaleBlocState.initial());
           },
-        ),
-        BlocProvider(
-          create: (_) => CartBloc(),
         ),
       ],
       child: BlocBuilder<LocaleBlocBloc, LocaleBlocState>(
@@ -67,7 +73,7 @@ class MyApp extends StatelessWidget {
             supportedLocales: AppLocalizations.supportedLocales,
             theme: ThemeData.dark(),
             locale: state.locale,
-            home: AuthPage(),
+            home: const AuthenticationPage(),
           );
         },
       ),

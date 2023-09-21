@@ -1,21 +1,18 @@
+import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/order/order_bloc.dart';
+import 'package:single_machine_cashier_ui/features/pos/presentation/screens/payment_screen.dart';
+import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/discount_dialog.dart';
 import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/split_bill_dialog.dart';
-import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/user_permission_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../bloc/category/category_bloc.dart';
-import '../bloc/category/category_state.dart';
-import '../bloc/user/user_bloc.dart';
 import '../screens/constants.dart';
-import '../screens/to_pay.dart';
 import 'confirm_dialog.dart';
 import 'different_item_dialog.dart';
-import 'discount_popup.dart';
 import 'ean_dialog.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class BillButtons extends StatelessWidget {
   final BuildContext context;
-  BillButtons({Key? key, required this.context}) : super(key: key);
+  const BillButtons({Key? key, required this.context}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,31 +21,23 @@ class BillButtons extends StatelessWidget {
         'title': AppLocalizations.of(context)?.pay,
         'icon': const Icon(Icons.payment),
         'function': () {
-          final currentBloc = context.read<CategoryBloc>();
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: ((context) => BlocProvider.value(
-                        value: currentBloc,
-                        child: ToPay(
-                          order: currentBloc.state.orderstate!,
-                          isOrder: true,
-                        ),
-                      ))));
+                  builder: ((context) => PaymentScreen(
+                      totalPrice: BlocProvider.of<OrderBloc>(context)
+                          .state
+                          .totalPrice))));
         }
       },
       <String, dynamic>{
         'title': AppLocalizations.of(context)?.split,
         'icon': const Icon(Icons.splitscreen),
         'function': () {
-          final currentBloc = context.read<CategoryBloc>();
           showDialog(
               context: context,
               builder: (((cc) {
-                return BlocProvider.value(
-                  value: currentBloc,
-                  child: SplitBill(),
-                );
+                return SplitBill();
               })));
         }
       },
@@ -56,14 +45,10 @@ class BillButtons extends StatelessWidget {
         'title': AppLocalizations.of(context)?.differentitem,
         'icon': const Icon(Icons.add_box),
         'function': () {
-          final currentBloc = context.read<CategoryBloc>();
           showDialog(
               context: context,
               builder: (((cc) {
-                return BlocProvider.value(
-                  value: currentBloc,
-                  child: DifferentItem(),
-                );
+                return const DifferentItem();
               })));
         }
       },
@@ -71,17 +56,14 @@ class BillButtons extends StatelessWidget {
         'title': AppLocalizations.of(context)?.discount,
         'icon': const Icon(Icons.discount),
         'function': () {
-          final currentBloc = context.read<CategoryBloc>();
           showDialog(
               context: context,
               builder: (((cc) {
-                return BlocProvider.value(
-                  value: currentBloc,
-                  child: BlocBuilder<CategoryBloc, CategoryState>(
-                    builder: (context, state) {
-                      return DiscountPopup();
-                    },
-                  ),
+                return DiscountDialog(
+                  onPressed: (discount) {
+                    BlocProvider.of<OrderBloc>(context)
+                        .add(AddDiscountToOrder(discount: discount));
+                  },
                 );
               })));
         }
@@ -90,14 +72,10 @@ class BillButtons extends StatelessWidget {
         'title': AppLocalizations.of(context)?.eansearch,
         'icon': const Icon(Icons.manage_search_sharp),
         'function': () {
-          final currentBloc = context.read<CategoryBloc>();
           showDialog(
               context: context,
               builder: (((cc) {
-                return BlocProvider.value(
-                  value: currentBloc,
-                  child: CustomDialog(),
-                );
+                return const CustomDialog();
               })));
         }
       },
@@ -105,36 +83,18 @@ class BillButtons extends StatelessWidget {
         'title': AppLocalizations.of(context)?.cancel,
         'icon': const Icon(Icons.cancel),
         'function': () {
-          final currentBloc = context.read<CategoryBloc>();
-          if (currentBloc.state.orderstate!.length != 0) {
-            final currentBloc2 = context.read<UserBloc>();
-            if (currentBloc2.state.currentUser.role == 'ADMIN') {
-              showDialog(
-                  context: context,
-                  builder: (((cc) {
-                    return BlocProvider.value(
-                      value: currentBloc,
-                      child: ConfirmDialog(),
-                    );
-                  })));
-            } else if (currentBloc2.state.currentUser.role == 'Cashier') {
-              showDialog(
-                  context: context,
-                  builder: (((cc) {
-                    return BlocProvider.value(
-                      value: currentBloc2,
-                      child: UserPermissionDialog(),
-                    );
-                  })));
-            }
-          }
+          showDialog(
+              context: context,
+              builder: (((cc) {
+                return const ConfirmDialog();
+              })));
         }
       },
     ];
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
 
-    return Container(
+    return SizedBox(
       height: 0.2 * height,
       child: GridView.builder(
         itemCount: buttons.length, //should be length of the items list

@@ -1,247 +1,129 @@
+import 'package:single_machine_cashier_ui/features/pos/domain/entities/item.dart';
+import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/order/order_bloc.dart';
 import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/quantity_dialog.dart';
-import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/user_permission_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../bloc/category/category_bloc.dart';
-import '../bloc/category/category_event.dart';
-import '../bloc/category/category_state.dart';
-import 'package:provider/provider.dart';
-
-import '../bloc/user/user_bloc.dart';
-import 'item_discount_dialog.dart';
+import 'discount_dialog.dart';
 
 class CartItem extends StatelessWidget {
-  final int index;
-  final CategoryState state;
-  final bool isDiscount;
+  final Item orderItem;
 
-  const CartItem(
-      {Key? key,
-      required this.index,
-      required this.state,
-      required this.isDiscount})
-      : super(key: key);
+  const CartItem({
+    Key? key,
+    required this.orderItem,
+  }) : super(key: key);
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
 
-    return Container(
+    return SizedBox(
       height: height * 0.15,
       child: Card(
-        color: isDiscount
-            ? Theme.of(context).primaryColor
-            : Theme.of(context).cardColor,
-        semanticContainer: true,
-        child: !isDiscount
-            ? ListTile(
-                dense: true,
-                visualDensity: VisualDensity(vertical: 4),
-                title: Text(
-                  state.orderstate!.keys.elementAt(index).name,
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: height * 0.022),
-                ),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                        state.orderstate!.keys
-                            .elementAt(index)
-                            .price
-                            .toString(),
-                        style: TextStyle(fontSize: height * 0.022)),
-                    InkWell(
-                      child: Icon(Icons.discount, size: height * 0.027),
-                      onTap: () {
-                        final currentBloc = context.read<CategoryBloc>();
-                        showDialog(
-                            context: context,
-                            builder: (((cc) {
-                              return BlocProvider.value(
-                                value: currentBloc,
-                                child: BlocBuilder<CategoryBloc, CategoryState>(
-                                  builder: (context, state) {
-                                    return ItemDiscountDialog(
-                                      item: state.orderstate!.keys
-                                          .elementAt(index),
-                                      quantity: state.orderstate!.values
-                                          .elementAt(index),
-                                    );
-                                  },
-                                ),
-                              );
-                            })));
-                      },
-                    ),
-                  ],
-                ),
-                trailing: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    InkWell(
-                      child: Icon(Icons.delete, size: height * 0.029),
-                      onTap: (() {
-                        final currentBloc = context.read<UserBloc>();
-                        if (currentBloc.state.currentUser.role == 'ADMIN') {
-                          BlocProvider.of<CategoryBloc>(context).add(
-                              DeleteFromOrder(
-                                  state.orderstate!.keys.elementAt(index)));
-                        } else if (currentBloc.state.currentUser.role ==
-                            'Cashier') {
-                          showDialog(
-                              context: context,
-                              builder: (((cc) {
-                                return BlocProvider.value(
-                                  value: currentBloc,
-                                  child: UserPermissionDialog(),
-                                );
-                              })));
-                        }
-
-                        if (state.gotitems == false) {
-                          BlocProvider.of<CategoryBloc>(context)
-                              .add(InitEvent());
-                        }
-                      }),
-                    ),
-                    Text(
-                        (state.orderstate!.keys.elementAt(index).price *
-                                state.orderstate!.values.elementAt(index))
-                            .toString(),
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: height * 0.019)),
-                    Container(
-                      width: width * 0.06,
-                      height: height * 0.035,
-                      decoration: BoxDecoration(
-                          color: Theme.of(context).backgroundColor,
-                          borderRadius: BorderRadius.all(Radius.circular(8.0))),
-                      child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            InkWell(
-                              child: Icon(Icons.remove),
-                              onTap: () {
-                                final currentBloc = context.read<UserBloc>();
-                                if (currentBloc.state.currentUser.role ==
-                                    'ADMIN') {
-                                  BlocProvider.of<CategoryBloc>(context)
-                                      .add(SubtractFromOrder(
-                                    state.orderstate!.keys.elementAt(index),
-                                  ));
-                                } else if (currentBloc.state.currentUser.role ==
-                                    'Cashier') {
-                                  showDialog(
-                                      context: context,
-                                      builder: (((cc) {
-                                        return BlocProvider.value(
-                                          value: currentBloc,
-                                          child: UserPermissionDialog(),
-                                        );
-                                      })));
-                                }
-
-                                if (state.gotitems == false) {
-                                  BlocProvider.of<CategoryBloc>(context)
-                                      .add(InitEvent());
-                                }
-                              },
-                            ),
-                            InkWell(
-                              child: Text(
-                                  '${state.orderstate!.values.elementAt(index).toString()}'),
-                              onTap: (() {
-                                final currentBloc2 = context.read<UserBloc>();
-                                if (currentBloc2.state.currentUser.role ==
-                                    'ADMIN') {
-                                  final currentBloc =
-                                      context.read<CategoryBloc>();
-                                  showDialog(
-                                      context: context,
-                                      builder: (((cc) {
-                                        return BlocProvider.value(
-                                          value: currentBloc,
-                                          child: QuantityDialog(
-                                              quantity: state.orderstate!.values
-                                                  .elementAt(index),
-                                              item: state.orderstate!.keys
-                                                  .elementAt(index)),
-                                        );
-                                      })));
-                                } else if (currentBloc2
-                                        .state.currentUser.role ==
-                                    'Cashier') {
-                                  showDialog(
-                                      context: context,
-                                      builder: (((cc) {
-                                        return BlocProvider.value(
-                                          value: currentBloc2,
-                                          child: UserPermissionDialog(),
-                                        );
-                                      })));
-                                }
-                              }),
-                            ),
-                            InkWell(
-                              child: Icon(Icons.add),
-                              onTap: () {
-                                BlocProvider.of<CategoryBloc>(context).add(
-                                    UpdateOrderEvent(
-                                        state.orderstate!.keys.elementAt(index),
-                                        state.categoryitems));
-                                if (state.gotitems == false) {
-                                  BlocProvider.of<CategoryBloc>(context)
-                                      .add(InitEvent());
-                                }
-                              },
-                            )
-                          ]),
-                    ),
-                  ],
-                ),
-              )
-            : ListTile(
-                title: Text(
-                  state.orderstate!.keys.elementAt(index).name,
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold, fontSize: height * 0.022),
-                ),
-                subtitle: Text(
-                    state.orderstate!.keys.elementAt(index).price.toString(),
+          color: Theme.of(context).cardColor,
+          semanticContainer: true,
+          child: ListTile(
+            dense: true,
+            visualDensity: const VisualDensity(vertical: 4),
+            title: Text(
+              orderItem.name,
+              style: TextStyle(
+                  fontWeight: FontWeight.bold, fontSize: height * 0.022),
+            ),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(orderItem.price.toString(),
                     style: TextStyle(fontSize: height * 0.022)),
-                trailing: InkWell(
-                  child: Icon(Icons.delete, size: height * 0.029),
-                  onTap: (() {
-                    final currentBloc = context.read<UserBloc>();
-                    if (currentBloc.state.currentUser.role == 'ADMIN') {
-                      BlocProvider.of<CategoryBloc>(context).add(
-                          DeleteFromOrder(
-                              state.orderstate!.keys.elementAt(index)));
-                    } else if (currentBloc.state.currentUser.role ==
-                        'Cashier') {
-                      showDialog(
-                          context: context,
-                          builder: (((cc) {
-                            return BlocProvider.value(
-                              value: currentBloc,
-                              child: UserPermissionDialog(),
-                            );
-                          })));
-                    }
-                    if (state.gotitems == false) {
-                      BlocProvider.of<CategoryBloc>(context).add(InitEvent());
-                    }
-                  }),
+                discountButton(context, height)
+              ],
+            ),
+            trailing: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                deleteButton(context, height),
+                Text((orderItem.price * orderItem.quantity).toString(),
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: height * 0.019)),
+                Container(
+                  width: width * 0.06,
+                  height: height * 0.035,
+                  decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.background,
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(8.0))),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        subtractButton(context),
+                        quantityButton(context),
+                        addButton(context)
+                      ]),
                 ),
-              ),
-      ),
+              ],
+            ),
+          )),
+    );
+  }
+
+  Widget discountButton(BuildContext context, double height) {
+    return InkWell(
+      child: Icon(Icons.discount, size: height * 0.027),
+      onTap: () {
+        showDialog(
+            context: context,
+            builder: ((context) => DiscountDialog(
+                  onPressed: (discount) {
+                    BlocProvider.of<OrderBloc>(context).add(
+                        AddDiscountToItem(item: orderItem, discount: discount));
+                  },
+                  title: orderItem.name,
+                )));
+      },
+    );
+  }
+
+  Widget deleteButton(BuildContext context, double height) {
+    return InkWell(
+      onTap: (() {
+        BlocProvider.of<OrderBloc>(context)
+            .add(RemoveItemFromOrder(item: orderItem));
+      }),
+      child: Icon(Icons.delete, size: height * 0.029),
+    );
+  }
+
+  Widget subtractButton(BuildContext context) {
+    return InkWell(
+      child: const Icon(Icons.remove),
+      onTap: () {
+        BlocProvider.of<OrderBloc>(context)
+            .add(SubtractFromItemQuantity(item: orderItem));
+      },
+    );
+  }
+
+  Widget addButton(BuildContext context) {
+    return InkWell(
+      child: const Icon(Icons.add),
+      onTap: () {
+        BlocProvider.of<OrderBloc>(context)
+            .add(AddItemToOrder(item: orderItem));
+      },
+    );
+  }
+
+  Widget quantityButton(BuildContext context) {
+    return InkWell(
+      onTap: (() {
+        showDialog(
+            context: context,
+            builder: (((cc) {
+              return QuantityDialog(item: orderItem);
+            })));
+      }),
+      child: Text(orderItem.quantity.toString()),
     );
   }
 }

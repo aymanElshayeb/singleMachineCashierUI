@@ -26,7 +26,7 @@ class UserPermissionDialog extends StatelessWidget {
           title: Column(
             children: [
               Text(AppLocalizations.of(context)!.adminpassword),
-              Container(
+              SizedBox(
                 width: width * 0.19,
                 height: height * 0.08,
                 child: TextField(
@@ -57,7 +57,7 @@ class UserPermissionDialog extends StatelessWidget {
           actions: [
             MaterialButton(
               onPressed: () {
-                if (controller.text.length > 0) {
+                if (controller.text.isNotEmpty) {
                   BlocProvider.of<UserBloc>(context)
                       .add(SecondAuthenticate(controller.text));
                 }
