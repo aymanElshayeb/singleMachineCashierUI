@@ -7,14 +7,13 @@ import 'package:dartz/dartz.dart';
 
 class AuthRepository extends BaseAuthRepository {
   final FirebaseAuth _auth;
-  final CollectionReference _firebaseFireStore2;
+  final CollectionReference _firebaseFireStore;
 
   AuthRepository({
     FirebaseAuth? auth,
     CollectionReference? firebaseFirestore,
-    CollectionReference? firebaseFirestore2,
   })  : _auth = auth ?? FirebaseAuth.instance,
-        _firebaseFireStore2 = firebaseFirestore2 ??
+        _firebaseFireStore = firebaseFirestore ??
             Firestore('user-management-da458').collection('users');
 
   @override
@@ -70,7 +69,7 @@ class AuthRepository extends BaseAuthRepository {
   Future<User?> getUserByEmail(String email) async {
     try {
       // Perform the query to get the document(s) with the specified email
-      final query = _firebaseFireStore2.where('user.email', isEqualTo: email);
+      final query = _firebaseFireStore.where('user.email', isEqualTo: email);
 
       final querySnapshot = await query.get();
 
@@ -95,9 +94,8 @@ class AuthRepository extends BaseAuthRepository {
       await _auth.signIn(email, password);
 
       User? currentUser = await getUserByEmail(email);
-      print(currentUser!);
 
-      return right(currentUser);
+      return right(currentUser!);
     } catch (e) {
       return left(
           kDebugMode ? e.toString() : 'error occurred, please try again later');
@@ -107,7 +105,7 @@ class AuthRepository extends BaseAuthRepository {
   Future<bool?> checkSystemAccess(String email, String accessKey) async {
     try {
       // Perform the query to get the document(s) with the specified email
-      final query = _firebaseFireStore2.where('user.email', isEqualTo: email);
+      final query = _firebaseFireStore.where('user.email', isEqualTo: email);
       final querySnapshot = await query.get();
 
       if (querySnapshot.isNotEmpty) {

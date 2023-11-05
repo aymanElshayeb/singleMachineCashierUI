@@ -4,7 +4,6 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   firebase_core
-  objectbox_flutter_libs
   printing
   url_launcher_windows
   window_to_front

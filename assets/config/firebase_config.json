@@ -1,0 +1,19 @@
+{
+    "data_firebase_config":{
+        "apiKey": "AIzaSyBL25nbjrnpt7voxy6wJbiGU1JgtRBCkcI",
+        "authDomain": "pos-system-fe6f1.firebaseapp.com",
+        "projectId": "pos-system-fe6f1",
+        "storageBucket": "pos-system-fe6f1.appspot.com",
+        "messagingSenderId": "670214672771",
+        "appId": "1:670214672771:web:5ff8f560c0d5168ce466b6"
+      },
+    "auth_firebase_config":{
+        "apiKey": "AIzaSyCjuv-MXi7cPBjOAra9A5KCYkl7CZ5kfP0",
+        "authDomain": "user-management-da458.firebaseapp.com",
+        "projectId": "user-management-da458",
+        "storageBucket": "user-management-da458.appspot.com",
+        "messagingSenderId": "751277100021",
+        "appId": "1:751277100021:web:0bb371fef2fd677a8faebc"
+      },
+    "google_clientId":"11927002349-t0tnt1178rju3tt4js5qvajmjphm8rk0.apps.googleusercontent.com"  
+}

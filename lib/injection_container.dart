@@ -6,7 +6,7 @@ import 'package:single_machine_cashier_ui/features/pos/domain/repositories/order
 import 'package:single_machine_cashier_ui/features/pos/domain/usecases/items.dart';
 import 'package:single_machine_cashier_ui/features/pos/domain/usecases/orders.dart';
 import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/auth/auth_bloc.dart';
-import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/bloc/ean_bloc.dart';
+import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/ean/ean_bloc.dart';
 import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/item/bloc.dart';
 import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/order/order_bloc.dart';
 import 'features/pos/data/datasources/category_local_data_source.dart';
@@ -49,7 +49,7 @@ Future<void> init() async {
   );
 
   sl.registerLazySingleton<ItemsRepository>(
-    () => ItemRepositoryImpl(localDataSource: sl()),
+    () => ItemRepositoryImpl(),
   );
 
   sl.registerLazySingleton<CategoryRepository>(

@@ -2,8 +2,6 @@ import 'package:equatable/equatable.dart';
 import 'package:firedart/firestore/models.dart';
 import 'package:uuid/uuid.dart';
 
-import 'category.dart';
-
 class Item extends Equatable {
   final String id;
   final String name;

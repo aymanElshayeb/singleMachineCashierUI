@@ -1,4 +1,4 @@
-import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/bloc/ean_bloc.dart';
+import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/ean/ean_bloc.dart';
 import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/order/order_bloc.dart';
 import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/virtual_keyboard.dart';
 import 'package:flutter/material.dart';

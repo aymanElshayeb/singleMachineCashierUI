@@ -1,3 +1,4 @@
+import 'package:printing/printing.dart';
 import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/user_permission_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -74,14 +75,14 @@ class _PopupMenuState extends State<PopupMenu> {
     );
   }
 
-  void gotoPage(String pageName) {
+  void gotoPage(String pageName) async {
     switch (pageName) {
       case 'seller':
         {
           final currentBloc = context.read<UserBloc>();
           if (currentBloc.state.currentUser.role == 'ADMIN') {
             Navigator.push(context,
-                CupertinoPageRoute(builder: (redContext) => SellerMangament()));
+                MaterialPageRoute(builder: (redContext) => SellerMangament()));
           } else {
             showDialog(
                 context: context,
@@ -97,8 +98,13 @@ class _PopupMenuState extends State<PopupMenu> {
 
       case 'device':
         {
-          Navigator.push(context,
-              CupertinoPageRoute(builder: (redContext) => DeviceMangament()));
+          List<Printer> printers = await Printing.listPrinters();
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (redContext) => DeviceMangament(
+                        printers: printers,
+                      )));
         }
         break;
 

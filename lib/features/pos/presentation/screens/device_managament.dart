@@ -1,14 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:printing/printing.dart';
+import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/reusable_dropdown.dart';
 
-class DeviceMangament extends StatelessWidget {
-  const DeviceMangament({Key? key}) : super(key: key);
+class DeviceMangament extends StatefulWidget {
+  final List<Printer> printers;
+  const DeviceMangament({Key? key, required this.printers}) : super(key: key);
 
+  @override
+  State<DeviceMangament> createState() => _DeviceMangamentState();
+}
+
+class _DeviceMangamentState extends State<DeviceMangament> {
+  @override
+  void initState() {
+    super.initState();
+    selectedMethod = widget.printers[0].name;
+  }
+
+  String? selectedMethod;
   @override
   Widget build(BuildContext context) {
     final screenwidth = MediaQuery.of(context).size.width;
     final screenheight = MediaQuery.of(context).size.height;
-    const selectedMethod = 'printer1';
+
     const selectedMethod2 = 'drawer1';
     return Scaffold(
       appBar:
@@ -32,28 +47,20 @@ class DeviceMangament extends StatelessWidget {
             Row(
               children: [
                 Container(
-                  width: 150,
+                  width: 270,
                   height: 50,
                   alignment: AlignmentDirectional.center,
                   margin: const EdgeInsets.all(8.0),
                   decoration: const BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(5.0))),
-                  child: DropdownButton(
-                    items: ["printer1", "printer2"]
-                        .map((e) => DropdownMenuItem(
-                              value: e,
-                              child: Text(
-                                e,
-                                style: const TextStyle(
-                                  fontSize: 17,
-                                ),
-                              ),
-                            ))
-                        .toList(),
-                    onChanged: (val) {
-                      debugPrint(val);
+                  child: ReusableDropdown(
+                    items: widget.printers.map((e) => e.name).toList(),
+                    selectedValue: selectedMethod!,
+                    onChanged: (newValue) {
+                      setState(() {
+                        selectedMethod = newValue!;
+                      });
                     },
-                    value: selectedMethod,
                   ),
                 ),
                 const SizedBox(
@@ -61,7 +68,9 @@ class DeviceMangament extends StatelessWidget {
                 ),
                 MaterialButton(
                     color: Theme.of(context).primaryColor,
-                    onPressed: () {},
+                    onPressed: () {
+                      print(widget.printers[1].url);
+                    },
                     child: Text(AppLocalizations.of(context)!.test))
               ],
             ),
