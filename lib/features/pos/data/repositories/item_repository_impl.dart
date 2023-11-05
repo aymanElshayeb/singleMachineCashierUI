@@ -3,14 +3,11 @@ import 'package:firedart/firestore/firestore.dart';
 import '../../../../core/error/failures.dart';
 import '../../domain/entities/item.dart';
 import '../../domain/repositories/item_repository.dart';
-import '../datasources/item_local_data_source.dart';
 
 class ItemRepositoryImpl implements ItemsRepository {
-  final ItemLocalDataSource localDataSource;
   final Firestore _firebaseFirestore;
 
   ItemRepositoryImpl({
-    required this.localDataSource,
     Firestore? firebaseFirestore,
   }) : _firebaseFirestore = firebaseFirestore ?? Firestore('pos-system-fe6f1');
 
