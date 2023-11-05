@@ -7,9 +7,33 @@ import '../bloc/categories/category_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/order/order_bloc.dart';
 import 'Language_popup.dart';
+import 'dart:io';
 
 class MainAppBar extends StatelessWidget {
   const MainAppBar({Key? key}) : super(key: key);
+  void _showExitConfirmation(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirm Exit'),
+          content: const Text('Are you sure you want to exit the app?'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(), // Dismiss dialog
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                exit(0); // Exit the app
+              },
+              child: const Text('Exit'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +83,7 @@ class MainAppBar extends StatelessWidget {
                     height,
                     Icons.power_settings_new,
                     AppLocalizations.of(context)!.exit,
-                    () {}),
+                    ()=>_showExitConfirmation(context)),
                 LangPopup(),
               ],
             ),
