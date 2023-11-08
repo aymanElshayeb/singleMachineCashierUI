@@ -102,6 +102,7 @@ class MyApp extends StatelessWidget {
       child: BlocBuilder<LocaleBlocBloc, LocaleBlocState>(
         builder: (context, state) {
           return MaterialApp(
+            debugShowCheckedModeBanner: false,
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
             theme: ThemeData.dark(),

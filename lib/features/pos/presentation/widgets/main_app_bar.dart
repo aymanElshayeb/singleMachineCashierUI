@@ -1,4 +1,5 @@
-import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/popup_menu.dart';
+import 'package:printing/printing.dart';
+import 'package:single_machine_cashier_ui/features/pos/presentation/screens/device_managament.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -40,7 +41,7 @@ class MainAppBar extends StatelessWidget {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return Container(
-      padding: EdgeInsets.all(5),
+      padding: const EdgeInsets.all(5),
       width: double.infinity,
       height: height * 0.07,
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(5)),
@@ -71,7 +72,20 @@ class MainAppBar extends StatelessWidget {
             padding: EdgeInsets.only(right: width * 0.02),
             child: Row(
               children: <Widget>[
-                PopupMenu(),
+                menuButton(
+                    Theme.of(context).primaryColor,
+                    width,
+                    height,
+                    Icons.device_hub,
+                    AppLocalizations.of(context)!.office, () async {
+                  List<Printer> printers = await Printing.listPrinters();
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (redContext) => DeviceMangament(
+                                printers: printers,
+                              )));
+                }),
                 menuButton(Theme.of(context).primaryColor, width, height,
                     Icons.home, AppLocalizations.of(context)!.home, () {
                   BlocProvider.of<CategoryBloc>(context)
@@ -83,7 +97,7 @@ class MainAppBar extends StatelessWidget {
                     height,
                     Icons.power_settings_new,
                     AppLocalizations.of(context)!.exit,
-                    ()=>_showExitConfirmation(context)),
+                    () => _showExitConfirmation(context)),
                 LangPopup(),
               ],
             ),

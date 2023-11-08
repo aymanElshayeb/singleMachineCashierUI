@@ -22,7 +22,6 @@ class PdfInvoiceApi {
         Divider(),
         buildTotal(invoice),
       ],
-      footer: (context) => buildFooter(invoice),
     ));
 
     return PdfApi.saveDocument(name: 'my_invoice.pdf', pdf: pdf);
@@ -127,12 +126,12 @@ class PdfInvoiceApi {
       ];
     }).toList();
 
-    return Table.fromTextArray(
+    return TableHelper.fromTextArray(
       headers: headers,
       data: data,
       border: null,
       headerStyle: TextStyle(fontWeight: FontWeight.bold),
-      headerDecoration: BoxDecoration(color: PdfColors.grey300),
+      headerDecoration: const BoxDecoration(color: PdfColors.grey300),
       cellHeight: 30,
       cellAlignments: {
         0: Alignment.centerLeft,
@@ -189,16 +188,7 @@ class PdfInvoiceApi {
     );
   }
 
-  static Widget buildFooter(Invoice invoice) => Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Divider(),
-          SizedBox(height: 2 * PdfPageFormat.mm),
-          buildSimpleText(title: 'Address', value: invoice.supplier.address),
-          SizedBox(height: 1 * PdfPageFormat.mm),
-          buildSimpleText(title: 'Paypal', value: invoice.supplier.paymentInfo),
-        ],
-      );
+
 
   static buildSimpleText({
     required String title,

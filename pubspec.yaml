@@ -56,7 +56,7 @@ dependencies:
   open_file: ^3.3.2
   printing: ^5.11.0
   equatable: ^2.0.5
-  shared_preferences: ^2.2.1
+  shared_preferences: ^2.2.2
   flutter_login: ^4.2.1
   firedart: ^0.9.7
   google_sign_in: ^6.1.5

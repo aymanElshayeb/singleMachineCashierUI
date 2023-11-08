@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:printing/printing.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:single_machine_cashier_ui/features/pos/domain/usecases/handle_printer_and_drawer.dart';
 import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/reusable_dropdown.dart';
 
 class DeviceMangament extends StatefulWidget {
@@ -24,7 +26,6 @@ class _DeviceMangamentState extends State<DeviceMangament> {
     final screenwidth = MediaQuery.of(context).size.width;
     final screenheight = MediaQuery.of(context).size.height;
 
-    const selectedMethod2 = 'drawer1';
     return Scaffold(
       appBar:
           AppBar(title: Text(AppLocalizations.of(context)!.devicemanagement)),
@@ -56,10 +57,11 @@ class _DeviceMangamentState extends State<DeviceMangament> {
                   child: ReusableDropdown(
                     items: widget.printers.map((e) => e.name).toList(),
                     selectedValue: selectedMethod!,
-                    onChanged: (newValue) {
+                    onChanged: (newValue) async {
                       setState(() {
                         selectedMethod = newValue!;
                       });
+                      await updatePrinterUrl(selectedMethod!);
                     },
                   ),
                 ),
@@ -69,58 +71,19 @@ class _DeviceMangamentState extends State<DeviceMangament> {
                 MaterialButton(
                     color: Theme.of(context).primaryColor,
                     onPressed: () {
-                      print(widget.printers[1].url);
+                      HandlePrinterAndDrawer.openDrawer();
                     },
                     child: Text(AppLocalizations.of(context)!.test))
               ],
             ),
-            Container(
-              alignment: AlignmentDirectional.topStart,
-              padding: const EdgeInsets.all(8),
-              child: Text(
-                AppLocalizations.of(context)!.drawersettings,
-                style: const TextStyle(fontSize: 17),
-              ),
-            ),
-            Row(
-              children: [
-                Container(
-                  width: 150,
-                  height: 50,
-                  alignment: AlignmentDirectional.center,
-                  margin: const EdgeInsets.all(8.0),
-                  decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(5.0))),
-                  child: DropdownButton(
-                    items: ["drawer1", "drawer2"]
-                        .map((e) => DropdownMenuItem(
-                              value: e,
-                              child: Text(
-                                e,
-                                style: const TextStyle(
-                                  fontSize: 17,
-                                ),
-                              ),
-                            ))
-                        .toList(),
-                    onChanged: (val) {
-                      debugPrint(val);
-                    },
-                    value: selectedMethod2,
-                  ),
-                ),
-                const SizedBox(
-                  width: 20,
-                ),
-                MaterialButton(
-                    color: Theme.of(context).primaryColor,
-                    onPressed: () {},
-                    child: Text(AppLocalizations.of(context)!.test))
-              ],
-            )
           ]),
         ),
       ),
     );
+  }
+
+  Future<void> updatePrinterUrl(String newUrl) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('printer_url', newUrl);
   }
 }
