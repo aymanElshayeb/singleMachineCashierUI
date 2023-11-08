@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:single_machine_cashier_ui/features/pos/domain/entities/item.dart';
 import 'package:single_machine_cashier_ui/features/pos/domain/entities/order.dart';
+import 'package:single_machine_cashier_ui/features/pos/domain/usecases/handle_printer_and_drawer.dart';
 import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/order/order_bloc.dart';
 import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/currency.dart';
 import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/number_pad.dart';
@@ -62,19 +63,33 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       icon: Icons.done_all,
                       title: AppLocalizations.of(context)!.completepayment,
                       onPressed: () {
-                        BlocProvider.of<OrderBloc>(context).add(FinishOrder(
-                            restOfOrderItems: widget.restOfOrder,
-                            subOrder: widget.subOrder,
-                            totalPrice: widget.totalPrice,
-                            paymentMethod: paymentMethod == 'Cash'
-                                ? PaymentMethod.cash
-                                : PaymentMethod.card));
+                        if (widget.totalPrice != 0) {
+                          HandlePrinterAndDrawer.printOrderInvoice(
+                              items: BlocProvider.of<OrderBloc>(context)
+                                  .state
+                                  .orderItems,
+                              order: Order(
+                                  totalPrice: widget.totalPrice,
+                                  paymentMethod: paymentMethod == 'Cash'
+                                      ? PaymentMethod.cash
+                                      : PaymentMethod.card,
+                                  dateTime: DateTime.now()));
+                          BlocProvider.of<OrderBloc>(context).add(FinishOrder(
+                              restOfOrderItems: widget.restOfOrder,
+                              subOrder: widget.subOrder,
+                              totalPrice: widget.totalPrice,
+                              paymentMethod: paymentMethod == 'Cash'
+                                  ? PaymentMethod.cash
+                                  : PaymentMethod.card));
+                        }
                       }),
                 ),
                 paymentButton(
                     icon: Icons.open_in_browser,
                     title: AppLocalizations.of(context)!.opendrawer,
-                    onPressed: () {}),
+                    onPressed: () {
+                      HandlePrinterAndDrawer.openDrawer();
+                    }),
               ],
             ),
             NumberPad(
