@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firedart/firestore/models.dart';
 import 'package:uuid/uuid.dart';
@@ -38,6 +39,17 @@ class Item extends Equatable {
   List<Object?> get props =>
       [id, name, PLU_EAN, categoryId, price, unit, discountsPercentage];
   static Item fromSnapshot(Document snap) {
+    return Item(
+      name: snap['item']['name'] ?? 'Unknown',
+      id: snap.id,
+      PLU_EAN: snap['item']['PLU_EAN'] ?? '',
+      categoryId: snap['item']['categoryId'] ?? '',
+      price: (snap['item']['price'] as num?)?.toDouble() ?? 0.0,
+      unit: snap['item']['unit'] ?? '',
+      quantity: snap['item']['quantity'] ?? 1,
+    );
+  }
+    static Item firebaseFromSnapshot(DocumentSnapshot snap) {
     return Item(
       name: snap['item']['name'] ?? 'Unknown',
       id: snap.id,

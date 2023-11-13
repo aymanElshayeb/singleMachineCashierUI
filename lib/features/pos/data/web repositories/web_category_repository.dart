@@ -1,15 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
-import 'package:firedart/firestore/firestore.dart';
 import '../../../../core/error/failures.dart';
 import '../../domain/entities/category.dart';
 import '../../domain/repositories/category_repository.dart';
 
-class FiredartCategoryRepositoryImpl implements CategoryRepository {
-  final Firestore _firebaseFirestore;
+class WebCategoryRepositoryImpl implements CategoryRepository {
+  final FirebaseFirestore _firebaseFirestore;
 
-  FiredartCategoryRepositoryImpl({
-    Firestore? firebaseFirestore,
-  }) : _firebaseFirestore = firebaseFirestore ?? Firestore('pos-system-fe6f1');
+  WebCategoryRepositoryImpl({
+    FirebaseFirestore? firebaseFirestore,
+  }) : _firebaseFirestore = firebaseFirestore ?? FirebaseFirestore.instance;
 
   @override
   Future<Either<Failure, List<Category>>> getCategories() async {
@@ -17,7 +17,7 @@ class FiredartCategoryRepositoryImpl implements CategoryRepository {
     try {
       var snapshot = await _firebaseFirestore.collection('categories').get();
 
-      categories = snapshot.map((doc) => Category.fromSnapshot(doc)).toList();
+      categories = snapshot.docs.map((doc) => Category.fireBaseFromSnapshot(doc)).toList();
       return right(categories);
     } catch (e) {
       return left(CacheFailure());

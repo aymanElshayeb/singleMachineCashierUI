@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:printing/printing.dart';
 import 'package:single_machine_cashier_ui/features/pos/presentation/screens/device_managament.dart';
 import 'package:flutter/material.dart';
@@ -46,6 +47,7 @@ class MainAppBar extends StatelessWidget {
       height: height * 0.07,
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(5)),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           SizedBox(
             width: width * 0.02,
@@ -72,6 +74,7 @@ class MainAppBar extends StatelessWidget {
             padding: EdgeInsets.only(right: width * 0.02),
             child: Row(
               children: <Widget>[
+                if(!kIsWeb)
                 menuButton(
                     Theme.of(context).primaryColor,
                     width,
@@ -91,6 +94,7 @@ class MainAppBar extends StatelessWidget {
                   BlocProvider.of<CategoryBloc>(context)
                       .add(FetchCategoriesEvent());
                 }),
+                if(!kIsWeb)
                 menuButton(
                     Theme.of(context).primaryColor,
                     width,
