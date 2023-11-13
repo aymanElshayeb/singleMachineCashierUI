@@ -2,13 +2,14 @@ import 'dart:io';
 import 'package:firedart/auth/firebase_auth.dart';
 import 'package:firedart/auth/token_store.dart';
 import 'package:firedart/firestore/firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
-import 'package:single_machine_cashier_ui/features/pos/data/repositories/auth_repository_impl.dart';
-import 'package:single_machine_cashier_ui/features/pos/data/repositories/category_repository_impl.dart';
-import 'package:single_machine_cashier_ui/features/pos/data/repositories/item_repository_impl.dart';
-import 'package:single_machine_cashier_ui/features/pos/data/repositories/order_repository_impl.dart';
+import 'package:single_machine_cashier_ui/features/pos/domain/service%20managers/auth_service_manager.dart';
+import 'package:single_machine_cashier_ui/features/pos/domain/service%20managers/category_service_manager.dart';
+import 'package:single_machine_cashier_ui/features/pos/domain/service%20managers/item_service_manager.dart';
+import 'package:single_machine_cashier_ui/features/pos/domain/service%20managers/order_service_manager.dart';
 import 'package:single_machine_cashier_ui/features/pos/domain/usecases/categories.dart';
 import 'package:single_machine_cashier_ui/features/pos/domain/usecases/items.dart';
 import 'package:single_machine_cashier_ui/features/pos/domain/usecases/orders.dart';
@@ -17,12 +18,10 @@ import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/ean/ean
 import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/order/order_bloc.dart';
 import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/item/bloc.dart';
 import 'package:single_machine_cashier_ui/features/pos/presentation/screens/auth.dart';
+import 'package:single_machine_cashier_ui/firebase_web.dart';
 import 'features/pos/presentation/bloc/Locale/locale_bloc_bloc.dart';
 import 'features/pos/presentation/bloc/categories/category_bloc.dart';
-import 'features/pos/presentation/bloc/user/user_bloc.dart';
-import 'injection_container.dart' as di;
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'injection_container.dart';
 import 'package:google_sign_in_dartio/google_sign_in_dartio.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'dart:convert';
@@ -32,13 +31,16 @@ void main() async {
   String jsonString = await getConfigForFirebase();
   Map configMap = json.decode(jsonString);
   String googleClientId = configMap['google_clientId'];
-  String firebaseAuthApiKey = configMap['auth_firebase_config']['apiKey'];
-  String dataProjectId = configMap['data_firebase_config']['projectId'];
-  String authProjectId = configMap['auth_firebase_config']['projectId'];
-  if (Platform.isWindows) {
-    GoogleSignInDart.register(clientId: googleClientId);
+  Map dataProjectConfig = configMap['data_firebase_config'];
+  Map authProjectConfig = configMap['auth_firebase_config'];
+  if (kIsWeb) {
+    FirebaseWeb.webInitializeFirebase(dataProjectConfig, authProjectConfig);
+  } else {
+    if (Platform.isWindows) {
+      GoogleSignInDart.register(clientId: googleClientId);
+    }
+    FirebaseAuth.initialize(authProjectConfig['apiKey'], VolatileStore());
   }
-  FirebaseAuth.initialize(firebaseAuthApiKey, VolatileStore());
   Logger.root.level = Level
       .ALL; // defaults to Level.INFO (so it overrides the log level to be able to view fine logs )
   Logger.root.onRecord.listen((record) {
@@ -46,11 +48,9 @@ void main() async {
         '[${record.loggerName}] -- ${record.level.name} -- ${record.time} -- ${record.message}');
   });
 
-  await di.init();
-
   runApp(MyApp(
-    authProjectId: authProjectId,
-    dataProjectId: dataProjectId,
+    authProjectId: authProjectConfig['projectId'],
+    dataProjectId: dataProjectConfig['projectId'],
   ));
 }
 
@@ -69,29 +69,32 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(
             create: (_) => AuthBloc(
-                authRepository: AuthRepository(
-                    firebaseFirestore:
-                        Firestore(authProjectId!).collection('users')))),
+            authServiceManager: AuthServiceManager(
+                authProjectId: authProjectId!,
+                dataProjectId: dataProjectId,
+                firebaseFirestore: FirebaseWeb.authFirebaseInstance,
+                firestore: Firestore(authProjectId!)))),
         BlocProvider(
             create: (_) => OrderBloc(
-                orders: Orders(OrderRepositoryImpl(
-                    firebaseFirestore: Firestore(dataProjectId!))))),
+                orders: Orders(orderServiceManager: OrderServiceManager(
+                firebaseFirestore: FirebaseWeb.dataFirebaseInstance,
+                firestore: Firestore(dataProjectId!))))),
         BlocProvider(
             create: (_) => ItemBloc(
-                items: Items(ItemRepositoryImpl(
-                    firebaseFirestore: Firestore(dataProjectId!))))),
+                items: Items(itemServiceManager: ItemServiceManager(
+                firebaseFirestore: FirebaseWeb.dataFirebaseInstance,
+                firestore: Firestore(dataProjectId!))))),
         BlocProvider(
           create: (_) => EanBloc(
-              items: Items(ItemRepositoryImpl(
-                  firebaseFirestore: Firestore(dataProjectId!)))),
-        ),
-        BlocProvider(
-          create: (_) => sl<UserBloc>(),
+              items: Items(itemServiceManager: ItemServiceManager(
+                firebaseFirestore: FirebaseWeb.dataFirebaseInstance,
+                firestore: Firestore(dataProjectId!)))),
         ),
         BlocProvider(
           create: (context) => CategoryBloc(
-              categories: Categories(CategoryRepositoryImpl(
-                  firebaseFirestore: Firestore(dataProjectId!)))),
+              categories: Categories(categoryServiceManager: CategoryServiceManager(
+                firebaseFirestore: FirebaseWeb.dataFirebaseInstance,
+                firestore: Firestore(dataProjectId!)))),
         ),
         BlocProvider(
           create: (BuildContext context) {

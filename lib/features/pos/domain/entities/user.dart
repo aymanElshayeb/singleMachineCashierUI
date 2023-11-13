@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firedart/firedart.dart';
 
@@ -36,6 +37,29 @@ class User extends Equatable {
         systemAccess,
       ];
   static User fromSnapshot(Document snap) {
+    switch (snap['user']['role']) {
+      case 'admin':
+        User user = User(
+          email: snap['user']['email'],
+          role: Role.admin,
+          id: snap.id,
+          systemAccess: Map<String, bool>.from(snap['user']['systemAccess']),
+        );
+        return user;
+      case 'user':
+        User user = User(
+          email: snap['user']['email'],
+          role: Role.user,
+          id: snap.id,
+          systemAccess: Map<String, bool>.from(snap['user']['systemAccess']),
+        );
+        return user;
+
+      default:
+        throw ArgumentError('Invalid role value: ${snap['user']['role']}');
+    }
+  }
+      static User fireBaseFromSnapshot(DocumentSnapshot snap) {
     switch (snap['user']['role']) {
       case 'admin':
         User user = User(

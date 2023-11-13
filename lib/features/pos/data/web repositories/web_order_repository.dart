@@ -1,16 +1,16 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
-import 'package:firedart/firestore/firestore.dart';
 import 'package:single_machine_cashier_ui/core/error/failures.dart';
 import 'package:single_machine_cashier_ui/features/pos/domain/entities/order.dart'
     as entity;
 import 'package:single_machine_cashier_ui/features/pos/domain/repositories/order_repository.dart';
 
-class FiredartOrderRepositoryImpl implements OrderRepository {
-  final Firestore _firebaseFirestore;
+class WebOrderRepositoryImpl implements OrderRepository {
+  final FirebaseFirestore _firebaseFirestore;
 
-  FiredartOrderRepositoryImpl({
-    Firestore? firebaseFirestore,
-  }) : _firebaseFirestore = firebaseFirestore ?? Firestore('pos-system-fe6f1');
+  WebOrderRepositoryImpl({
+    FirebaseFirestore? firebaseFirestore,
+  }) : _firebaseFirestore = firebaseFirestore ?? FirebaseFirestore.instance;
 
   @override
   Future<Either<Failure, void>> saveOrder(

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firedart/firestore/models.dart';
 
@@ -16,9 +17,11 @@ class Category extends Equatable {
 
   @override
   List<Object?> get props => [id, name];
-  static Category fromSnapshot(Document snap) {
-    return Category(name: snap['category']['name'], id: snap.id);
-  }
+  static Category fromSnapshot(Document snap) =>
+      Category(name: snap['category']['name'], id: snap.id);
+
+  static Category fireBaseFromSnapshot(DocumentSnapshot snap) =>
+      Category(name: snap['category']['name'], id: snap.id);
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{

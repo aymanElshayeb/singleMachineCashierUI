@@ -37,4 +37,9 @@ class PdfApi {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString('printer_url');
   }
+
+  Future<void> updatePrinterUrl(String newUrl) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('printer_url', newUrl);
+  }
 }

@@ -2,16 +2,17 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:single_machine_cashier_ui/features/pos/data/repositories/auth_repository_impl.dart';
 import 'package:single_machine_cashier_ui/features/pos/domain/entities/user.dart';
+import 'package:single_machine_cashier_ui/features/pos/domain/repositories/auth_repository.dart';
+import 'package:single_machine_cashier_ui/features/pos/domain/service%20managers/auth_service_manager.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  final AuthRepository _authRepository;
-  AuthBloc({required AuthRepository authRepository})
-      : _authRepository = authRepository,
+  final BaseAuthRepository _authRepository;
+  AuthBloc({required AuthServiceManager authServiceManager})
+      : _authRepository = authServiceManager.authRepository,
         super(AuthState.initial()) {
     on<SignOutUser>(_onSignOutUser);
     on<GoogleSignInUser>(_onGoogleSignInUser);

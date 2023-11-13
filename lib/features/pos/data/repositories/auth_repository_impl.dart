@@ -5,16 +5,16 @@ import 'package:single_machine_cashier_ui/features/pos/domain/entities/user.dart
 import 'package:single_machine_cashier_ui/features/pos/domain/repositories/auth_repository.dart';
 import 'package:dartz/dartz.dart';
 
-class AuthRepository extends BaseAuthRepository {
+class FiredartAuthRepository extends BaseAuthRepository {
   final FirebaseAuth _auth;
-  final CollectionReference _firebaseFireStore;
+  final Firestore _authFirebaseFireStore;
 
-  AuthRepository({
+  FiredartAuthRepository({
     FirebaseAuth? auth,
-    CollectionReference? firebaseFirestore,
+    Firestore? authFirebaseFireStore,
+    required String authProjectId,
   })  : _auth = auth ?? FirebaseAuth.instance,
-        _firebaseFireStore = firebaseFirestore ??
-            Firestore('user-management-da458').collection('users');
+        _authFirebaseFireStore = authFirebaseFireStore ?? Firestore(authProjectId);
 
   @override
   EitherUser<User> googleSignInUser() async {
@@ -69,7 +69,9 @@ class AuthRepository extends BaseAuthRepository {
   Future<User?> getUserByEmail(String email) async {
     try {
       // Perform the query to get the document(s) with the specified email
-      final query = _firebaseFireStore.where('user.email', isEqualTo: email);
+      final query = _authFirebaseFireStore
+          .collection('users')
+          .where('user.email', isEqualTo: email);
 
       final querySnapshot = await query.get();
 
@@ -105,7 +107,9 @@ class AuthRepository extends BaseAuthRepository {
   Future<bool?> checkSystemAccess(String email, String accessKey) async {
     try {
       // Perform the query to get the document(s) with the specified email
-      final query = _firebaseFireStore.where('user.email', isEqualTo: email);
+      final query = _authFirebaseFireStore
+          .collection('users')
+          .where('user.email', isEqualTo: email);
       final querySnapshot = await query.get();
 
       if (querySnapshot.isNotEmpty) {
