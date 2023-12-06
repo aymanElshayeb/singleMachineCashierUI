@@ -18,6 +18,7 @@ class _LangPopupState extends State<LangPopup> {
   List<String> listitems = [
     "English",
     "German",
+    "العربية"
   ];
   String selectval = "English";
 
@@ -28,7 +29,7 @@ class _LangPopupState extends State<LangPopup> {
     return Container(
       height: height * 0.2,
       width: width * 0.1,
-      margin: EdgeInsets.all(5),
+      margin: const EdgeInsets.all(5),
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(5)),
       alignment: Alignment.topCenter,
       child: DropdownButton(
@@ -36,10 +37,13 @@ class _LangPopupState extends State<LangPopup> {
         onChanged: (value) {
           if (value == 'English') {
             BlocProvider.of<LocaleBlocBloc>(context)
-                .add(LoadLanguage(locale: Locale('en')));
-          } else {
+                .add(LoadLanguage(locale: const Locale('en')));
+          } else if(value == "German"){
             BlocProvider.of<LocaleBlocBloc>(context)
-                .add(LoadLanguage(locale: Locale('de')));
+                .add(LoadLanguage(locale: const Locale('de')));
+          }else if(value == "العربية"){
+            BlocProvider.of<LocaleBlocBloc>(context)
+                .add(LoadLanguage(locale: const Locale('ar')));
           }
 
           setState(() {
