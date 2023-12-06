@@ -9,7 +9,7 @@ class ConfirmDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Alert'),
+      title: Text(AppLocalizations.of(context)!.alert),
       content: Text(AppLocalizations.of(context)!.cancelorder),
       actions: [
         MaterialButton(

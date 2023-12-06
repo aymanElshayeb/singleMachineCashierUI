@@ -38,5 +38,8 @@
     "continuee":"Weitermachen",
     "cancelorder":"Möchten Sie die Bestellung weiterhin stornieren?",
     "editquantity":"Artikelmenge bearbeiten",
-    "adminpassword":"Bitte geben Sie das Admin-Passwort ein"
+    "adminpassword":"Bitte geben Sie das Admin-Passwort ein",
+    "splitbill":"teilen Sie die Rechnung",
+    "alert":"Alarm"
+
 }

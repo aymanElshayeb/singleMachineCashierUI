@@ -15,6 +15,7 @@ class Language extends Equatable {
   List<Object> get props => [name, flag, languagecode];
   static List<Language> languagelist() => <Language>[
         Language(name: 'English', flag: '', languagecode: 'en'),
-        Language(name: 'German', flag: '', languagecode: 'de')
+        Language(name: 'German', flag: '', languagecode: 'de'),
+        Language(name: 'العربية', flag: '', languagecode: 'ar')
       ];
 }

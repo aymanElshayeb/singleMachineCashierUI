@@ -30,7 +30,7 @@ class _SplitBillState extends State<SplitBill> {
     double height = MediaQuery.of(context).size.height;
 
     return AlertDialog(
-      title: const Text('Split bill'),
+      title: Text(AppLocalizations.of(context)!.splitbill),
       content: SizedBox(
         width: width * 0.65,
         height: height * 0.6,

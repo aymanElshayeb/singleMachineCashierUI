@@ -90,6 +90,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     onPressed: () {
                       HandlePrinterAndDrawer.openDrawer();
                     }),
+                    
               ],
             ),
             NumberPad(
