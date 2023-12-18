@@ -49,7 +49,8 @@ class Item extends Equatable {
       quantity: snap['item']['quantity'] ?? 1,
     );
   }
-    static Item firebaseFromSnapshot(DocumentSnapshot snap) {
+
+  static Item firebaseFromSnapshot(DocumentSnapshot snap) {
     return Item(
       name: snap['item']['name'] ?? 'Unknown',
       id: snap.id,
@@ -122,4 +123,13 @@ class Item extends Equatable {
         categoryId = source.categoryId,
         discountsPercentage = newDiscounts,
         unit = source.unit;
+  static Item fromJson(Map json) {
+    return Item(
+        name: json['name'],
+        PLU_EAN: json['PLU_EAN'],
+        categoryId: json['categoryId'],
+        price: json['price'].toDouble(),
+        unit: json['unit'],
+        id: json['_id']);
+  }
 }
