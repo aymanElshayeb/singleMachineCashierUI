@@ -1,9 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firedart/firedart.dart';
-import 'package:flutter/foundation.dart';
 import 'package:single_machine_cashier_ui/features/pos/data/offline%20repositories/category_repository.dart';
-import 'package:single_machine_cashier_ui/features/pos/data/repositories/category_repository_impl.dart';
-import 'package:single_machine_cashier_ui/features/pos/data/web%20repositories/web_category_repository.dart';
 import 'package:single_machine_cashier_ui/features/pos/domain/repositories/category_repository.dart';
 
 

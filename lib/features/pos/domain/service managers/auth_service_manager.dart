@@ -1,8 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firedart/firedart.dart';
-import 'package:flutter/foundation.dart';
-import 'package:single_machine_cashier_ui/features/pos/data/repositories/auth_repository_impl.dart';
-import 'package:single_machine_cashier_ui/features/pos/data/web%20repositories/web_auth_repository.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:single_machine_cashier_ui/features/pos/data/offline%20repositories/offline_auth_repository.dart';
 import 'package:single_machine_cashier_ui/features/pos/domain/repositories/auth_repository.dart';
 
 
@@ -29,12 +28,7 @@ class AuthServiceManager {
       Firestore? firestore,
       String? authProjectId,
       String? dataProjectId})
-      : _authRepository = kIsWeb
-            ? WebAuthRepository(firebaseFirestore: firebaseFirestore)
-            : FiredartAuthRepository(
-                authFirebaseFireStore: firestore,
-                authProjectId: authProjectId!,
-                );
+      : _authRepository = OfflineAuthRepository(secureStorage: const FlutterSecureStorage());
 
   BaseAuthRepository get authRepository => _authRepository;
 }

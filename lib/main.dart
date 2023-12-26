@@ -5,6 +5,8 @@ import 'package:firedart/firestore/firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:logging/logging.dart';
 import 'package:single_machine_cashier_ui/features/pos/domain/service%20managers/auth_service_manager.dart';
 import 'package:single_machine_cashier_ui/features/pos/domain/service%20managers/category_service_manager.dart';
@@ -18,6 +20,7 @@ import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/ean/ean
 import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/order/order_bloc.dart';
 import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/item/bloc.dart';
 import 'package:single_machine_cashier_ui/features/pos/presentation/screens/auth.dart';
+import 'package:single_machine_cashier_ui/features/pos/presentation/screens/menu.dart';
 import 'package:single_machine_cashier_ui/firebase_web.dart';
 import 'features/pos/presentation/bloc/Locale/locale_bloc_bloc.dart';
 import 'features/pos/presentation/bloc/categories/category_bloc.dart';
@@ -47,11 +50,12 @@ void main() async {
     debugPrint(
         '[${record.loggerName}] -- ${record.level.name} -- ${record.time} -- ${record.message}');
   });
+  final String? token = await const FlutterSecureStorage().read(key: 'token');
 
   runApp(MyApp(
-    authProjectId: authProjectConfig['projectId'],
-    dataProjectId: dataProjectConfig['projectId'],
-  ));
+      authProjectId: authProjectConfig['projectId'],
+      dataProjectId: dataProjectConfig['projectId'],
+      token: token));
 }
 
 Future<String> getConfigForFirebase() async =>
@@ -60,7 +64,8 @@ Future<String> getConfigForFirebase() async =>
 class MyApp extends StatelessWidget {
   final String? dataProjectId;
   final String? authProjectId;
-  const MyApp({super.key, this.dataProjectId, this.authProjectId});
+  final String? token;
+  const MyApp({super.key, this.dataProjectId, this.authProjectId, this.token});
 
   // This widget is the root of your application.
   @override
@@ -69,32 +74,36 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(
             create: (_) => AuthBloc(
-            authServiceManager: AuthServiceManager(
-                authProjectId: authProjectId!,
-                dataProjectId: dataProjectId,
-                firebaseFirestore: FirebaseWeb.authFirebaseInstance,
-                firestore: Firestore(authProjectId!)))),
+                authServiceManager: AuthServiceManager(
+                    authProjectId: authProjectId!,
+                    dataProjectId: dataProjectId,
+                    firebaseFirestore: FirebaseWeb.authFirebaseInstance,
+                    firestore: Firestore(authProjectId!)))),
         BlocProvider(
             create: (_) => OrderBloc(
-                orders: Orders(orderServiceManager: OrderServiceManager(
-                firebaseFirestore: FirebaseWeb.dataFirebaseInstance,
-                firestore: Firestore(dataProjectId!))))),
+                orders: Orders(
+                    orderServiceManager: OrderServiceManager(
+                        firebaseFirestore: FirebaseWeb.dataFirebaseInstance,
+                        firestore: Firestore(dataProjectId!))))),
         BlocProvider(
             create: (_) => ItemBloc(
-                items: Items(itemServiceManager: ItemServiceManager(
-                firebaseFirestore: FirebaseWeb.dataFirebaseInstance,
-                firestore: Firestore(dataProjectId!))))),
+                items: Items(
+                    itemServiceManager: ItemServiceManager(
+                        firebaseFirestore: FirebaseWeb.dataFirebaseInstance,
+                        firestore: Firestore(dataProjectId!))))),
         BlocProvider(
           create: (_) => EanBloc(
-              items: Items(itemServiceManager: ItemServiceManager(
-                firebaseFirestore: FirebaseWeb.dataFirebaseInstance,
-                firestore: Firestore(dataProjectId!)))),
+              items: Items(
+                  itemServiceManager: ItemServiceManager(
+                      firebaseFirestore: FirebaseWeb.dataFirebaseInstance,
+                      firestore: Firestore(dataProjectId!)))),
         ),
         BlocProvider(
           create: (context) => CategoryBloc(
-              categories: Categories(categoryServiceManager: CategoryServiceManager(
-                firebaseFirestore: FirebaseWeb.dataFirebaseInstance,
-                firestore: Firestore(dataProjectId!)))),
+              categories: Categories(
+                  categoryServiceManager: CategoryServiceManager(
+                      firebaseFirestore: FirebaseWeb.dataFirebaseInstance,
+                      firestore: Firestore(dataProjectId!)))),
         ),
         BlocProvider(
           create: (BuildContext context) {
@@ -110,10 +119,15 @@ class MyApp extends StatelessWidget {
             supportedLocales: AppLocalizations.supportedLocales,
             theme: ThemeData.dark(),
             locale: state.locale,
-            home: const AuthenticationPage(),
+            home: buildInitialRoute(token),
           );
         },
       ),
     );
   }
+    Widget buildInitialRoute(String? token) => token == null
+      ? const AuthenticationPage()
+      : !JwtDecoder.isExpired(token)
+          ? const MyHomePage()
+          : const AuthenticationPage();
 }

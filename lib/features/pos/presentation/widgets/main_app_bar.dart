@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:printing/printing.dart';
+import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/auth/auth_bloc.dart';
+import 'package:single_machine_cashier_ui/features/pos/presentation/screens/auth.dart';
 import 'package:single_machine_cashier_ui/features/pos/presentation/screens/device_managament.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -68,40 +70,58 @@ class MainAppBar extends StatelessWidget {
             ),
           ),
           SizedBox(
-            width: width * 0.435,
+            width: width * 0.3,
           ),
           Padding(
             padding: EdgeInsets.only(right: width * 0.02),
             child: Row(
               children: <Widget>[
-                if(!kIsWeb)
-                menuButton(
-                    Theme.of(context).primaryColor,
-                    width,
-                    height,
-                    Icons.device_hub,
-                    AppLocalizations.of(context)!.office, () async {
-                  List<Printer> printers = await Printing.listPrinters();
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (redContext) => DeviceMangament(
-                                printers: printers,
-                              )));
-                }),
+                if (!kIsWeb)
+                  menuButton(
+                      Theme.of(context).primaryColor,
+                      width,
+                      height,
+                      Icons.device_hub,
+                      AppLocalizations.of(context)!.office, () async {
+                    List<Printer> printers = await Printing.listPrinters();
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (redContext) => DeviceMangament(
+                                  printers: printers,
+                                )));
+                  }),
                 menuButton(Theme.of(context).primaryColor, width, height,
                     Icons.home, AppLocalizations.of(context)!.home, () {
                   BlocProvider.of<CategoryBloc>(context)
                       .add(FetchCategoriesEvent());
                 }),
-                if(!kIsWeb)
-                menuButton(
-                    Theme.of(context).primaryColor,
-                    width,
-                    height,
-                    Icons.power_settings_new,
-                    AppLocalizations.of(context)!.exit,
-                    () => _showExitConfirmation(context)),
+                BlocListener<AuthBloc, AuthState>(
+                  listener: (context, state) {
+                    if (state is UserSignedOut) {
+                      Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(builder: ((context) {
+                        return const AuthenticationPage();
+                      })));
+                    }
+                  },
+                  child: menuButton(
+                      Theme.of(context).primaryColor,
+                      width,
+                      height,
+                      Icons.logout,
+                      AppLocalizations.of(context)!.logout, () {
+                    BlocProvider.of<AuthBloc>(context).add(SignOutUser());
+                  }),
+                ),
+                if (!kIsWeb)
+                  menuButton(
+                      Theme.of(context).primaryColor,
+                      width,
+                      height,
+                      Icons.power_settings_new,
+                      AppLocalizations.of(context)!.exit,
+                      () => _showExitConfirmation(context)),
                 LangPopup(),
               ],
             ),

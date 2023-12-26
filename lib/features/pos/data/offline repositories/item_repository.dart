@@ -1,17 +1,23 @@
 import 'dart:convert';
 
 import 'package:dartz/dartz.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:single_machine_cashier_ui/core/error/failures.dart';
 import 'package:single_machine_cashier_ui/features/pos/domain/entities/item.dart';
 import 'package:single_machine_cashier_ui/features/pos/domain/repositories/item_repository.dart';
 import 'package:http/http.dart' as http;
 
 class OfflineItemRepository implements ItemsRepository {
+  
   @override
   Future<Either<Failure, List<Item>>> getCategoryItems(
       {String? categoryId}) async {
-    final Uri url = Uri.parse('http://localhost:3000/item');
-    final response = await http.get(url);
+    final Uri url = Uri.parse('http://localhost:3003/item');
+    const storage = FlutterSecureStorage();
+    final String? jwtToken = await storage.read(key: 'token');
+    final response = await http.get(url, headers: {
+      'Authorization': 'Bearer $jwtToken',
+    });
     if (response.statusCode == 200) {
       // Parse the response
       final List<dynamic> itemsJson = jsonDecode(response.body);
@@ -41,8 +47,12 @@ class OfflineItemRepository implements ItemsRepository {
   @override
   Future<Either<Failure, List<Item>>> getItemsByEan(
       {required String keyWord}) async {
-    final Uri url = Uri.parse('http://localhost:3000/item');
-    final response = await http.get(url);
+    final Uri url = Uri.parse('http://localhost:3003/item');
+    const storage = FlutterSecureStorage();
+    final String? jwtToken = await storage.read(key: 'token');
+    final response = await http.get(url, headers: {
+      'Authorization': 'Bearer $jwtToken',
+    });
     if (response.statusCode == 200) {
       // Parse the response
       final List<dynamic> itemsJson = jsonDecode(response.body);
