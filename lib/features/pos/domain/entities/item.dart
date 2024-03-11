@@ -10,10 +10,12 @@ class Item extends Equatable {
   final String categoryId;
   final double price;
   final String unit;
+  final double vat;
   final double quantity;
   final List<double>? discountsPercentage;
 
   const Item({
+    this.vat = 0,
     required this.name,
     this.id = '0',
     required this.PLU_EAN,
@@ -24,8 +26,12 @@ class Item extends Equatable {
     this.discountsPercentage,
   });
   factory Item.custom(
-      {required String name, required double price, required double quantity}) {
+      {required String name,
+      required double price,
+      required double quantity,
+      required double vat}) {
     return Item(
+        vat: vat,
         id: const Uuid().v4(),
         name: name,
         PLU_EAN: 'custom',
@@ -47,6 +53,7 @@ class Item extends Equatable {
       price: (snap['item']['price'] as num?)?.toDouble() ?? 0.0,
       unit: snap['item']['unit'] ?? '',
       quantity: snap['item']['quantity'] ?? 1,
+      vat: (snap['item']['vat'] as num?)?.toDouble() ?? 0.0,
     );
   }
 
@@ -57,8 +64,10 @@ class Item extends Equatable {
       PLU_EAN: snap['item']['PLU_EAN'] ?? '',
       categoryId: snap['item']['categoryId'] ?? '',
       price: (snap['item']['price'] as num?)?.toDouble() ?? 0.0,
+      vat: (snap['item']['vat'] as num?)?.toDouble() ?? 0.0,
       unit: snap['item']['unit'] ?? '',
       quantity: snap['item']['quantity'] ?? 1,
+      
     );
   }
 
@@ -70,25 +79,33 @@ class Item extends Equatable {
       'price': price.toString(),
       'unit': unit,
       'quantity': quantity,
-      'discounts': discountsPercentage
+      'discounts': discountsPercentage,
+      'vat': vat,
     };
   }
 
-  double getTotalPrice() {
+  double getTotalDiscount() {
     double totalDiscounts = 1;
     if (discountsPercentage != null) {
       for (var i = 0; i < discountsPercentage!.length; i++) {
         totalDiscounts *= 1 - discountsPercentage![i];
       }
     }
-    return price * quantity * totalDiscounts;
+    return totalDiscounts;
   }
+
+  double getNetPrice() {
+    return price * quantity * getTotalDiscount();
+  }
+
+  double getGross() => getNetPrice() - vat;
 
   Item copyWith({
     String? name,
     String? PLU_EAN,
     String? categoryId,
     double? price,
+    double? vat,
     String? unit,
     double? quantity,
     List<double>? discountsPercentage,
@@ -99,6 +116,7 @@ class Item extends Equatable {
         PLU_EAN: PLU_EAN ?? this.PLU_EAN,
         categoryId: categoryId ?? this.categoryId,
         price: price ?? this.price,
+        vat: vat ?? this.vat,
         unit: unit ?? this.unit,
         quantity: quantity ?? this.quantity,
         discountsPercentage: discountsPercentage ?? this.discountsPercentage);
@@ -108,6 +126,7 @@ class Item extends Equatable {
       : id = source.id,
         name = source.name,
         price = source.price,
+        vat = source.vat,
         quantity = newQuantity,
         PLU_EAN = source.PLU_EAN,
         categoryId = source.categoryId,
@@ -118,6 +137,7 @@ class Item extends Equatable {
       : id = source.id,
         name = source.name,
         price = source.price,
+        vat = source.vat,
         quantity = source.quantity,
         PLU_EAN = source.PLU_EAN,
         categoryId = source.categoryId,
@@ -129,6 +149,7 @@ class Item extends Equatable {
         PLU_EAN: json['PLU_EAN'],
         categoryId: json['categoryId'],
         price: json['price'].toDouble(),
+        vat: json['vat'].toDouble(),
         unit: json['unit'],
         id: json['_id']);
   }

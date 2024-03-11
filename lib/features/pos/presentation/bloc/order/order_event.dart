@@ -65,5 +65,5 @@ class FinishOrder extends OrderEvent {
     this.totalPrice,
   });
 }
-
+class CreateInvoice extends OrderEvent {}
 class DeleteOrder extends OrderEvent {}

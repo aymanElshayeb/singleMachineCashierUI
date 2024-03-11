@@ -59,7 +59,7 @@ class _SplitBillState extends State<SplitBill> {
               totalDiscounts *= 1 - discountPercentages[i];
             }
             for (var i = 0; i < widget.subOrderItems.length; i++) {
-              totalPrice += widget.subOrderItems[i].getTotalPrice();
+              totalPrice += widget.subOrderItems[i].getNetPrice();
             }
 
             Navigator.push(

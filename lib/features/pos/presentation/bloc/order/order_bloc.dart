@@ -1,12 +1,13 @@
 import 'dart:async';
-
+import 'dart:convert';
+import 'dart:typed_data';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:single_machine_cashier_ui/core/error/failures.dart';
 import 'package:single_machine_cashier_ui/features/pos/domain/entities/item.dart';
 import 'package:single_machine_cashier_ui/features/pos/domain/entities/order.dart';
 import 'package:single_machine_cashier_ui/features/pos/domain/usecases/orders.dart';
-
+import 'package:single_machine_cashier_ui/features/pos/domain/usecases/pdf_api.dart';
 part 'order_event.dart';
 part 'order_state.dart';
 
@@ -22,6 +23,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     on<AddItemToOrder>(_onAddItemToOrder);
     on<RemoveItemFromOrder>(_onRemoveItemFromOrder);
     on<FinishOrder>(_onFinishOrder);
+    on<CreateInvoice>(_onCreateInvoice);
     on<DeleteOrder>(_onDeleteOrder);
     on<SubtractFromItemQuantity>(_onSubtractFromItemQuantity);
     on<AddDiscountToItem>(_onAddDiscountToItem);
@@ -69,11 +71,12 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
           orderDiscounts: state.orderDiscounts,
           orderItems: state.orderItems,
           totalPrice: state.totalPrice));
-
+      add(CreateInvoice());
       final response = await orders.saveOrder(
-          orderPrice:
-              event.subOrder != null ? event.totalPrice! : state.totalPrice,
-          paymentMethod: event.paymentMethod);
+        orderPrice:
+            event.subOrder != null ? event.totalPrice! : state.totalPrice,
+        paymentMethod: event.paymentMethod,
+      );
       response.fold((failure) {
         emit(OrderError(
             message: _mapFailureToMessage(failure),
@@ -147,7 +150,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     double totalPrice = 0;
 
     for (var i = 0; i < event.updatedOrder.length; i++) {
-      totalPrice += event.updatedOrder[i].getTotalPrice();
+      totalPrice += event.updatedOrder[i].getNetPrice();
     }
     if (event.updatedDiscounts != null) {
       double totalDiscounts = 1;
@@ -205,6 +208,34 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     add(UpdateOrderAndTotalPrice(
         updatedOrder: state.orderItems,
         updatedDiscounts: updatedOrderDiscounts));
+  }
+
+  FutureOr<void> _onCreateInvoice(
+      CreateInvoice event, Emitter<OrderState> emit) async {
+    try {
+      emit(SaveLoading(
+          orderDiscounts: state.orderDiscounts,
+          orderItems: state.orderItems,
+          totalPrice: state.totalPrice));
+
+      final response = await orders.createInvoice(orderItems: state.orderItems);
+      response.fold((failure) {
+        emit(OrderError(
+            message: _mapFailureToMessage(failure),
+            orderItems: state.orderItems,
+            totalPrice: state.totalPrice,
+            orderDiscounts: state.orderDiscounts));
+      }, (invoiceBase64PdfData) async {
+        Uint8List pdfBytes = base64Decode(invoiceBase64PdfData.split(',').last);
+        PdfApi.printExternalInvoice(pdfBytes);
+      });
+    } catch (e) {
+      emit(OrderError(
+          message: 'Error saving order: $e',
+          orderItems: state.orderItems,
+          totalPrice: state.totalPrice,
+          orderDiscounts: state.orderDiscounts));
+    }
   }
 
   String _mapFailureToMessage(Failure failure) {

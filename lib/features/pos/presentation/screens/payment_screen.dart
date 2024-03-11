@@ -64,16 +64,17 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       title: AppLocalizations.of(context)!.completepayment,
                       onPressed: () {
                         if (widget.totalPrice != 0) {
-                          HandlePrinterAndDrawer.printOrderInvoice(
-                              items: BlocProvider.of<OrderBloc>(context)
-                                  .state
-                                  .orderItems,
-                              order: Order(
-                                  totalPrice: widget.totalPrice,
-                                  paymentMethod: paymentMethod == 'Cash'
-                                      ? PaymentMethod.cash
-                                      : PaymentMethod.card,
-                                  dateTime: DateTime.now()));
+                          // HandlePrinterAndDrawer.printOrderInvoice(
+                          //     items: BlocProvider.of<OrderBloc>(context)
+                          //         .state
+                          //         .orderItems,
+                          //     order: Order(
+                          //         totalPrice: widget.totalPrice,
+                          //         paymentMethod: paymentMethod == 'Cash'
+                          //             ? PaymentMethod.cash
+                          //             : PaymentMethod.card,
+                          //         dateTime: DateTime.now()));
+                          
                           BlocProvider.of<OrderBloc>(context).add(FinishOrder(
                               restOfOrderItems: widget.restOfOrder,
                               subOrder: widget.subOrder,
@@ -90,7 +91,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     onPressed: () {
                       HandlePrinterAndDrawer.openDrawer();
                     }),
-                    
               ],
             ),
             NumberPad(

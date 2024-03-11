@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:firedart/firestore/firestore.dart';
 import 'package:single_machine_cashier_ui/core/error/failures.dart';
+import 'package:single_machine_cashier_ui/features/pos/domain/entities/item.dart';
 import 'package:single_machine_cashier_ui/features/pos/domain/entities/order.dart'
     as entity;
 import 'package:single_machine_cashier_ui/features/pos/domain/repositories/order_repository.dart';
@@ -27,5 +28,11 @@ class FiredartOrderRepositoryImpl implements OrderRepository {
     } catch (e) {
       return left(CacheFailure());
     }
+  }
+
+  @override
+  Future<Either<Failure, String>> createInvoice(List<Item> orderItems) {
+    // TODO: implement createInvoice
+    throw UnimplementedError();
   }
 }
