@@ -36,7 +36,7 @@ class ItemsList extends StatelessWidget {
                       style: ElevatedButton.styleFrom(
                         backgroundColor:
                             Colors.primaries[index].withOpacity(0.5),
-                        textStyle: TextStyle(
+                        textStyle: const TextStyle(
                           fontSize: 16,
                         ),
                         shape: RoundedRectangleBorder(
@@ -49,7 +49,7 @@ class ItemsList extends StatelessWidget {
                       child: Column(
                         children: [
                           Text(state.items[index].name),
-                          Text(state.items[index].price.toString()),
+                          Text(state.items[index].unitPrice.toString()),
                         ],
                       )));
             },

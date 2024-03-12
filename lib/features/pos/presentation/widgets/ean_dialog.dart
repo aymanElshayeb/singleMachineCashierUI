@@ -87,7 +87,7 @@ class CustomDialog extends StatelessWidget {
                                 subtitle:
                                     Text('EAN: ${state.items[index].PLU_EAN} '),
                                 trailing:
-                                    Text(state.items[index].price.toString()),
+                                    Text(state.items[index].unitPrice.toString()),
                                 onTap: () {
                                   BlocProvider.of<OrderBloc>(context).add(
                                       AddItemToOrder(item: state.items[index]));

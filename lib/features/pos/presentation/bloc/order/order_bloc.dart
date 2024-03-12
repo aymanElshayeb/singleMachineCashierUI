@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:single_machine_cashier_ui/core/error/failures.dart';
+import 'package:single_machine_cashier_ui/features/pos/domain/entities/discount.dart';
 import 'package:single_machine_cashier_ui/features/pos/domain/entities/item.dart';
 import 'package:single_machine_cashier_ui/features/pos/domain/entities/order.dart';
 import 'package:single_machine_cashier_ui/features/pos/domain/usecases/orders.dart';
@@ -53,12 +54,15 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       updatedOrderItems.add(event.item);
     }
 
-    add(UpdateOrderAndTotalPrice(updatedOrder: updatedOrderItems));
+    add(UpdateOrderAndTotalPrice(
+        updatedOrder: updatedOrderItems,
+        updatedDiscounts: state.orderDiscounts));
   }
 
   FutureOr<void> _onRemoveItemFromOrder(
       RemoveItemFromOrder event, Emitter<OrderState> emit) {
     final List<Item> updatedOrderItems = [];
+    event.item.discountPercentages = [];
     updatedOrderItems.addAll(state.orderItems);
     updatedOrderItems.remove(event.item);
     add(UpdateOrderAndTotalPrice(updatedOrder: updatedOrderItems));
@@ -132,9 +136,9 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       (item) => item.id == event.item.id,
     );
     if (existingProductIndex != -1) {
-      // If the product is already in the order, increase its quantity
       List<double> updatedDiscounts =
-          updatedOrderItems[existingProductIndex].discountsPercentage ?? [];
+          updatedOrderItems[existingProductIndex].discountPercentages ?? [];
+
       updatedDiscounts.add(event.discount);
       Item updatedItem = Item.copyWithDiscount(
           updatedOrderItems[existingProductIndex], updatedDiscounts);
@@ -150,7 +154,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     double totalPrice = 0;
 
     for (var i = 0; i < event.updatedOrder.length; i++) {
-      totalPrice += event.updatedOrder[i].getNetPrice();
+      totalPrice += event.updatedOrder[i].netAmount;
     }
     if (event.updatedDiscounts != null) {
       double totalDiscounts = 1;
@@ -176,7 +180,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
     if (existingProductIndex != -1) {
       // If the product is already in the order, increase its quantity
       List<double> updatedDiscounts =
-          updatedOrderItems[existingProductIndex].discountsPercentage ?? [];
+          updatedOrderItems[existingProductIndex].discountPercentages ?? [];
       updatedDiscounts.removeAt(event.discountIndex);
 
       Item updatedItem = Item.copyWithDiscount(
@@ -217,8 +221,21 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
           orderDiscounts: state.orderDiscounts,
           orderItems: state.orderItems,
           totalPrice: state.totalPrice));
+      final Order order = Order(
+          paymentMethod: PaymentMethod.cash,
+          dateTime: DateTime.now(),
+          items: state.orderItems,
+          orderDiscounts: state.orderDiscounts.map(
+            (discount) {
+              double originalPrice = state.totalPrice / (1 - discount);
+              double discountAmount = originalPrice - state.totalPrice;
+              print(
+                  'total price: ${state.totalPrice}, discount percentage: $discount,original price: $originalPrice, discountAmount: $discountAmount');
+              return Discount(grossAmount: discountAmount);
+            },
+          ).toList());
 
-      final response = await orders.createInvoice(orderItems: state.orderItems);
+      final response = await orders.createInvoice(order: order);
       response.fold((failure) {
         emit(OrderError(
             message: _mapFailureToMessage(failure),

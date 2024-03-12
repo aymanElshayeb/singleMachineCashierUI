@@ -4,7 +4,6 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:single_machine_cashier_ui/core/error/failures.dart';
-import 'package:single_machine_cashier_ui/features/pos/domain/entities/item.dart';
 import 'package:single_machine_cashier_ui/features/pos/domain/entities/order.dart';
 import 'package:single_machine_cashier_ui/features/pos/domain/repositories/order_repository.dart';
 import 'package:http/http.dart' as http;
@@ -17,10 +16,6 @@ class OfflineOrderRepository implements OrderRepository {
     double orderPrice,
     PaymentMethod paymentMethod,
   ) async {
-    entity.Order order = entity.Order(
-        totalPrice: orderPrice,
-        paymentMethod: paymentMethod,
-        dateTime: DateTime.now());
     try {
       const storage = FlutterSecureStorage();
       final String? jwtToken = await storage.read(key: 'token');
@@ -30,7 +25,11 @@ class OfflineOrderRepository implements OrderRepository {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $jwtToken',
         },
-        body: jsonEncode(order.toMap()),
+        body: jsonEncode({
+          'orderPrice':orderPrice,
+          'paymentMethod':paymentMethod,
+          'dateTime':DateTime.now()
+        }),
       );
 
       if (response.statusCode == 200) {
@@ -48,16 +47,14 @@ class OfflineOrderRepository implements OrderRepository {
   }
 
   @override
-  Future<Either<Failure, String>> createInvoice(List<Item> orderItems) async {
+  Future<Either<Failure, String>> createInvoice(entity.Order order) async {
     try {
-      List<Map<String, dynamic>> itemsMap =
-          orderItems.map((item) => item.toMap()).toList();
       final http.Response response = await http.post(
         Uri.parse('http://localhost:3006/order-invoices/ksa'),
         headers: <String, String>{
           'Content-Type': 'application/json',
         },
-        body: jsonEncode(itemsMap),
+        body: jsonEncode(order.toMap()),
       );
 
       if (response.statusCode == 200) {

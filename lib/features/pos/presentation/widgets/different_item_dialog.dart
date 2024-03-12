@@ -15,7 +15,7 @@ class DifferentItem extends StatelessWidget {
     TextEditingController nameController = TextEditingController();
     TextEditingController priceController = TextEditingController();
     TextEditingController quantityController = TextEditingController();
-    TextEditingController vatController = TextEditingController();
+    TextEditingController taxController = TextEditingController();
     return AlertDialog(
       title: Text(AppLocalizations.of(context)!.enteranitem),
       content: SizedBox(
@@ -34,9 +34,9 @@ class DifferentItem extends StatelessWidget {
             isNumber: true,
           ),
           GlobalTextField(
-            customController: vatController,
+            customController: taxController,
             iconData: Icons.price_change,
-            labelText: 'VAT %',
+            labelText: 'tax percentage',
             isNumber: true,
           ),
           GlobalTextField(
@@ -52,10 +52,10 @@ class DifferentItem extends StatelessWidget {
           onPressed: () {
             double unitPrice = double.parse(priceController.text);
             double quantity = double.parse(quantityController.text);
-            double vat =
-                vatController.text == '' ? 0 : double.parse(vatController.text);
+            double taxPercentage =
+                taxController.text == '' ? 0 : double.parse(taxController.text);
             Item customItem = Item.custom(
-                vat: vat,
+                taxPercentage: taxPercentage,
                 name: nameController.text,
                 price: unitPrice,
                 quantity: quantity);

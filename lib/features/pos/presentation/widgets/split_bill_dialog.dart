@@ -59,7 +59,7 @@ class _SplitBillState extends State<SplitBill> {
               totalDiscounts *= 1 - discountPercentages[i];
             }
             for (var i = 0; i < widget.subOrderItems.length; i++) {
-              totalPrice += widget.subOrderItems[i].getNetPrice();
+              totalPrice += widget.subOrderItems[i].netAmount;
             }
 
             Navigator.push(
@@ -102,7 +102,7 @@ class _SplitBillState extends State<SplitBill> {
                         title: Text(widget.orderItems.elementAt(index).name),
                         subtitle: Text(widget.orderItems
                             .elementAt(index)
-                            .price
+                            .unitPrice
                             .toString()),
                         trailing: Column(children: [
                           Text(widget.orderItems
@@ -196,7 +196,7 @@ class _SplitBillState extends State<SplitBill> {
                   child: ListTile(
                     title: Text(widget.subOrderItems.elementAt(index).name),
                     subtitle: Text(
-                        widget.subOrderItems.elementAt(index).price.toString()),
+                        widget.subOrderItems.elementAt(index).unitPrice.toString()),
                     trailing: Column(children: [
                       Text(widget.subOrderItems
                           .elementAt(index)

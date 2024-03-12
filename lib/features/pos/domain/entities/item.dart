@@ -1,6 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
-import 'package:firedart/firestore/models.dart';
 import 'package:uuid/uuid.dart';
 
 class Item extends Equatable {
@@ -8,149 +6,157 @@ class Item extends Equatable {
   final String name;
   final String PLU_EAN;
   final String categoryId;
-  final double price;
   final String unit;
-  final double vat;
-  final double quantity;
-  final List<double>? discountsPercentage;
+  final double unitPrice;
+  double quantity;
+  double get amount => unitPrice * quantity;
+  //////////////////////////
+  List<double>? discountPercentages;
+  double get totalDiscount {
+    double totalPercentage = 0.0;
+    if (discountPercentages != null) {
+      for (var discount in discountPercentages!) {
+        totalPercentage += discount;
+      }
+    }
+    return amount * totalPercentage;
+  }
 
-  const Item({
-    this.vat = 0,
+  double get netAmount => amount - totalDiscount;
+  //////////////////////////
+  final String taxFormat;
+  final String taxCategory;
+  final double taxPercentage;
+  final String taxExeptionReasonCode;
+  final String taxExeptionReason;
+  double get taxPrice => netAmount * taxPercentage / 100;
+  //////////////////////////
+  double get grossPrice => taxPrice + netAmount;
+
+  Item({
+    required this.id,
     required this.name,
-    this.id = '0',
+    required this.unit,
+    required this.unitPrice,
+    this.quantity = 1,
+    required this.taxFormat,
+    required this.taxCategory,
+    required this.taxPercentage,
+    required this.taxExeptionReasonCode,
+    required this.taxExeptionReason,
+    required this.discountPercentages,
     required this.PLU_EAN,
     required this.categoryId,
-    required this.price,
-    required this.unit,
-    this.quantity = 1,
-    this.discountsPercentage,
   });
   factory Item.custom(
       {required String name,
       required double price,
       required double quantity,
-      required double vat}) {
+      required double taxPercentage}) {
     return Item(
-        vat: vat,
+        taxPercentage: taxPercentage,
         id: const Uuid().v4(),
         name: name,
-        PLU_EAN: 'custom',
-        categoryId: 'custom',
-        price: price,
-        unit: 'custom',
+        PLU_EAN: "custom",
+        categoryId: "custom",
+        unitPrice: price,
+        unit: "custom",
+        taxCategory: "Standard",
+        taxFormat: "%",
+        taxExeptionReason: "",
+        taxExeptionReasonCode: "",
+        discountPercentages: const [],
         quantity: quantity);
-  }
-
-  @override
-  List<Object?> get props =>
-      [id, name, PLU_EAN, categoryId, price, unit, discountsPercentage];
-  static Item fromSnapshot(Document snap) {
-    return Item(
-      name: snap['item']['name'] ?? 'Unknown',
-      id: snap.id,
-      PLU_EAN: snap['item']['PLU_EAN'] ?? '',
-      categoryId: snap['item']['categoryId'] ?? '',
-      price: (snap['item']['price'] as num?)?.toDouble() ?? 0.0,
-      unit: snap['item']['unit'] ?? '',
-      quantity: snap['item']['quantity'] ?? 1,
-      vat: (snap['item']['vat'] as num?)?.toDouble() ?? 0.0,
-    );
-  }
-
-  static Item firebaseFromSnapshot(DocumentSnapshot snap) {
-    return Item(
-      name: snap['item']['name'] ?? 'Unknown',
-      id: snap.id,
-      PLU_EAN: snap['item']['PLU_EAN'] ?? '',
-      categoryId: snap['item']['categoryId'] ?? '',
-      price: (snap['item']['price'] as num?)?.toDouble() ?? 0.0,
-      vat: (snap['item']['vat'] as num?)?.toDouble() ?? 0.0,
-      unit: snap['item']['unit'] ?? '',
-      quantity: snap['item']['quantity'] ?? 1,
-      
-    );
-  }
-
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      'name': name,
-      'PLU_EAN': PLU_EAN,
-      'categoryId': categoryId,
-      'price': price.toString(),
-      'unit': unit,
-      'quantity': quantity,
-      'discounts': discountsPercentage,
-      'vat': vat,
-    };
-  }
-
-  double getTotalDiscount() {
-    double totalDiscounts = 1;
-    if (discountsPercentage != null) {
-      for (var i = 0; i < discountsPercentage!.length; i++) {
-        totalDiscounts *= 1 - discountsPercentage![i];
-      }
-    }
-    return totalDiscounts;
-  }
-
-  double getNetPrice() {
-    return price * quantity * getTotalDiscount();
-  }
-
-  double getGross() => getNetPrice() - vat;
-
-  Item copyWith({
-    String? name,
-    String? PLU_EAN,
-    String? categoryId,
-    double? price,
-    double? vat,
-    String? unit,
-    double? quantity,
-    List<double>? discountsPercentage,
-  }) {
-    return Item(
-        id: id,
-        name: name ?? this.name,
-        PLU_EAN: PLU_EAN ?? this.PLU_EAN,
-        categoryId: categoryId ?? this.categoryId,
-        price: price ?? this.price,
-        vat: vat ?? this.vat,
-        unit: unit ?? this.unit,
-        quantity: quantity ?? this.quantity,
-        discountsPercentage: discountsPercentage ?? this.discountsPercentage);
   }
 
   Item.copyWithQuantity(Item source, double newQuantity)
       : id = source.id,
         name = source.name,
-        price = source.price,
-        vat = source.vat,
+        unitPrice = source.unitPrice,
         quantity = newQuantity,
         PLU_EAN = source.PLU_EAN,
         categoryId = source.categoryId,
-        discountsPercentage = source.discountsPercentage,
+        discountPercentages = source.discountPercentages,
+        taxCategory = source.taxCategory,
+        taxExeptionReason = source.taxExeptionReason,
+        taxExeptionReasonCode = source.taxExeptionReasonCode,
+        taxFormat = source.taxFormat,
+        taxPercentage = source.taxPercentage,
         unit = source.unit;
-
   Item.copyWithDiscount(Item source, List<double> newDiscounts)
       : id = source.id,
         name = source.name,
-        price = source.price,
-        vat = source.vat,
+        unitPrice = source.unitPrice,
         quantity = source.quantity,
         PLU_EAN = source.PLU_EAN,
         categoryId = source.categoryId,
-        discountsPercentage = newDiscounts,
+        discountPercentages = newDiscounts,
+        taxCategory = source.taxCategory,
+        taxExeptionReason = source.taxExeptionReason,
+        taxExeptionReasonCode = source.taxExeptionReasonCode,
+        taxFormat = source.taxFormat,
+        taxPercentage = source.taxPercentage,
         unit = source.unit;
+
   static Item fromJson(Map json) {
     return Item(
         name: json['name'],
+        quantity: json['quantity'] != null ? json['quantity'].toDouble() : 1,
         PLU_EAN: json['PLU_EAN'],
         categoryId: json['categoryId'],
-        price: json['price'].toDouble(),
-        vat: json['vat'].toDouble(),
+        unitPrice: json['unitPrice'].toDouble(),
         unit: json['unit'],
-        id: json['_id']);
+        id: json['_id'],
+        taxCategory: json['taxCategory'] ?? 'Standard',
+        taxExeptionReason: json['taxExeptionReason'] ?? '',
+        taxExeptionReasonCode: json['taxExeptionReasonCode'] ?? '',
+        taxPercentage: json['taxPercentage'] != null
+            ? json['taxPercentage'].toDouble()
+            : 0.0,
+        taxFormat: json['taxFormat'] ?? '%',
+        discountPercentages: json['discountPercentages'] ?? []);
   }
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'product': name,
+      'quantity': quantity,
+      'PLU_EAN': PLU_EAN,
+      'categoryId': categoryId,
+      'unitPrice': unitPrice,
+      'unit': unit,
+      'taxCategory': taxCategory,
+      'taxExeptionReason': taxExeptionReason,
+      'taxExeptionReasonCode': taxExeptionReasonCode,
+      'tax': taxPercentage,
+      'taxFormat': taxFormat,
+      'discountPercentages': discountPercentages,
+      'discountAmount': totalDiscount,
+      'amount': amount,
+      "netAmount": netAmount,
+      "taxAmount": taxPrice,
+      "grossAmount": grossPrice,
+    };
+  }
+
+  static Item fromSnapshot(snap) {
+    return Item(
+        unitPrice: (snap['item']['unitPrice'] as num?)?.toDouble() ?? 0.0,
+        unit: snap['item']['unit'] ?? '',
+        quantity: snap['item']['quantity'] ?? 1,
+        name: snap['item']['name'] ?? 'Unknown',
+        PLU_EAN: snap['item']['PLU_EAN'] ?? '',
+        categoryId: snap['item']['categoryId'] ?? '',
+        id: snap.id,
+        taxCategory: snap['item']['taxCategory'] ?? '',
+        taxExeptionReason: snap['item']['taxExeptionReason'] ?? '',
+        taxExeptionReasonCode: snap['item']['taxExeptionReasonCode'] ?? '',
+        taxPercentage: snap['item']['taxPercentage'] ?? '',
+        taxFormat: snap['item']['taxFormat'] ?? '%',
+        discountPercentages: snap['item']['discountPercentages'] ?? []);
+  }
+
+  @override
+  List<Object?> get props =>
+      [id, name, PLU_EAN, categoryId, unitPrice, unit, discountPercentages];
 }

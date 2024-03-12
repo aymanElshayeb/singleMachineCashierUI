@@ -33,7 +33,7 @@ class CartItem extends StatelessWidget {
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(orderItem.price.toString(),
+                Text(orderItem.unitPrice.toString(),
                     style: TextStyle(fontSize: height * 0.022)),
                 discountButton(context, height)
               ],
@@ -43,7 +43,7 @@ class CartItem extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 deleteButton(context, height),
-                Text((orderItem.price * orderItem.quantity).toString(),
+                Text((orderItem.unitPrice * orderItem.quantity).toString(),
                     style: TextStyle(
                         fontWeight: FontWeight.bold, fontSize: height * 0.019)),
                 Container(
