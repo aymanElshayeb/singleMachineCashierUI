@@ -11,12 +11,10 @@ class Orders {
       : repository = orderServiceManager.orderRepository;
 
   Future<Either<Failure, void>> saveOrder({
-    required double orderPrice,
-    required entity.PaymentMethod paymentMethod,
+    required entity.Order order
   }) async =>
       await repository.saveOrder(
-        orderPrice,
-        paymentMethod,
+        order
       );
 
   Future<Either<Failure, String>> createInvoice({

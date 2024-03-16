@@ -75,12 +75,19 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
           orderDiscounts: state.orderDiscounts,
           orderItems: state.orderItems,
           totalPrice: state.totalPrice));
-      add(CreateInvoice());
-      final response = await orders.saveOrder(
-        orderPrice:
-            event.subOrder != null ? event.totalPrice! : state.totalPrice,
-        paymentMethod: event.paymentMethod,
-      );
+      final Order order = Order(
+          paymentMethod: PaymentMethod.cash,
+          issueDate: DateTime.now(),
+          items: state.orderItems,
+          orderDiscounts: state.orderDiscounts.map(
+            (discount) {
+              double originalPrice = state.totalPrice / (1 - discount);
+              double discountAmount = originalPrice - state.totalPrice;
+              return Discount(grossAmount: discountAmount);
+            },
+          ).toList());
+      add(CreateInvoice(order: order));
+      final response = await orders.saveOrder(order: order);
       response.fold((failure) {
         emit(OrderError(
             message: _mapFailureToMessage(failure),
@@ -221,21 +228,8 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
           orderDiscounts: state.orderDiscounts,
           orderItems: state.orderItems,
           totalPrice: state.totalPrice));
-      final Order order = Order(
-          paymentMethod: PaymentMethod.cash,
-          dateTime: DateTime.now(),
-          items: state.orderItems,
-          orderDiscounts: state.orderDiscounts.map(
-            (discount) {
-              double originalPrice = state.totalPrice / (1 - discount);
-              double discountAmount = originalPrice - state.totalPrice;
-              print(
-                  'total price: ${state.totalPrice}, discount percentage: $discount,original price: $originalPrice, discountAmount: $discountAmount');
-              return Discount(grossAmount: discountAmount);
-            },
-          ).toList());
 
-      final response = await orders.createInvoice(order: order);
+      final response = await orders.createInvoice(order: event.order);
       response.fold((failure) {
         emit(OrderError(
             message: _mapFailureToMessage(failure),

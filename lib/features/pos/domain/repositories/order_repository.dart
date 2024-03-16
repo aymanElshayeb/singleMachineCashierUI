@@ -5,8 +5,7 @@ import '../../../../core/error/failures.dart';
 
 abstract class OrderRepository {
   Future<Either<Failure, void>> saveOrder(
-    double orderPrice,
-    entity.PaymentMethod paymentMethod,
+    entity.Order order
   );
   Future<Either<Failure, String>> createInvoice(
       entity.Order order, );

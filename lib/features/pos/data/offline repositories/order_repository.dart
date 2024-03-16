@@ -4,7 +4,6 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:single_machine_cashier_ui/core/error/failures.dart';
-import 'package:single_machine_cashier_ui/features/pos/domain/entities/order.dart';
 import 'package:single_machine_cashier_ui/features/pos/domain/repositories/order_repository.dart';
 import 'package:http/http.dart' as http;
 import 'package:single_machine_cashier_ui/features/pos/domain/entities/order.dart'
@@ -12,10 +11,7 @@ import 'package:single_machine_cashier_ui/features/pos/domain/entities/order.dar
 
 class OfflineOrderRepository implements OrderRepository {
   @override
-  Future<Either<Failure, void>> saveOrder(
-    double orderPrice,
-    PaymentMethod paymentMethod,
-  ) async {
+  Future<Either<Failure, void>> saveOrder(entity.Order order) async {
     try {
       const storage = FlutterSecureStorage();
       final String? jwtToken = await storage.read(key: 'token');
@@ -25,11 +21,7 @@ class OfflineOrderRepository implements OrderRepository {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $jwtToken',
         },
-        body: jsonEncode({
-          'orderPrice':orderPrice,
-          'paymentMethod':paymentMethod,
-          'dateTime':DateTime.now()
-        }),
+        body: jsonEncode({'order': jsonEncode(order.toMap())}),
       );
 
       if (response.statusCode == 200) {
@@ -38,6 +30,7 @@ class OfflineOrderRepository implements OrderRepository {
         return right(null);
       } else {
         // Handle errors
+        print(response.body);
         debugPrint('Error: ${response.statusCode}, ${response.reasonPhrase}');
         return left(CacheFailure());
       }
@@ -59,7 +52,6 @@ class OfflineOrderRepository implements OrderRepository {
 
       if (response.statusCode == 200) {
         // Successful POST request
-        debugPrint('Response: ${response.body}');
         return right(response.body);
       } else {
         // Handle errors

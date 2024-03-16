@@ -47,19 +47,19 @@ class Order extends Equatable {
   double get grossPrice => netAmount + taxAmount;
 
   final PaymentMethod paymentMethod;
-  final DateTime dateTime;
+  final DateTime issueDate;
 
   const Order({
     this.taxPercentage = 15.0,
     required this.paymentMethod,
-    required this.dateTime,
+    required this.issueDate,
     this.id = '0',
     required this.items,
     required this.orderDiscounts,
   });
 
   @override
-  List<Object?> get props => [id, paymentMethod, dateTime];
+  List<Object?> get props => [id, paymentMethod, issueDate];
   static Order fromSnapshot(Document snap) {
     return Order(
         id: snap.id,
@@ -68,14 +68,13 @@ class Order extends Equatable {
         paymentMethod: snap['order']['paymentMethod'] == 'cash'
             ? PaymentMethod.cash
             : PaymentMethod.card,
-        dateTime:
-            DateTime.fromMillisecondsSinceEpoch(snap['order']['dateTime']));
+        issueDate: snap['order']['issueDate']);
   }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'paymentMethod': paymentMethod.toString().split('.').last,
-      'dateTime': dateTime.millisecondsSinceEpoch,
+      'issueDate': issueDate.toIso8601String(),
       'items': items.map((e) => e.toMap()).toList(),
       'documentDiscounts': orderDiscounts.map((e) => e.toMap()).toList(),
       "amount": amount,

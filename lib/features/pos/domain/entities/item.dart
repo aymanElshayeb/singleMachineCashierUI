@@ -52,7 +52,8 @@ class Item extends Equatable {
       {required String name,
       required double price,
       required double quantity,
-      required double taxPercentage}) {
+      required double taxPercentage,
+      required List<double> discountPercentages}) {
     return Item(
         taxPercentage: taxPercentage,
         id: const Uuid().v4(),
@@ -65,7 +66,7 @@ class Item extends Equatable {
         taxFormat: "%",
         taxExeptionReason: "",
         taxExeptionReasonCode: "",
-        discountPercentages: const [],
+        discountPercentages: discountPercentages,
         quantity: quantity);
   }
 

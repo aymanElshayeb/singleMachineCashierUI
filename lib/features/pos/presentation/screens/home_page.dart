@@ -7,8 +7,10 @@ import '../widgets/bill.dart';
 import '../widgets/main_app_bar.dart';
 import '../widgets/category_list.dart';
 
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({super.key});
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
+
+
 
   @override
   Widget build(BuildContext context) {

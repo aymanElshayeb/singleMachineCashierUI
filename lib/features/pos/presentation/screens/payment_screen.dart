@@ -57,24 +57,21 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       );
                       ScaffoldMessenger.of(context).showSnackBar(snackBar2);
                       Navigator.of(context).pop();
+                    }else if(state is OrderError){
+                      var snackBar2 =  SnackBar(
+                        backgroundColor: Colors.red,
+                        duration: const Duration(seconds: 2),
+                        content: Text(state.message),
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar2);
+
                     }
                   },
                   child: paymentButton(
                       icon: Icons.done_all,
                       title: AppLocalizations.of(context)!.completepayment,
                       onPressed: () {
-                        if (widget.totalPrice != 0) {
-                          // HandlePrinterAndDrawer.printOrderInvoice(
-                          //     items: BlocProvider.of<OrderBloc>(context)
-                          //         .state
-                          //         .orderItems,
-                          //     order: Order(
-                          //         totalPrice: widget.totalPrice,
-                          //         paymentMethod: paymentMethod == 'Cash'
-                          //             ? PaymentMethod.cash
-                          //             : PaymentMethod.card,
-                          //         dateTime: DateTime.now()));
-                          
+                        if (widget.totalPrice != 0) {                        
                           BlocProvider.of<OrderBloc>(context).add(FinishOrder(
                               restOfOrderItems: widget.restOfOrder,
                               subOrder: widget.subOrder,

@@ -58,7 +58,7 @@ class DifferentItem extends StatelessWidget {
                 taxPercentage: taxPercentage,
                 name: nameController.text,
                 price: unitPrice,
-                quantity: quantity);
+                quantity: quantity,discountPercentages: []);
 
             BlocProvider.of<OrderBloc>(context)
                 .add(AddItemToOrder(item: customItem));

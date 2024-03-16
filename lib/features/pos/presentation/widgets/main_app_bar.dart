@@ -1,7 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:printing/printing.dart';
-import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/auth/auth_bloc.dart';
-import 'package:single_machine_cashier_ui/features/pos/presentation/screens/auth.dart';
 import 'package:single_machine_cashier_ui/features/pos/presentation/screens/device_managament.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,6 +10,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/order/order_bloc.dart';
 import 'Language_popup.dart';
 import 'dart:io';
+import 'package:authentication_module/authentication_module.dart';
 
 class MainAppBar extends StatelessWidget {
   const MainAppBar({Key? key}) : super(key: key);
@@ -98,10 +97,10 @@ class MainAppBar extends StatelessWidget {
                 }),
                 BlocListener<AuthBloc, AuthState>(
                   listener: (context, state) {
-                    if (state is UserSignedOut) {
+                    if (state is Unauthenticated) {
                       Navigator.of(context).pushReplacement(
                           MaterialPageRoute(builder: ((context) {
-                        return const AuthenticationPage();
+                        return const AuthPage();
                       })));
                     }
                   },
@@ -111,7 +110,7 @@ class MainAppBar extends StatelessWidget {
                       height,
                       Icons.logout,
                       AppLocalizations.of(context)!.logout, () {
-                    BlocProvider.of<AuthBloc>(context).add(SignOutUser());
+                    BlocProvider.of<AuthBloc>(context).add(SignOutEvent());
                   }),
                 ),
                 if (!kIsWeb)

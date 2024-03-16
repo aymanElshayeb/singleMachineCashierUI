@@ -14,16 +14,12 @@ class WebOrderRepositoryImpl implements OrderRepository {
 
   @override
   Future<Either<Failure, void>> saveOrder(
-      double orderPrice, entity.PaymentMethod paymentMethod) async {
+      entity.Order order) async {
     
     try {
       await _firebaseFirestore
           .collection('orders')
-          .add({'order': {
-          'orderPrice':orderPrice,
-          'paymentMethod':paymentMethod,
-          'dateTime':DateTime.now()
-        }});
+          .add({'order': order.toMap()});
       return right(null);
     } catch (e) {
       return left(CacheFailure());
