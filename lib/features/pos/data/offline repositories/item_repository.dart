@@ -39,6 +39,10 @@ class OfflineItemRepository implements ItemsRepository {
 
       return right(items);
     } else {
+      final responseMap = jsonDecode(response.body);
+      if (responseMap['message'] == 'Unauthorized: Invalid token') {
+        return left(AuthenticationFailure());
+      }
       // Handle errors
       return left(CacheFailure());
     }
@@ -70,6 +74,10 @@ class OfflineItemRepository implements ItemsRepository {
 
       return right(eanItems);
     } else {
+      final responseMap = jsonDecode(response.body);
+      if (responseMap['message'] == 'Unauthorized: Invalid token') {
+        return left(AuthenticationFailure());
+      }
       // Handle errors
       return left(CacheFailure());
     }

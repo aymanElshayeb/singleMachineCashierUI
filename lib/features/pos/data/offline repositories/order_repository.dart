@@ -32,6 +32,10 @@ class OfflineOrderRepository implements OrderRepository {
         // Handle errors
         print(response.body);
         debugPrint('Error: ${response.statusCode}, ${response.reasonPhrase}');
+        final responseMap = jsonDecode(response.body);
+      if (responseMap['message'] == 'Unauthorized: Invalid token') {
+        return left(AuthenticationFailure());
+      }
         return left(CacheFailure());
       }
     } catch (e) {
@@ -56,9 +60,14 @@ class OfflineOrderRepository implements OrderRepository {
       } else {
         // Handle errors
         debugPrint('Error: ${response.statusCode}, ${response.reasonPhrase}');
+        final responseMap = jsonDecode(response.body);
+      if (responseMap['message'] == 'Unauthorized: Invalid token') {
+        return left(AuthenticationFailure());
+      }
         return left(CacheFailure());
       }
     } catch (e) {
+      
       return left(CacheFailure());
     }
   }

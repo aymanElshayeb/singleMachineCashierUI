@@ -14,7 +14,8 @@ part 'order_state.dart';
 
 const String SERVER_FAILURE_MESSAGE = 'Server Failure';
 const String CACHE_FAILURE_MESSAGE = 'Cache Failure';
-const String AUTHENTICATION_FAILURE_MESSAGE = 'Invalid password';
+const String AUTHENTICATION_FAILURE_MESSAGE =
+    'Session ended, Please sign in again';
 
 class OrderBloc extends Bloc<OrderEvent, OrderState> {
   final Orders orders;
@@ -89,11 +90,18 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       add(CreateInvoice(order: order));
       final response = await orders.saveOrder(order: order);
       response.fold((failure) {
-        emit(OrderError(
-            message: _mapFailureToMessage(failure),
-            orderItems: state.orderItems,
-            totalPrice: state.totalPrice,
-            orderDiscounts: state.orderDiscounts));
+        if (failure is AuthenticationFailure) {
+          emit(OrderSessionEndedState(
+              orderDiscounts: state.orderDiscounts,
+              orderItems: state.orderItems,
+              totalPrice: state.totalPrice));
+        } else {
+          emit(OrderError(
+              message: _mapFailureToMessage(failure),
+              orderItems: state.orderItems,
+              totalPrice: state.totalPrice,
+              orderDiscounts: state.orderDiscounts));
+        }
       }, (items) {
         add(UpdateOrderAndTotalPrice(
             updatedOrder: event.subOrder != null ? event.restOfOrderItems! : [],

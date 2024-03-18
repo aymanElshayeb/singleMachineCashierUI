@@ -7,6 +7,7 @@ import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/order/o
 import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/currency.dart';
 import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/number_pad.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/session_ended_dialog.dart';
 
 class PaymentScreen extends StatefulWidget {
   final List<Item>? subOrder;
@@ -65,6 +66,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       );
                       ScaffoldMessenger.of(context).showSnackBar(snackBar2);
 
+                    }else if(state is OrderSessionEndedState){
+                      showDialog(
+                    context: context,
+                    builder: (context) => const SessionEndedDialog(),
+                  );
                     }
                   },
                   child: paymentButton(

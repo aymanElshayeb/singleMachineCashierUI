@@ -1,5 +1,6 @@
 import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/ean/ean_bloc.dart';
 import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/order/order_bloc.dart';
+import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/session_ended_dialog.dart';
 import 'package:single_machine_cashier_ui/features/pos/presentation/widgets/virtual_keyboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -61,8 +62,16 @@ class CustomDialog extends StatelessWidget {
                 decoration: BoxDecoration(
                     color: Theme.of(context).colorScheme.background,
                     borderRadius: BorderRadius.circular(15)),
-                child: BlocBuilder<EanBloc, EanState>(
+                child: BlocConsumer<EanBloc, EanState>(
                   bloc: BlocProvider.of(context)..add(EmptyEan()),
+                  listener: (context, state) {
+                    if (state is SessionEndedState) {
+                      showDialog(
+                        context: context,
+                        builder: (context) => const SessionEndedDialog(),
+                      );
+                    }
+                  },
                   builder: (context, state) {
                     if (state is EanInitial) {
                       return const Center(
@@ -86,8 +95,8 @@ class CustomDialog extends StatelessWidget {
                                 title: Text(state.items[index].name),
                                 subtitle:
                                     Text('EAN: ${state.items[index].PLU_EAN} '),
-                                trailing:
-                                    Text(state.items[index].unitPrice.toString()),
+                                trailing: Text(
+                                    state.items[index].unitPrice.toString()),
                                 onTap: () {
                                   BlocProvider.of<OrderBloc>(context).add(
                                       AddItemToOrder(item: state.items[index]));

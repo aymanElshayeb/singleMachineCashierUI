@@ -19,6 +19,7 @@ class ItemsLoaded extends ItemState {
 
   ItemsLoaded(this.items);
 }
+class SessionEndedState extends ItemState {}
 
 class ItemError extends ItemState {
   final String message;

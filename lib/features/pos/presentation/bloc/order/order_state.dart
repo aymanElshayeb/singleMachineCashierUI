@@ -60,3 +60,10 @@ class OrderError extends OrderState {
       required super.totalPrice,
       required super.orderDiscounts});
 }
+
+class OrderSessionEndedState extends OrderState {
+  const OrderSessionEndedState(
+      {required super.orderItems,
+      required super.totalPrice,
+      required super.orderDiscounts});
+}

@@ -29,6 +29,10 @@ class OfflineCategoryRepository implements CategoryRepository {
 
       return right(categories);
     } else {
+      final responseMap = jsonDecode(response.body);
+      if (responseMap['message'] == 'Unauthorized: Invalid token') {
+        return left(AuthenticationFailure());
+      }
       // Handle errors
       return left(CacheFailure());
     }
