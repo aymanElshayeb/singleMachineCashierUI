@@ -29,7 +29,7 @@ class HandlePrinterAndDrawer {
                 description: item.name,
                 date: DateTime.now(),
                 quantity: item.quantity,
-                unitPrice: item.price))
+                unitPrice: item.unitPrice))
             .toList()));
   }
 
@@ -45,4 +45,5 @@ class HandlePrinterAndDrawer {
         }));
     PdfApi.saveDocument(name: 'empty', pdf: doc);
   }
+  
 }

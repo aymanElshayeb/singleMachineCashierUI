@@ -11,7 +11,9 @@ part 'category_state.dart';
 
 const String SERVER_FAILURE_MESSAGE = 'Server Failure';
 const String CACHE_FAILURE_MESSAGE = 'Cache Failure';
-const String AUTHENTICATION_FAILURE_MESSAGE = 'Invalid password';
+const String AUTHENTICATION_FAILURE_MESSAGE = '''Your session has ended.
+Please log in again to continue accessing the application.
+If you believe this is an error, please check your internet connection and try again.''';
 
 class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
   final Categories categories;
@@ -27,12 +29,16 @@ class CategoryBloc extends Bloc<CategoryEvent, CategoryState> {
       emit(NavigateToCategoriesState());
       emit(CategoriesLoadingState());
       final response = await categories.getAllCategories();
-      response.fold(
-          (failure) =>
-              emit(ErrorState(errorMessage: _mapFailureToMessage(failure))),
-          (categories) => emit(CategoriesLoadedState(categories: categories)));
+      response.fold((failure) {
+        if (failure is AuthenticationFailure) {
+          emit(SessionEndedState());
+        }else{
+          emit(ErrorState(errorMessage: _mapFailureToMessage(failure)));
+        }
+        
+      }, (categories) => emit(CategoriesLoadedState(categories: categories)));
     } catch (e) {
-      emit(ErrorState(errorMessage: 'Error fetching users: $e'));
+      emit(ErrorState(errorMessage: 'Error fetching categories: $e'));
     }
   }
 

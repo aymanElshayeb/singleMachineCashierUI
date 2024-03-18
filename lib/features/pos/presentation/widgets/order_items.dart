@@ -23,11 +23,11 @@ class OrderItems extends StatelessWidget {
                     return Column(
                       children: [
                         CartItem(orderItem: state.orderItems[index]),
-                        if (state.orderItems[index].discountsPercentage != null)
+                        if (state.orderItems[index].discountPercentages!.isNotEmpty)
                           DiscountList(
                             item: state.orderItems[index],
                             discounts:
-                                state.orderItems[index].discountsPercentage!,
+                                state.orderItems[index].discountPercentages!,
                           )
                       ],
                     );

@@ -1,9 +1,11 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/widgets.dart';
 import 'package:printing/printing.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 
 class PdfApi {
   static Future<File> saveDocument({
@@ -26,6 +28,15 @@ class PdfApi {
     await file.writeAsBytes(bytes);
 
     return file;
+  }
+  static Future<void> printExternalInvoice(Uint8List pdfBytes) async{
+        String? url = await getPrinterUrl();
+    if (url != null) {
+      await Printing.directPrintPdf(
+          printer: Printer(url: url), onLayout: ((format) async => pdfBytes));
+    } else {
+      await Printing.layoutPdf(onLayout: ((format) async => pdfBytes));
+    }
   }
 
   static Future openFile(File file) async {

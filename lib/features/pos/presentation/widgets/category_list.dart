@@ -35,7 +35,7 @@ class CategoryList extends StatelessWidget {
                       style: ElevatedButton.styleFrom(
                         backgroundColor:
                             Colors.primaries[index].withOpacity(0.5),
-                        textStyle: TextStyle(
+                        textStyle: const TextStyle(
                           fontSize: 16,
                         ),
                         shape: RoundedRectangleBorder(

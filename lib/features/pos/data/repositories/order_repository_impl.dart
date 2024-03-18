@@ -14,11 +14,7 @@ class FiredartOrderRepositoryImpl implements OrderRepository {
 
   @override
   Future<Either<Failure, void>> saveOrder(
-      double orderPrice, entity.PaymentMethod paymentMethod) async {
-    entity.Order order = entity.Order(
-        totalPrice: orderPrice,
-        paymentMethod: paymentMethod,
-        dateTime: DateTime.now());
+      entity.Order order) async {
     try {
       await _firebaseFirestore
           .collection('orders')
@@ -27,5 +23,11 @@ class FiredartOrderRepositoryImpl implements OrderRepository {
     } catch (e) {
       return left(CacheFailure());
     }
+  }
+
+  @override
+  Future<Either<Failure, String>> createInvoice(entity.Order order) {
+    // TODO: implement createInvoice
+    throw UnimplementedError();
   }
 }

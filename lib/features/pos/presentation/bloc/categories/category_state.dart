@@ -29,3 +29,4 @@ class NavigateToItemsState extends CategoryState {
 }
 
 class NavigateToCategoriesState extends CategoryState {}
+class SessionEndedState extends CategoryState {}

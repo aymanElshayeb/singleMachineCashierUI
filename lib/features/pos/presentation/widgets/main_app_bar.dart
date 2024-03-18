@@ -10,6 +10,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:single_machine_cashier_ui/features/pos/presentation/bloc/order/order_bloc.dart';
 import 'Language_popup.dart';
 import 'dart:io';
+import 'package:authentication_module/authentication_module.dart';
 
 class MainAppBar extends StatelessWidget {
   const MainAppBar({Key? key}) : super(key: key);
@@ -68,40 +69,58 @@ class MainAppBar extends StatelessWidget {
             ),
           ),
           SizedBox(
-            width: width * 0.435,
+            width: width * 0.3,
           ),
           Padding(
             padding: EdgeInsets.only(right: width * 0.02),
             child: Row(
               children: <Widget>[
-                if(!kIsWeb)
-                menuButton(
-                    Theme.of(context).primaryColor,
-                    width,
-                    height,
-                    Icons.device_hub,
-                    AppLocalizations.of(context)!.office, () async {
-                  List<Printer> printers = await Printing.listPrinters();
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (redContext) => DeviceMangament(
-                                printers: printers,
-                              )));
-                }),
+                if (!kIsWeb)
+                  menuButton(
+                      Theme.of(context).primaryColor,
+                      width,
+                      height,
+                      Icons.device_hub,
+                      AppLocalizations.of(context)!.office, () async {
+                    List<Printer> printers = await Printing.listPrinters();
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (redContext) => DeviceMangament(
+                                  printers: printers,
+                                )));
+                  }),
                 menuButton(Theme.of(context).primaryColor, width, height,
                     Icons.home, AppLocalizations.of(context)!.home, () {
                   BlocProvider.of<CategoryBloc>(context)
                       .add(FetchCategoriesEvent());
                 }),
-                if(!kIsWeb)
-                menuButton(
-                    Theme.of(context).primaryColor,
-                    width,
-                    height,
-                    Icons.power_settings_new,
-                    AppLocalizations.of(context)!.exit,
-                    () => _showExitConfirmation(context)),
+                BlocListener<AuthBloc, AuthState>(
+                  listener: (context, state) {
+                    if (state is Unauthenticated) {
+                      Navigator.of(context).pushReplacement(
+                          MaterialPageRoute(builder: ((context) {
+                        return const AuthPage();
+                      })));
+                    }
+                  },
+                  child: menuButton(
+                      Theme.of(context).primaryColor,
+                      width,
+                      height,
+                      Icons.logout,
+                      AppLocalizations.of(context)!.logout, () {
+                    BlocProvider.of<AuthBloc>(context).add(SignOutEvent());
+                  }),
+                ),
+                if (!kIsWeb)
+                  menuButton(
+                      Theme.of(context).primaryColor,
+                      width,
+                      height,
+                      Icons.power_settings_new,
+                      AppLocalizations.of(context)!.exit,
+                      () => _showExitConfirmation(context)),
                 LangPopup(),
               ],
             ),
@@ -114,7 +133,7 @@ class MainAppBar extends StatelessWidget {
   String countTheTotal(Map<Item, num> order) {
     double total = 0;
     for (int i = 0; i < order.length; i++) {
-      total += order.keys.elementAt(i).price * order.values.elementAt(i);
+      total += order.keys.elementAt(i).unitPrice * order.values.elementAt(i);
     }
     return total.toString();
   }

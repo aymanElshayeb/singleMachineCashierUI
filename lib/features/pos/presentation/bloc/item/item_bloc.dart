@@ -35,7 +35,15 @@ class ItemBloc extends Bloc<ItemEvent, ItemState> {
       final response =
           await items.getItemsByCategory(categoryId: event.categoryId);
       response.fold(
-          (failure) => emit(ItemError(message: _mapFailureToMessage(failure))),
+          (failure) {
+            if (failure is AuthenticationFailure) {
+          emit(SessionEndedState());
+        }else{
+          emit(ItemError(message: _mapFailureToMessage(failure)));
+
+        }
+            
+          },
           (items) => emit(ItemsLoaded(items)));
     } catch (e) {
       emit(ItemError(message: 'Error fetching users: $e'));

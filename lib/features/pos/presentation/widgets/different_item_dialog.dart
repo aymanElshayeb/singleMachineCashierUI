@@ -12,28 +12,35 @@ class DifferentItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
-    TextEditingController customController = TextEditingController();
-    TextEditingController customController2 = TextEditingController();
-    TextEditingController customController3 = TextEditingController();
+    TextEditingController nameController = TextEditingController();
+    TextEditingController priceController = TextEditingController();
+    TextEditingController quantityController = TextEditingController();
+    TextEditingController taxController = TextEditingController();
     return AlertDialog(
       title: Text(AppLocalizations.of(context)!.enteranitem),
       content: SizedBox(
-        height: height * 0.25,
+        height: height * 0.32,
         child: Column(children: [
           GlobalTextField(
-            customController: customController,
+            customController: nameController,
             iconData: Icons.fastfood,
             labelText: AppLocalizations.of(context)!.name,
             isNumber: false,
           ),
           GlobalTextField(
-            customController: customController2,
+            customController: priceController,
             iconData: Icons.price_change,
             labelText: AppLocalizations.of(context)!.price,
             isNumber: true,
           ),
           GlobalTextField(
-            customController: customController3,
+            customController: taxController,
+            iconData: Icons.price_change,
+            labelText: 'tax percentage',
+            isNumber: true,
+          ),
+          GlobalTextField(
+            customController: quantityController,
             iconData: Icons.add,
             labelText: AppLocalizations.of(context)!.quantity,
             isNumber: true,
@@ -43,10 +50,15 @@ class DifferentItem extends StatelessWidget {
       actions: [
         MaterialButton(
           onPressed: () {
+            double unitPrice = double.parse(priceController.text);
+            double quantity = double.parse(quantityController.text);
+            double taxPercentage =
+                taxController.text == '' ? 0 : double.parse(taxController.text);
             Item customItem = Item.custom(
-                name: customController.text,
-                price: double.parse(customController2.text),
-                quantity: double.parse(customController3.text));
+                taxPercentage: taxPercentage,
+                name: nameController.text,
+                price: unitPrice,
+                quantity: quantity,discountPercentages: []);
 
             BlocProvider.of<OrderBloc>(context)
                 .add(AddItemToOrder(item: customItem));
