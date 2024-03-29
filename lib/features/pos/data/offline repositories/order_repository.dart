@@ -10,6 +10,9 @@ import 'package:single_machine_cashier_ui/features/pos/domain/entities/order.dar
     as entity;
 
 class OfflineOrderRepository implements OrderRepository {
+  final invoicingEndpoint = const String.fromEnvironment('INVOICING_ENDPOINT');
+  final countryCode = const String.fromEnvironment('COUNTRY_CODE');
+  final clientId = const String.fromEnvironment('TSS_CLIENT');
   @override
   Future<Either<Failure, void>> saveOrder(entity.Order order) async {
     try {
@@ -30,12 +33,11 @@ class OfflineOrderRepository implements OrderRepository {
         return right(null);
       } else {
         // Handle errors
-        print(response.body);
         debugPrint('Error: ${response.statusCode}, ${response.reasonPhrase}');
         final responseMap = jsonDecode(response.body);
-      if (responseMap['message'] == 'Unauthorized: Invalid token') {
-        return left(AuthenticationFailure());
-      }
+        if (responseMap['message'] == 'Unauthorized: Invalid token') {
+          return left(AuthenticationFailure());
+        }
         return left(CacheFailure());
       }
     } catch (e) {
@@ -46,12 +48,19 @@ class OfflineOrderRepository implements OrderRepository {
   @override
   Future<Either<Failure, String>> createInvoice(entity.Order order) async {
     try {
+      print(order.getInvoiceData());
       final http.Response response = await http.post(
-        Uri.parse('http://localhost:3006/order-invoices/ksa'),
+        Uri.parse('$invoicingEndpoint/$countryCode'),
         headers: <String, String>{
           'Content-Type': 'application/json',
         },
-        body: jsonEncode(order.toMap()),
+        body: jsonEncode(countryCode == 'ksa'
+            ? order.toMap()
+            : {
+                'items': order.toMapGER(),
+                'client_id': clientId,
+                'orderData': order.getInvoiceData()
+              }),
       );
 
       if (response.statusCode == 200) {
@@ -61,13 +70,13 @@ class OfflineOrderRepository implements OrderRepository {
         // Handle errors
         debugPrint('Error: ${response.statusCode}, ${response.reasonPhrase}');
         final responseMap = jsonDecode(response.body);
-      if (responseMap['message'] == 'Unauthorized: Invalid token') {
-        return left(AuthenticationFailure());
-      }
+        if (responseMap['message'] == 'Unauthorized: Invalid token') {
+          return left(AuthenticationFailure());
+        }
         return left(CacheFailure());
       }
     } catch (e) {
-      
+      print('this is my error no  more: $e');
       return left(CacheFailure());
     }
   }
