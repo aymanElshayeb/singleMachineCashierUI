@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:equatable/equatable.dart';
 import 'package:firedart/firestore/models.dart';
 import 'package:single_machine_cashier_ui/features/pos/domain/entities/discount.dart';
@@ -57,6 +59,34 @@ class Order extends Equatable {
     required this.items,
     required this.orderDiscounts,
   });
+List<Map<String, dynamic>> groupItemsByTax() {
+  Map<double, List<Item>> groupedMap = {};
+
+  // Grouping items by taxPercentage
+  for (var item in items) {
+    if (!groupedMap.containsKey(item.taxPercentage)) {
+      groupedMap[item.taxPercentage] = [];
+    }
+    groupedMap[item.taxPercentage]!.add(item);
+  }
+
+  List<Map<String, dynamic>> result = [];
+
+  // Constructing the result list
+  groupedMap.forEach((taxPercentage, itemList) {
+    double totalGrossPrice = itemList.map((item) => item.grossPrice).reduce((value, element) => value + element);
+    double totalPriceWithoutVAT = itemList.map((item) => item.netAmount).reduce((value, element) => value + element);
+
+    result.add({
+      'percentage': (taxPercentage/100).toStringAsFixed(2),
+      'incl_vat': totalGrossPrice.toStringAsFixed(2),
+      'excl_vat': totalPriceWithoutVAT.toStringAsFixed(2),
+      'vat':(totalGrossPrice-totalPriceWithoutVAT).toStringAsFixed(2)
+    });
+  });
+
+  return result;
+}
 
   @override
   List<Object?> get props => [id, paymentMethod, issueDate];
@@ -83,6 +113,70 @@ class Order extends Equatable {
       "netAmount": netAmount,
       "taxAmount": taxAmount,
       "grossAmount": grossPrice,
+    };
+  }
+
+  Map<String, dynamic> getInvoiceData() {
+    return {
+      "data": {
+        "currency": 'EUR',
+        "full_amount_incl_vat": grossPrice.toStringAsFixed(2),
+        "full_amount_incl_vat_before_discount": (grossPrice - totalOrderDiscount).toStringAsFixed(2),
+        "total_discount_value": totalOrderDiscount.toStringAsFixed(2),
+        "date":DateTime.now().millisecondsSinceEpoch ~/ 1000,
+        "discounts": orderDiscounts
+            .map((discount) =>
+                {"name": "Discount", "discount_value": discount.grossAmount.toStringAsFixed(2)})
+            .toList(),
+        "payment_types": [
+          {"amount": grossPrice.toStringAsFixed(2), "name": "CASH"}
+        ],
+        "vat_amounts":groupItemsByTax(),
+        "lines": items
+            .map(
+              (e) => {
+                "text": e.name,
+                "vat_amounts": [
+                  {
+                    "percentage": (e.taxPercentage/100).toStringAsFixed(2),
+                    "incl_vat": e.grossPrice.toStringAsFixed(2)
+                  }
+                ],
+                "item": {
+                  "number": e.name,
+                  "quantity": e.quantity.toStringAsFixed(2),
+                  "price_per_unit": e.unitPrice.toStringAsFixed(2),
+                  "full_amount": e.grossPrice.toStringAsFixed(2)
+                },
+                "discounts": e.discountPercentages != null
+                    ? e.discountPercentages!
+                        .map((discountPercentage) => {
+                              "name": "Discount",
+                              "discount_value":
+                                  (discountPercentage * e.grossPrice).toStringAsFixed(2)
+                            })
+                        .toList()
+                    : []
+              },
+            )
+            .toList()
+      }
+    };
+  }
+
+  Map<String, dynamic> toMapGER() {
+    return <String, dynamic>{
+      "amounts_per_vat_rate": items
+          .map((e) =>
+              {"vat_rate": "NORMAL", "amount": e.grossPrice.toStringAsFixed(2)})
+          .toList(),
+      "amounts_per_payment_type": [
+        {
+          "payment_type":
+              paymentMethod == PaymentMethod.cash ? 'CASH' : 'NON-CASH',
+          "amount": grossPrice.toStringAsFixed(2)
+        }
+      ],
     };
   }
 }

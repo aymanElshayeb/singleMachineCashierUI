@@ -245,6 +245,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
             totalPrice: state.totalPrice,
             orderDiscounts: state.orderDiscounts));
       }, (invoiceBase64PdfData) async {
+        
         Uint8List pdfBytes = base64Decode(invoiceBase64PdfData.split(',').last);
         PdfApi.printExternalInvoice(pdfBytes);
       });

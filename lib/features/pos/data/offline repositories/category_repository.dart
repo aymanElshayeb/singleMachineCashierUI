@@ -10,9 +10,10 @@ import '../../domain/repositories/category_repository.dart';
 import 'package:http/http.dart' as http;
 
 class OfflineCategoryRepository implements CategoryRepository {
+  final posEndpoint = const String.fromEnvironment('POS_ENDPOINT');
   @override
   Future<Either<Failure, List<Category>>> getCategories() async {
-    final Uri url = Uri.parse('http://localhost:3003/category');
+    final Uri url = Uri.parse('$posEndpoint/category');
     const storage = FlutterSecureStorage();
     final String? jwtToken = await storage.read(key: 'token');
     final response = await http.get(url, headers: {

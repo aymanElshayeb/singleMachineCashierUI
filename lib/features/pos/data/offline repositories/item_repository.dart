@@ -8,11 +8,12 @@ import 'package:single_machine_cashier_ui/features/pos/domain/repositories/item_
 import 'package:http/http.dart' as http;
 
 class OfflineItemRepository implements ItemsRepository {
+    final posEndpoint = const String.fromEnvironment('POS_ENDPOINT');
   
   @override
   Future<Either<Failure, List<Item>>> getCategoryItems(
       {String? categoryId}) async {
-    final Uri url = Uri.parse('http://localhost:3003/item');
+    final Uri url = Uri.parse('$posEndpoint/item');
     const storage = FlutterSecureStorage();
     final String? jwtToken = await storage.read(key: 'token');
     final response = await http.get(url, headers: {
@@ -51,7 +52,7 @@ class OfflineItemRepository implements ItemsRepository {
   @override
   Future<Either<Failure, List<Item>>> getItemsByEan(
       {required String keyWord}) async {
-    final Uri url = Uri.parse('http://localhost:3003/item');
+    final Uri url = Uri.parse('$posEndpoint/item');
     const storage = FlutterSecureStorage();
     final String? jwtToken = await storage.read(key: 'token');
     final response = await http.get(url, headers: {
