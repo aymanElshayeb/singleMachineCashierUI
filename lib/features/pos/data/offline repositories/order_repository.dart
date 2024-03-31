@@ -48,7 +48,7 @@ class OfflineOrderRepository implements OrderRepository {
   @override
   Future<Either<Failure, String>> createInvoice(entity.Order order) async {
     try {
-      print(order.getInvoiceData());
+      
       final http.Response response = await http.post(
         Uri.parse('$invoicingEndpoint/$countryCode'),
         headers: <String, String>{

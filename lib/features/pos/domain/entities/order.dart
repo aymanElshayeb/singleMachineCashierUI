@@ -59,32 +59,34 @@ class Order extends Equatable {
     required this.items,
     required this.orderDiscounts,
   });
-  Map<double, double> groupItemsByVAT() {
-    final Map<double, double> vatTotals = {};
-    final Map<double, double> totalPriceWithoutVat = {};
-    final Map<double, double> totalPriceWithVat = {};
-    for (final item in items) {
-      if (totalPriceWithVat.containsKey(item.taxPercentage)) {
-        totalPriceWithVat[item.taxPercentage] =
-            totalPriceWithVat[item.taxPercentage]! + item.grossPrice;
-      } else {
-        totalPriceWithVat[item.taxPercentage] = item.grossPrice;
-      }
-      if (totalPriceWithoutVat.containsKey(item.taxPercentage)) {
-        totalPriceWithoutVat[item.taxPercentage] =
-            totalPriceWithoutVat[item.taxPercentage]! + item.netAmount;
-      } else {
-        totalPriceWithoutVat[item.taxPercentage] = item.netAmount;
-      }
-      if (vatTotals.containsKey(item.taxPercentage)) {
-        vatTotals[item.taxPercentage] =
-            vatTotals[item.taxPercentage]! + item.taxPrice;
-      } else {
-        vatTotals[item.taxPercentage] = item.taxPrice;
-      }
+List<Map<String, dynamic>> groupItemsByTax() {
+  Map<double, List<Item>> groupedMap = {};
+
+  // Grouping items by taxPercentage
+  for (var item in items) {
+    if (!groupedMap.containsKey(item.taxPercentage)) {
+      groupedMap[item.taxPercentage] = [];
     }
-    return vatTotals;
+    groupedMap[item.taxPercentage]!.add(item);
   }
+
+  List<Map<String, dynamic>> result = [];
+
+  // Constructing the result list
+  groupedMap.forEach((taxPercentage, itemList) {
+    double totalGrossPrice = itemList.map((item) => item.grossPrice).reduce((value, element) => value + element);
+    double totalPriceWithoutVAT = itemList.map((item) => item.netAmount).reduce((value, element) => value + element);
+
+    result.add({
+      'percentage': (taxPercentage/100).toStringAsFixed(2),
+      'incl_vat': totalGrossPrice.toStringAsFixed(2),
+      'excl_vat': totalPriceWithoutVAT.toStringAsFixed(2),
+      'vat':(totalGrossPrice-totalPriceWithoutVAT).toStringAsFixed(2)
+    });
+  });
+
+  return result;
+}
 
   @override
   List<Object?> get props => [id, paymentMethod, issueDate];
@@ -119,41 +121,45 @@ class Order extends Equatable {
       "data": {
         "currency": 'EUR',
         "full_amount_incl_vat": grossPrice.toStringAsFixed(2),
+        "full_amount_incl_vat_before_discount": (grossPrice - totalOrderDiscount).toStringAsFixed(2),
         "total_discount_value": totalOrderDiscount.toStringAsFixed(2),
+        "date":DateTime.now().millisecondsSinceEpoch ~/ 1000,
         "discounts": orderDiscounts
             .map((discount) =>
-                {"name": "", "discount_value": discount.grossAmount.toStringAsFixed(2)})
+                {"name": "Discount", "discount_value": discount.grossAmount.toStringAsFixed(2)})
             .toList(),
         "payment_types": [
           {"amount": grossPrice.toStringAsFixed(2), "name": "CASH"}
         ],
-        "lines": [
-          items
-              .map(
-                (e) => {
-                  "text": e.name,
-                  "vat_amounts": [
-                    jsonEncode({"percentage": e.taxPercentage.toStringAsFixed(2), "incl_vat": e.grossPrice.toStringAsFixed(2)})
-                  ],
-                  "item": {
-                    "number": e.name,
-                    "quantity": e.quantity.toStringAsFixed(2),
-                    "price_per_unit": e.unitPrice.toStringAsFixed(2),
-                    // "full_amount": e.grossPrice.toStringAsFixed(2)
-                  },
-                  // "discounts": e.discountPercentages != null
-                  //     ? e.discountPercentages!
-                  //         .map((discountPercentage) => {
-                  //               "name": "",
-                  //               "discount_value":
-                  //                   (discountPercentage * e.grossPrice).toStringAsFixed(2)
-                  //             })
-                  //         .toList()
-                  //     : []
+        "vat_amounts":groupItemsByTax(),
+        "lines": items
+            .map(
+              (e) => {
+                "text": e.name,
+                "vat_amounts": [
+                  {
+                    "percentage": (e.taxPercentage/100).toStringAsFixed(2),
+                    "incl_vat": e.grossPrice.toStringAsFixed(2)
+                  }
+                ],
+                "item": {
+                  "number": e.name,
+                  "quantity": e.quantity.toStringAsFixed(2),
+                  "price_per_unit": e.unitPrice.toStringAsFixed(2),
+                  "full_amount": e.grossPrice.toStringAsFixed(2)
                 },
-              )
-              .toList()
-        ]
+                "discounts": e.discountPercentages != null
+                    ? e.discountPercentages!
+                        .map((discountPercentage) => {
+                              "name": "Discount",
+                              "discount_value":
+                                  (discountPercentage * e.grossPrice).toStringAsFixed(2)
+                            })
+                        .toList()
+                    : []
+              },
+            )
+            .toList()
       }
     };
   }
