@@ -9,7 +9,10 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:logging/logging.dart';
 import 'package:printing/printing.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:single_machine_cashier_ui/features/pos/domain/service%20managers/category_service_manager.dart';
+import 'package:single_machine_cashier_ui/features/pos/data/datasources/cloud/category_data_source.dart';
+import 'package:single_machine_cashier_ui/features/pos/data/datasources/local/local_category_data_source.dart';
+import 'package:single_machine_cashier_ui/features/pos/data/datasources/odoo/odoo_category_data_source.dart';
+import 'package:single_machine_cashier_ui/features/pos/data/repositories/category_repository_impl.dart';
 import 'package:single_machine_cashier_ui/features/pos/domain/service%20managers/item_service_manager.dart';
 import 'package:single_machine_cashier_ui/features/pos/domain/service%20managers/order_service_manager.dart';
 import 'package:single_machine_cashier_ui/features/pos/domain/usecases/categories.dart';
@@ -108,9 +111,14 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => CategoryBloc(
               categories: Categories(
-                  categoryServiceManager: CategoryServiceManager(
-                      firebaseFirestore: FirebaseWeb.dataFirebaseInstance,
-                      firestore: Firestore(dataProjectId!)))),
+            repository: CategoryRepositoryImpl(
+                localDataSource: LocalCategoryDataSource(),
+                cloudDataSource: CloudCategoryDataSource(),
+                odooDataSource: OdooCategoryDataSource()),
+            // categoryServiceManager: CategoryServiceManager(
+            //     firebaseFirestore: FirebaseWeb.dataFirebaseInstance,
+            //     firestore: Firestore(dataProjectId!))
+          )),
         ),
         BlocProvider(
           create: (BuildContext context) {

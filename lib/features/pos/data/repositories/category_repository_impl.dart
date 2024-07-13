@@ -1,26 +1,30 @@
 import 'package:dartz/dartz.dart';
-import 'package:firedart/firestore/firestore.dart';
-import '../../../../core/error/failures.dart';
-import '../../domain/entities/category.dart';
-import '../../domain/repositories/category_repository.dart';
+import 'package:single_machine_cashier_ui/core/error/failures.dart';
+import 'package:single_machine_cashier_ui/features/pos/data/datasources/data_source.dart';
+import 'package:single_machine_cashier_ui/features/pos/domain/entities/category.dart';
+import 'package:single_machine_cashier_ui/features/pos/domain/repositories/category_repository.dart';
 
-class FiredartCategoryRepositoryImpl implements CategoryRepository {
-  final Firestore _firebaseFirestore;
+class CategoryRepositoryImpl implements CategoryRepository {
+  final CategoryDataSource localDataSource;
+  final CategoryDataSource cloudDataSource;
+  final CategoryDataSource odooDataSource;
 
-  FiredartCategoryRepositoryImpl({
-    Firestore? firebaseFirestore,
-  }) : _firebaseFirestore = firebaseFirestore ?? Firestore('pos-system-fe6f1');
-
+  CategoryRepositoryImpl(
+      {required this.localDataSource,
+      required this.cloudDataSource,
+      required this.odooDataSource});
   @override
-  Future<Either<Failure, List<Category>>> getCategories() async {
-    List<Category> categories = [];
-    try {
-      var snapshot = await _firebaseFirestore.collection('categories').get();
-
-      categories = snapshot.map((doc) => Category.fromSnapshot(doc)).toList();
-      return right(categories);
-    } catch (e) {
-      return left(CacheFailure());
+  Future<Either<Failure, List<Category>>> getCategories() {
+    const type = String.fromEnvironment('DATA_SOURCE');
+    switch (type) {
+      case 'local':
+        return localDataSource.getCategories();
+      case 'cloud':
+        return cloudDataSource.getCategories();
+      case 'odoo':
+        return odooDataSource.getCategories();
+      default:
+        throw CacheFailure();
     }
   }
 }
