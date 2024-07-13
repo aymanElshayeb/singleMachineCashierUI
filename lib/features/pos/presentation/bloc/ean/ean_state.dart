@@ -22,3 +22,4 @@ class ItemError extends EanState {
 
   const ItemError({required this.message});
 }
+class SessionEndedState extends EanState {}

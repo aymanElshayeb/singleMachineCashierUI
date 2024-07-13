@@ -66,4 +66,10 @@ class FinishOrder extends OrderEvent {
   });
 }
 
+class CreateInvoice extends OrderEvent {
+  final Order order;
+
+  const CreateInvoice({required this.order});
+}
+
 class DeleteOrder extends OrderEvent {}

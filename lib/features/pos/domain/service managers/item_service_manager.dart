@@ -1,8 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firedart/firedart.dart';
-import 'package:flutter/foundation.dart';
-import 'package:single_machine_cashier_ui/features/pos/data/repositories/item_repository_impl.dart';
-import 'package:single_machine_cashier_ui/features/pos/data/web%20repositories/web_item_repository.dart';
+import 'package:single_machine_cashier_ui/features/pos/data/offline%20repositories/item_repository.dart';
 import 'package:single_machine_cashier_ui/features/pos/domain/repositories/item_repository.dart';
 
 class ItemServiceManager {
@@ -19,9 +17,7 @@ class ItemServiceManager {
   // The internal constructor takes parameters and passes them to the repository
   ItemServiceManager._internal(
       {FirebaseFirestore? firebaseFirestore, Firestore? firestore})
-      : _itemRepository = kIsWeb
-            ? WebItemRepositoryImpl(firebaseFirestore: firebaseFirestore)
-            : FiredartItemRepositoryImpl(firebaseFirestore: firestore);
+      : _itemRepository = OfflineItemRepository();
 
   ItemsRepository get itemRepository => _itemRepository;
 }

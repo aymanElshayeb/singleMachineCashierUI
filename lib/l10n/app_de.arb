@@ -40,6 +40,7 @@
     "editquantity":"Artikelmenge bearbeiten",
     "adminpassword":"Bitte geben Sie das Admin-Passwort ein",
     "splitbill":"teilen Sie die Rechnung",
-    "alert":"Alarm"
+    "alert":"Alarm",
+    "logout":"Ausloggen"
 
 }

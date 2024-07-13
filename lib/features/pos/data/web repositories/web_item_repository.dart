@@ -19,7 +19,7 @@ class WebItemRepositoryImpl implements ItemsRepository {
     try {
       var snapshot = await _firebaseFirestore.collection('items').get();
 
-      items = snapshot.docs.map((doc) => Item.firebaseFromSnapshot(doc)).toList();
+      items = snapshot.docs.map((doc) => Item.fromSnapshot(doc)).toList();
 
       if (categoryId != null) {
         for (var item in items) {
@@ -45,7 +45,7 @@ class WebItemRepositoryImpl implements ItemsRepository {
     try {
       var snapshot = await _firebaseFirestore.collection('items').get();
 
-      items = snapshot.docs.map((doc) => Item.firebaseFromSnapshot(doc)).toList();
+      items = snapshot.docs.map((doc) => Item.fromSnapshot(doc)).toList();
 
       for (var item in items) {
         if (item.PLU_EAN.contains(keyWord)) {

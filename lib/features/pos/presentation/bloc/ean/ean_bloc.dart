@@ -25,11 +25,15 @@ class EanBloc extends Bloc<EanEvent, EanState> {
     try {
       emit(EanItemsLoading());
       final response = await items.getItemsByEan(keyWord: event.keyWord);
-      response.fold(
-          (failure) => emit(ItemError(message: _mapFailureToMessage(failure))),
-          (items) => emit(EanItemsLoaded(items)));
+      response.fold((failure) {
+        if (failure is AuthenticationFailure) {
+          emit(SessionEndedState());
+        } else {
+          emit(ItemError(message: _mapFailureToMessage(failure)));
+        }
+      }, (items) => emit(EanItemsLoaded(items)));
     } catch (e) {
-      emit(ItemError(message: 'Error fetching users: $e'));
+      emit(ItemError(message: 'Error fetching items: $e'));
     }
   }
 
