@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:equatable/equatable.dart';
 import 'package:firedart/firestore/models.dart';
 import 'package:single_machine_cashier_ui/features/pos/domain/entities/discount.dart';
