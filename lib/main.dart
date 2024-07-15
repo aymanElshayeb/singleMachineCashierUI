@@ -9,12 +9,21 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:logging/logging.dart';
 import 'package:printing/printing.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:single_machine_cashier_ui/features/pos/data/datasources/cloud/category_data_source.dart';
-import 'package:single_machine_cashier_ui/features/pos/data/datasources/local/local_category_data_source.dart';
+import 'package:single_machine_cashier_ui/features/pos/data/datasources/firebase/firebase_category_data_source.dart';
+import 'package:single_machine_cashier_ui/features/pos/data/datasources/firebase/firebase_items_data_source.dart';
+import 'package:single_machine_cashier_ui/features/pos/data/datasources/firebase/firebase_order_data_source.dart';
+import 'package:single_machine_cashier_ui/features/pos/data/datasources/firedart/firedart_category_data_source.dart';
+import 'package:single_machine_cashier_ui/features/pos/data/datasources/firedart/firedart_items_data_source.dart';
+import 'package:single_machine_cashier_ui/features/pos/data/datasources/firedart/firedart_order_data_source.dart';
+import 'package:single_machine_cashier_ui/features/pos/data/datasources/node/node_category_data_source.dart';
+import 'package:single_machine_cashier_ui/features/pos/data/datasources/node/node_items_data_source.dart';
+import 'package:single_machine_cashier_ui/features/pos/data/datasources/node/node_order_data_source.dart';
 import 'package:single_machine_cashier_ui/features/pos/data/datasources/odoo/odoo_category_data_source.dart';
+import 'package:single_machine_cashier_ui/features/pos/data/datasources/odoo/odoo_items_data_source.dart';
+import 'package:single_machine_cashier_ui/features/pos/data/datasources/odoo/odoo_order_data_source.dart';
 import 'package:single_machine_cashier_ui/features/pos/data/repositories/category_repository_impl.dart';
-import 'package:single_machine_cashier_ui/features/pos/domain/service%20managers/item_service_manager.dart';
-import 'package:single_machine_cashier_ui/features/pos/domain/service%20managers/order_service_manager.dart';
+import 'package:single_machine_cashier_ui/features/pos/data/repositories/items_repository_impl.dart';
+import 'package:single_machine_cashier_ui/features/pos/data/repositories/order_repository_impl.dart';
 import 'package:single_machine_cashier_ui/features/pos/domain/usecases/categories.dart';
 import 'package:single_machine_cashier_ui/features/pos/domain/usecases/items.dart';
 import 'package:single_machine_cashier_ui/features/pos/domain/usecases/orders.dart';
@@ -92,32 +101,36 @@ class MyApp extends StatelessWidget {
         BlocProvider(
             create: (_) => OrderBloc(
                 orders: Orders(
-                    orderServiceManager: OrderServiceManager(
-                        firebaseFirestore: FirebaseWeb.dataFirebaseInstance,
-                        firestore: Firestore(dataProjectId!))))),
+                  repository: OrderRepositoryImpl(nodeDataSource: NodeOrderDataSource(), fireBaseDataSource: FireBaseOrderDataSource(), fireDartDataSource: FireDartOrderDataSource(firebaseFirestore: Firestore(dataProjectId!)), odooDataSource: OdooOrderDataSource()),
+                    ))),
         BlocProvider(
             create: (_) => ItemBloc(
                 items: Items(
-                    itemServiceManager: ItemServiceManager(
-                        firebaseFirestore: FirebaseWeb.dataFirebaseInstance,
-                        firestore: Firestore(dataProjectId!))))),
+            repository: ItemsRepositoryImpl(
+                nodeDataSource: NodeItemsDataSource(),
+                fireBaseDataSource: FireBaseItemsDataSource(),
+                fireDartDataSource: FireDartItemsDataSource(firebaseFirestore: Firestore(dataProjectId!)),
+                odooDataSource: OdooItemsDataSource()),
+          ))),
         BlocProvider(
           create: (_) => EanBloc(
               items: Items(
-                  itemServiceManager: ItemServiceManager(
-                      firebaseFirestore: FirebaseWeb.dataFirebaseInstance,
-                      firestore: Firestore(dataProjectId!)))),
+            repository: ItemsRepositoryImpl(
+                nodeDataSource: NodeItemsDataSource(),
+                fireBaseDataSource: FireBaseItemsDataSource(),
+                fireDartDataSource: FireDartItemsDataSource(firebaseFirestore: Firestore(dataProjectId!)),
+                odooDataSource: OdooItemsDataSource()),
+          )),
         ),
         BlocProvider(
           create: (context) => CategoryBloc(
               categories: Categories(
             repository: CategoryRepositoryImpl(
-                localDataSource: LocalCategoryDataSource(),
-                cloudDataSource: CloudCategoryDataSource(),
+                nodeDataSource: NodeCategoryDataSource(),
+                fireBaseDataSource: FirebaseCategoryDataSource(),
+                fireDartDataSource: FireDartCategoryDataSource(
+                    firebaseFirestore: Firestore(dataProjectId!)),
                 odooDataSource: OdooCategoryDataSource()),
-            // categoryServiceManager: CategoryServiceManager(
-            //     firebaseFirestore: FirebaseWeb.dataFirebaseInstance,
-            //     firestore: Firestore(dataProjectId!))
           )),
         ),
         BlocProvider(
