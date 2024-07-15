@@ -93,32 +93,43 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(
             create: (_) => AuthBloc(
-                  authRepository: OfflineAuthenticationRepository(
-                      secureStorage: secureStorage,
-                      sharedPreferences: prefs,
-                      systemName: 'POS'),
+                  authRepository: AuthRepositoryImpl(
+                    dataSource: const String.fromEnvironment('DATA_SOURCE'),
+                    nodeDataSource: NodeAuthDataSource(
+                        secureStorage: secureStorage,
+                        sharedPreferences: prefs,
+                        systemName: 'POS'),
+                        odooDataSource: OdooAuthDataSource()
+                  ),
                 )),
         BlocProvider(
             create: (_) => OrderBloc(
-                orders: Orders(
-                  repository: OrderRepositoryImpl(nodeDataSource: NodeOrderDataSource(), fireBaseDataSource: FireBaseOrderDataSource(), fireDartDataSource: FireDartOrderDataSource(firebaseFirestore: Firestore(dataProjectId!)), odooDataSource: OdooOrderDataSource()),
-                    ))),
+                    orders: Orders(
+                  repository: OrderRepositoryImpl(
+                      nodeDataSource: NodeOrderDataSource(),
+                      fireBaseDataSource: FireBaseOrderDataSource(),
+                      fireDartDataSource: FireDartOrderDataSource(
+                          firebaseFirestore: Firestore(dataProjectId!)),
+                      odooDataSource: OdooOrderDataSource()),
+                ))),
         BlocProvider(
             create: (_) => ItemBloc(
-                items: Items(
-            repository: ItemsRepositoryImpl(
-                nodeDataSource: NodeItemsDataSource(),
-                fireBaseDataSource: FireBaseItemsDataSource(),
-                fireDartDataSource: FireDartItemsDataSource(firebaseFirestore: Firestore(dataProjectId!)),
-                odooDataSource: OdooItemsDataSource()),
-          ))),
+                    items: Items(
+                  repository: ItemsRepositoryImpl(
+                      nodeDataSource: NodeItemsDataSource(),
+                      fireBaseDataSource: FireBaseItemsDataSource(),
+                      fireDartDataSource: FireDartItemsDataSource(
+                          firebaseFirestore: Firestore(dataProjectId!)),
+                      odooDataSource: OdooItemsDataSource()),
+                ))),
         BlocProvider(
           create: (_) => EanBloc(
               items: Items(
             repository: ItemsRepositoryImpl(
                 nodeDataSource: NodeItemsDataSource(),
                 fireBaseDataSource: FireBaseItemsDataSource(),
-                fireDartDataSource: FireDartItemsDataSource(firebaseFirestore: Firestore(dataProjectId!)),
+                fireDartDataSource: FireDartItemsDataSource(
+                    firebaseFirestore: Firestore(dataProjectId!)),
                 odooDataSource: OdooItemsDataSource()),
           )),
         ),
