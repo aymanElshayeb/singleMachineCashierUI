@@ -1,15 +1,15 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
-import '../../../../core/error/failures.dart';
-import '../../domain/entities/item.dart';
-import '../../domain/repositories/item_repository.dart';
+import 'package:single_machine_cashier_ui/core/error/failures.dart';
+import 'package:single_machine_cashier_ui/features/pos/data/datasources/data_source.dart';
+import 'package:single_machine_cashier_ui/features/pos/domain/entities/item.dart';
+import 'package:firedart/firestore/firestore.dart';
 
-class WebItemRepositoryImpl implements ItemsRepository {
-  final FirebaseFirestore _firebaseFirestore;
+class FireDartItemsDataSource implements ItemsDataSource {
+    final Firestore _firebaseFirestore;
 
-  WebItemRepositoryImpl({
-    FirebaseFirestore? firebaseFirestore,
-  }) : _firebaseFirestore = firebaseFirestore ?? FirebaseFirestore.instance;
+  FireDartItemsDataSource({
+    Firestore? firebaseFirestore,
+  }) : _firebaseFirestore = firebaseFirestore ?? Firestore('pos-system-fe6f1');
 
   @override
   Future<Either<Failure, List<Item>>> getCategoryItems(
@@ -19,7 +19,7 @@ class WebItemRepositoryImpl implements ItemsRepository {
     try {
       var snapshot = await _firebaseFirestore.collection('items').get();
 
-      items = snapshot.docs.map((doc) => Item.fromSnapshot(doc)).toList();
+      items = snapshot.map((doc) => Item.fromSnapshot(doc)).toList();
 
       if (categoryId != null) {
         for (var item in items) {
@@ -45,7 +45,7 @@ class WebItemRepositoryImpl implements ItemsRepository {
     try {
       var snapshot = await _firebaseFirestore.collection('items').get();
 
-      items = snapshot.docs.map((doc) => Item.fromSnapshot(doc)).toList();
+      items = snapshot.map((doc) => Item.fromSnapshot(doc)).toList();
 
       for (var item in items) {
         if (item.PLU_EAN.contains(keyWord)) {
@@ -58,4 +58,5 @@ class WebItemRepositoryImpl implements ItemsRepository {
       return left(CacheFailure());
     }
   }
+
 }

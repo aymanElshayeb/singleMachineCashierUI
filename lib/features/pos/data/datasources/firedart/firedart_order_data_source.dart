@@ -1,21 +1,19 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dartz/dartz.dart';
+import 'package:firedart/firedart.dart';
 import 'package:single_machine_cashier_ui/core/error/failures.dart';
+import 'package:single_machine_cashier_ui/features/pos/data/datasources/data_source.dart';
 import 'package:single_machine_cashier_ui/features/pos/domain/entities/order.dart'
     as entity;
-import 'package:single_machine_cashier_ui/features/pos/domain/repositories/order_repository.dart';
+class FireDartOrderDataSource implements  OrderDataSource {
+   final Firestore _firebaseFirestore;
 
-class WebOrderRepositoryImpl implements OrderRepository {
-  final FirebaseFirestore _firebaseFirestore;
-
-  WebOrderRepositoryImpl({
-    FirebaseFirestore? firebaseFirestore,
-  }) : _firebaseFirestore = firebaseFirestore ?? FirebaseFirestore.instance;
+  FireDartOrderDataSource({
+    Firestore? firebaseFirestore,
+  }) : _firebaseFirestore = firebaseFirestore ?? Firestore('pos-system-fe6f1');
 
   @override
   Future<Either<Failure, void>> saveOrder(
       entity.Order order) async {
-    
     try {
       await _firebaseFirestore
           .collection('orders')
@@ -31,4 +29,5 @@ class WebOrderRepositoryImpl implements OrderRepository {
     // TODO: implement createInvoice
     throw UnimplementedError();
   }
+
 }
