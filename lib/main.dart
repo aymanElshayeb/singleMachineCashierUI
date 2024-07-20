@@ -7,7 +7,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:logging/logging.dart';
 import 'package:printing/printing.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:single_machine_cashier_ui/features/pos/data/datasources/firebase/firebase_category_data_source.dart';
 import 'package:single_machine_cashier_ui/features/pos/data/datasources/firebase/firebase_items_data_source.dart';
 import 'package:single_machine_cashier_ui/features/pos/data/datasources/firebase/firebase_order_data_source.dart';
@@ -42,7 +41,6 @@ import 'package:authentication_module/authentication_module.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
   String jsonString = await getConfigForFirebase();
   Map configMap = json.decode(jsonString);
   Map dataProjectConfig = configMap['data_firebase_config'];
@@ -62,7 +60,6 @@ void main() async {
   final bool isAuthenticated = await authService.isAuthenticated();
 
   runApp(MyApp(
-    prefs: prefs,
     isAuthenticated: isAuthenticated,
     authProjectId: authProjectConfig['projectId'],
     dataProjectId: dataProjectConfig['projectId'],
@@ -75,13 +72,11 @@ Future<String> getConfigForFirebase() async =>
 class MyApp extends StatelessWidget {
   final String? dataProjectId;
   final bool? isAuthenticated;
-  final SharedPreferences prefs;
   final String? authProjectId;
   const MyApp({
     super.key,
     this.dataProjectId,
     this.isAuthenticated,
-    required this.prefs,
     this.authProjectId,
   });
 
@@ -89,7 +84,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const secureStorage = FlutterSecureStorage();
-    final bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
 
     return MultiBlocProvider(
       providers: [
@@ -99,7 +93,6 @@ class MyApp extends StatelessWidget {
                       dataSource: const String.fromEnvironment('DATA_SOURCE'),
                       nodeDataSource: NodeAuthDataSource(
                           secureStorage: secureStorage,
-                          sharedPreferences: prefs,
                           systemName: 'POS'),
                       odooDataSource: OdooAuthDataSource(
                           secureStorage: secureStorage, systemName: 'POS')),
@@ -186,7 +179,7 @@ class MyApp extends StatelessWidget {
 
               return null;
             },
-            home: isLoggedIn ? const HomePage() : null,
+            // home: isLoggedIn ? const HomePage() : null,
           );
         },
       ),
