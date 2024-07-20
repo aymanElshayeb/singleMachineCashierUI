@@ -28,7 +28,8 @@ class Category extends Equatable {
       'name': name,
     };
   }
-   static Category fromJson(Map json) {
-    return Category(name: json['name'],id: json['_id']);
+
+  static Category fromJson(Map json) {
+    return Category(name: json['name'], id: json['_id'] ?? json['id'].toString());
   }
 }
