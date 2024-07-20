@@ -5,7 +5,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:logging/logging.dart';
 import 'package:printing/printing.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -59,13 +58,15 @@ void main() async {
     debugPrint(
         '[${record.loggerName}] -- ${record.level.name} -- ${record.time} -- ${record.message}');
   });
-  final String? token = await const FlutterSecureStorage().read(key: 'token');
+  final authService = AuthService();
+  final bool isAuthenticated = await authService.isAuthenticated();
 
   runApp(MyApp(
-      prefs: prefs,
-      authProjectId: authProjectConfig['projectId'],
-      dataProjectId: dataProjectConfig['projectId'],
-      token: token));
+    prefs: prefs,
+    isAuthenticated: isAuthenticated,
+    authProjectId: authProjectConfig['projectId'],
+    dataProjectId: dataProjectConfig['projectId'],
+  ));
 }
 
 Future<String> getConfigForFirebase() async =>
@@ -73,15 +74,16 @@ Future<String> getConfigForFirebase() async =>
 
 class MyApp extends StatelessWidget {
   final String? dataProjectId;
+  final bool? isAuthenticated;
   final SharedPreferences prefs;
   final String? authProjectId;
-  final String? token;
-  const MyApp(
-      {super.key,
-      this.dataProjectId,
-      required this.prefs,
-      this.authProjectId,
-      this.token});
+  const MyApp({
+    super.key,
+    this.dataProjectId,
+    this.isAuthenticated,
+    required this.prefs,
+    this.authProjectId,
+  });
 
   // This widget is the root of your application.
   @override
@@ -94,13 +96,13 @@ class MyApp extends StatelessWidget {
         BlocProvider(
             create: (_) => AuthBloc(
                   authRepository: AuthRepositoryImpl(
-                    dataSource: const String.fromEnvironment('DATA_SOURCE'),
-                    nodeDataSource: NodeAuthDataSource(
-                        secureStorage: secureStorage,
-                        sharedPreferences: prefs,
-                        systemName: 'POS'),
-                        odooDataSource: OdooAuthDataSource()
-                  ),
+                      dataSource: const String.fromEnvironment('DATA_SOURCE'),
+                      nodeDataSource: NodeAuthDataSource(
+                          secureStorage: secureStorage,
+                          sharedPreferences: prefs,
+                          systemName: 'POS'),
+                      odooDataSource: OdooAuthDataSource(
+                          secureStorage: secureStorage, systemName: 'POS')),
                 )),
         BlocProvider(
             create: (_) => OrderBloc(
@@ -159,7 +161,7 @@ class MyApp extends StatelessWidget {
             theme: ThemeData.dark(),
             title: 'POS',
             locale: state.locale,
-            initialRoute: buildInitialRoute(token),
+            initialRoute: isAuthenticated! ? '/home' : '/auth',
             onGenerateRoute: (settings) {
               switch (settings.name) {
                 case '/auth':
@@ -190,10 +192,4 @@ class MyApp extends StatelessWidget {
       ),
     );
   }
-
-  String buildInitialRoute(String? token) => token == null
-      ? '/auth'
-      : !JwtDecoder.isExpired(token)
-          ? '/home'
-          : '/auth';
 }
