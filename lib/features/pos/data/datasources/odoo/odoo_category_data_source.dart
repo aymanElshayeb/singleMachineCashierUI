@@ -23,7 +23,7 @@ class OdooCategoryDataSource implements CategoryDataSource {
           "jsonrpc": "2.0",
           "method": "call",
           "params": {
-            "model": "product.category",
+            "model": "pos.category",
             "method": "search_read",
             "args": [
               [],
