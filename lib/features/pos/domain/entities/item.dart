@@ -98,6 +98,22 @@ class Item extends Equatable {
         taxFormat = source.taxFormat,
         taxPercentage = source.taxPercentage,
         unit = source.unit;
+  static Item fromJsonOdoo(Map json) {
+   
+    return Item(
+        id: json['id'].toString(),
+        name: json['name'],
+        unit: 'kg',
+        unitPrice: json['list_price'],
+        taxFormat: '',
+        taxCategory: '',
+        taxPercentage: json['tax_ids']!=null?json['tax_ids'][0].toDouble():0.0,
+        taxExeptionReasonCode: '',
+        taxExeptionReason: '',
+        discountPercentages: const [],
+        PLU_EAN: json['code']!=false?json['code']:'',
+        categoryId: json['pos_categ_ids'][0].toString());
+  }
 
   static Item fromJson(Map json) {
     return Item(

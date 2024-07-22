@@ -30,7 +30,7 @@ class OdooItemsDataSource implements ItemsDataSource {
               "domain": [
                 ["pos_categ_ids", "in", int.parse(categoryId!)]
               ],
-              "fields": ["id", "name"],
+              "fields": ["id", "name","list_price","barcode","taxes_id","pos_categ_ids","code"],
               "limit": 100
             }
           },
@@ -39,12 +39,11 @@ class OdooItemsDataSource implements ItemsDataSource {
     if (response.statusCode == 200) {
       // Parse the response
       final List<dynamic> itemsJson = jsonDecode(response.body)['result'];
-      print(itemsJson);
       // Convert the JSON data to a list of Item objects
       final List<Item> items = List<Item>.from(
-        itemsJson.map((item) => Item(id: item['id'].toString(), name: item['name'], unit: 'kg', unitPrice: 100, taxFormat: 'Standard', taxCategory: '15', taxPercentage: 15.0, taxExeptionReasonCode: '', taxExeptionReason: '', PLU_EAN: 'A', categoryId: categoryId,discountPercentages: const [])),
+        itemsJson.map((item) => Item.fromJsonOdoo(item)),
       );
-      if (categoryId != null) {
+      
         List<Item> categoryItems = [];
         for (var item in items) {
           if (item.categoryId == categoryId) {
@@ -53,9 +52,7 @@ class OdooItemsDataSource implements ItemsDataSource {
         }
 
         return right(categoryItems);
-      }
-
-      return right(items);
+      
     } else {
       final responseMap = jsonDecode(response.body);
       if (responseMap['message'] == 'Unauthorized: Invalid token') {
