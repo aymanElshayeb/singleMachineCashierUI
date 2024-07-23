@@ -14,6 +14,9 @@ class OdooItemsDataSource implements ItemsDataSource {
     final Uri url = Uri.parse('$odooUrl/web/dataset/call_kw');
     const storage = FlutterSecureStorage();
     final String? sessionId = await storage.read(key: 'sessionId');
+    if (sessionId == null) {
+      return left(AuthenticationFailure());
+    }
     final response = await http.post(url,
         headers: {
           'Content-Type': 'application/json',
@@ -30,7 +33,15 @@ class OdooItemsDataSource implements ItemsDataSource {
               "domain": [
                 ["pos_categ_ids", "in", int.parse(categoryId!)]
               ],
-              "fields": ["id", "name","list_price","barcode","taxes_id","pos_categ_ids","code"],
+              "fields": [
+                "id",
+                "name",
+                "list_price",
+                "barcode",
+                "taxes_id",
+                "pos_categ_ids",
+                "code"
+              ],
               "limit": 100
             }
           },
@@ -43,16 +54,15 @@ class OdooItemsDataSource implements ItemsDataSource {
       final List<Item> items = List<Item>.from(
         itemsJson.map((item) => Item.fromJsonOdoo(item)),
       );
-      
-        List<Item> categoryItems = [];
-        for (var item in items) {
-          if (item.categoryId == categoryId) {
-            categoryItems.add(item);
-          }
-        }
 
-        return right(categoryItems);
-      
+      List<Item> categoryItems = [];
+      for (var item in items) {
+        if (item.categoryId == categoryId) {
+          categoryItems.add(item);
+        }
+      }
+
+      return right(categoryItems);
     } else {
       final responseMap = jsonDecode(response.body);
       if (responseMap['message'] == 'Unauthorized: Invalid token') {
@@ -64,8 +74,62 @@ class OdooItemsDataSource implements ItemsDataSource {
   }
 
   @override
-  Future<Either<Failure, List<Item>>> getItemsByEan({required String keyWord}) {
-    // TODO: implement getItemsByEan
-    throw UnimplementedError();
+  Future<Either<Failure, List<Item>>> getItemsByEan(
+      {required String keyWord}) async {
+    final Uri url = Uri.parse('$odooUrl/web/dataset/call_kw');
+    const storage = FlutterSecureStorage();
+    final String? sessionId = await storage.read(key: 'sessionId');
+    if (sessionId == null) {
+      return left(AuthenticationFailure());
+    }
+    final response = await http.post(url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Cookie': 'session_id=$sessionId'
+        },
+        body: jsonEncode({
+          "jsonrpc": "2.0",
+          "method": "call",
+          "params": {
+            "model": "product.product",
+            "method": "search_read",
+            "args": [],
+            "kwargs": {
+              "domain": [
+                ["default_code", "ilike", keyWord],
+                ["available_in_pos", "=", true]
+              ],
+              "fields": [
+                "id",
+                "name",
+                "list_price",
+                "barcode",
+                "taxes_id",
+                "pos_categ_ids",
+                "code"
+              ],
+              "limit": 100
+            }
+          },
+          "id": 3
+        }));
+    if (response.statusCode == 200) {
+      
+      final Map<String, dynamic> responseBody = jsonDecode(response.body);
+      if (responseBody.containsKey('result')) {
+        final List<dynamic> itemsJson = responseBody['result'];
+        final List<Item> items =
+            itemsJson.map((item) => Item.fromJsonOdoo(item)).toList();
+        return right(items);
+      } else {
+        return left(CacheFailure());
+      }
+    } else {
+      final Map<String, dynamic> responseBody = jsonDecode(response.body);
+      if (responseBody['error']['message'] == 'Unauthorized: Invalid token') {
+        return left(AuthenticationFailure());
+      }
+      return left(CacheFailure());
+    }
   }
 }

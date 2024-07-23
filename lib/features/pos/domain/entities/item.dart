@@ -29,6 +29,7 @@ class Item extends Equatable {
   final double taxPercentage;
   final String taxExeptionReasonCode;
   final String taxExeptionReason;
+  List<int>? taxIds;
   double get taxPrice => netAmount * taxPercentage / 100;
   //////////////////////////
   double get grossPrice => taxPrice + netAmount;
@@ -47,6 +48,7 @@ class Item extends Equatable {
     required this.discountPercentages,
     required this.PLU_EAN,
     required this.categoryId,
+    this.taxIds,
   });
   factory Item.custom(
       {required String name,
@@ -99,20 +101,20 @@ class Item extends Equatable {
         taxPercentage = source.taxPercentage,
         unit = source.unit;
   static Item fromJsonOdoo(Map json) {
-   
     return Item(
         id: json['id'].toString(),
         name: json['name'],
         unit: 'kg',
         unitPrice: json['list_price'],
+        taxIds: json['tax_ids'] ?? [],
         taxFormat: '',
         taxCategory: '',
-        taxPercentage: json['tax_ids']!=null?json['tax_ids'][0].toDouble():0.0,
+        taxPercentage:0.0,
         taxExeptionReasonCode: '',
         taxExeptionReason: '',
         discountPercentages: const [],
-        PLU_EAN: json['code']!=false?json['code']:'',
-        categoryId: json['pos_categ_ids'][0].toString());
+        PLU_EAN: json['code'] != false ? json['code'] : '',
+        categoryId: json['pos_categ_ids'].isNotEmpty?json['pos_categ_ids'][0].toString():'');
   }
 
   static Item fromJson(Map json) {
