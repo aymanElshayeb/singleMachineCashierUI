@@ -8,7 +8,7 @@ class Item extends Equatable {
   final String categoryId;
   final String unit;
   final double unitPrice;
-  double quantity;
+  late double quantity;
   double get amount => unitPrice * quantity;
   //////////////////////////
   List<double>? discountPercentages;
@@ -26,11 +26,25 @@ class Item extends Equatable {
   //////////////////////////
   final String taxFormat;
   final String taxCategory;
-  final double taxPercentage;
+  final Map<int, dynamic> taxMap;
   final String taxExeptionReasonCode;
   final String taxExeptionReason;
   List<int>? taxIds;
-  double get taxPrice => netAmount * taxPercentage / 100;
+  double get taxPrice {
+    double totalTax = 0;
+    for (int taxId in taxIds!) {
+      final tax = taxMap[taxId];
+      if (tax != null) {
+        final taxAmount = tax['amount'];
+        final priceInclude = tax['price_include'];
+        if (!priceInclude) {
+          totalTax += netAmount * (taxAmount / 100);
+        }
+      }
+    }
+    return totalTax;
+  }
+
   //////////////////////////
   double get grossPrice => taxPrice + netAmount;
 
@@ -42,7 +56,7 @@ class Item extends Equatable {
     this.quantity = 1,
     required this.taxFormat,
     required this.taxCategory,
-    required this.taxPercentage,
+    required this.taxMap,
     required this.taxExeptionReasonCode,
     required this.taxExeptionReason,
     required this.discountPercentages,
@@ -54,10 +68,10 @@ class Item extends Equatable {
       {required String name,
       required double price,
       required double quantity,
-      required double taxPercentage,
+      required Map<int, dynamic> taxMap,
       required List<double> discountPercentages}) {
     return Item(
-        taxPercentage: taxPercentage,
+        taxMap: taxMap,
         id: const Uuid().v4(),
         name: name,
         PLU_EAN: "custom",
@@ -84,7 +98,7 @@ class Item extends Equatable {
         taxExeptionReason = source.taxExeptionReason,
         taxExeptionReasonCode = source.taxExeptionReasonCode,
         taxFormat = source.taxFormat,
-        taxPercentage = source.taxPercentage,
+        taxMap = source.taxMap,
         unit = source.unit;
   Item.copyWithDiscount(Item source, List<double> newDiscounts)
       : id = source.id,
@@ -98,26 +112,44 @@ class Item extends Equatable {
         taxExeptionReason = source.taxExeptionReason,
         taxExeptionReasonCode = source.taxExeptionReasonCode,
         taxFormat = source.taxFormat,
-        taxPercentage = source.taxPercentage,
+        taxMap = source.taxMap,
         unit = source.unit;
-  static Item fromJsonOdoo(Map json) {
+  static Item fromJsonOdoo(Map json, Map<int, dynamic> taxMap) {
+      List<int> taxIds = [];
+  
+  if (json['taxes_id'] != null) {
+    taxIds = (json['taxes_id'] as List).map((tax) {
+      // Safely handle non-int values by using a null-aware operator and casting
+      if (tax is int) {
+        return tax;
+      } else if (tax is String) {
+        return int.tryParse(tax) ?? 0; // Attempt to parse if it's a string
+      } else {
+        return 0; // Default value if unable to cast
+      }
+    }).toList();
+  }
+    
+
     return Item(
         id: json['id'].toString(),
         name: json['name'],
         unit: 'kg',
         unitPrice: json['list_price'],
-        taxIds: json['tax_ids'] ?? [],
+        taxIds: taxIds,
         taxFormat: '',
         taxCategory: '',
-        taxPercentage:0.0,
+        taxMap: taxMap,
         taxExeptionReasonCode: '',
         taxExeptionReason: '',
         discountPercentages: const [],
         PLU_EAN: json['code'] != false ? json['code'] : '',
-        categoryId: json['pos_categ_ids'].isNotEmpty?json['pos_categ_ids'][0].toString():'');
+        categoryId: json['pos_categ_ids'].isNotEmpty
+            ? json['pos_categ_ids'][0].toString()
+            : '');
   }
 
-  static Item fromJson(Map json) {
+  static Item fromJson(Map json, Map<int, dynamic>? taxMap) {
     return Item(
         name: json['name'],
         quantity: json['quantity'] != null ? json['quantity'].toDouble() : 1,
@@ -129,9 +161,7 @@ class Item extends Equatable {
         taxCategory: json['taxCategory'] ?? 'Standard',
         taxExeptionReason: json['taxExeptionReason'] ?? '',
         taxExeptionReasonCode: json['taxExeptionReasonCode'] ?? '',
-        taxPercentage: json['taxPercentage'] != null
-            ? json['taxPercentage'].toDouble()
-            : 0.0,
+        taxMap: taxMap ?? {},
         taxFormat: json['taxFormat'] ?? '%',
         discountPercentages: json['discountPercentages'] ?? []);
   }
@@ -147,7 +177,6 @@ class Item extends Equatable {
       'taxCategory': taxCategory,
       'taxExeptionReason': taxExeptionReason,
       'taxExeptionReasonCode': taxExeptionReasonCode,
-      'tax': taxPercentage,
       'taxFormat': taxFormat,
       'discountPercentages': discountPercentages,
       'discountAmount': totalDiscount,
@@ -158,7 +187,7 @@ class Item extends Equatable {
     };
   }
 
-  static Item fromSnapshot(snap) {
+  static Item fromSnapshot(snap, Map<int, dynamic>? taxMap) {
     return Item(
         unitPrice: (snap['item']['unitPrice'] as num?)?.toDouble() ?? 0.0,
         unit: snap['item']['unit'] ?? '',
@@ -170,7 +199,7 @@ class Item extends Equatable {
         taxCategory: snap['item']['taxCategory'] ?? '',
         taxExeptionReason: snap['item']['taxExeptionReason'] ?? '',
         taxExeptionReasonCode: snap['item']['taxExeptionReasonCode'] ?? '',
-        taxPercentage: snap['item']['taxPercentage'] ?? '',
+        taxMap: taxMap ?? {},
         taxFormat: snap['item']['taxFormat'] ?? '%',
         discountPercentages: snap['item']['discountPercentages'] ?? []);
   }

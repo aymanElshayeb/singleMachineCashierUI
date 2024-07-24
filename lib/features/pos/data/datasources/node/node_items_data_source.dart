@@ -25,7 +25,7 @@ class NodeItemsDataSource implements ItemsDataSource {
 
       // Convert the JSON data to a list of Item objects
       final List<Item> items = List<Item>.from(
-        itemsJson.map((item) => Item.fromJson(item)),
+        itemsJson.map((item) => Item.fromJson(item,{})),
       );
       if (categoryId != null) {
         List<Item> categoryItems = [];
@@ -64,7 +64,7 @@ class NodeItemsDataSource implements ItemsDataSource {
 
       // Convert the JSON data to a list of Item objects
       final List<Item> items = List<Item>.from(
-        itemsJson.map((item) => Item.fromJson(item)),
+        itemsJson.map((item) => Item.fromJson(item,{})),
       );
       List<Item> eanItems = [];
       for (var item in items) {

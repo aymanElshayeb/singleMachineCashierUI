@@ -51,8 +51,11 @@ class OdooItemsDataSource implements ItemsDataSource {
       // Parse the response
       final List<dynamic> itemsJson = jsonDecode(response.body)['result'];
       // Convert the JSON data to a list of Item objects
+      final result = await fetchTaxDetails();
+      Map<int, dynamic> taxMap = {};
+      result.fold((l) => left(CacheFailure()), (taxes) => taxMap = taxes);
       final List<Item> items = List<Item>.from(
-        itemsJson.map((item) => Item.fromJsonOdoo(item)),
+        itemsJson.map((item) => Item.fromJsonOdoo(item, taxMap)),
       );
 
       List<Item> categoryItems = [];
@@ -61,7 +64,7 @@ class OdooItemsDataSource implements ItemsDataSource {
           categoryItems.add(item);
         }
       }
-
+     
       return right(categoryItems);
     } else {
       final responseMap = jsonDecode(response.body);
@@ -114,13 +117,66 @@ class OdooItemsDataSource implements ItemsDataSource {
           "id": 3
         }));
     if (response.statusCode == 200) {
-      
       final Map<String, dynamic> responseBody = jsonDecode(response.body);
       if (responseBody.containsKey('result')) {
         final List<dynamic> itemsJson = responseBody['result'];
+        final result = await fetchTaxDetails();
+        Map<int, dynamic> taxMap = {};
+        result.fold((l) => left(CacheFailure()), (taxes) => taxMap = taxes);
+
         final List<Item> items =
-            itemsJson.map((item) => Item.fromJsonOdoo(item)).toList();
+            itemsJson.map((item) => Item.fromJsonOdoo(item, taxMap)).toList();
+
         return right(items);
+      } else {
+        return left(CacheFailure());
+      }
+    } else {
+      final Map<String, dynamic> responseBody = jsonDecode(response.body);
+      if (responseBody['error']['message'] == 'Unauthorized: Invalid token') {
+        return left(AuthenticationFailure());
+      }
+      return left(CacheFailure());
+    }
+  }
+
+  Future<Either<Failure, Map<int, dynamic>>> fetchTaxDetails() async {
+    final Uri url = Uri.parse('$odooUrl/web/dataset/call_kw');
+    const storage = FlutterSecureStorage();
+    final String? sessionId = await storage.read(key: 'sessionId');
+    if (sessionId == null) {
+      return left(AuthenticationFailure());
+    }
+    final response = await http.post(url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Cookie': 'session_id=$sessionId'
+        },
+        body: jsonEncode({
+          "jsonrpc": "2.0",
+          "method": "call",
+          "params": {
+            "model": "account.tax",
+            "method": "search_read",
+            "args": [],
+            "kwargs": {
+              "domain": [],
+              "fields": ["id", "name", "amount", "price_include"],
+              "limit": 100
+            }
+          },
+          "id": 3
+        }));
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> responseBody = jsonDecode(response.body);
+      if (responseBody.containsKey('result')) {
+        final List<dynamic> taxes = responseBody['result'];
+        Map<int, dynamic> taxMap = {};
+        for (var tax in taxes) {
+          taxMap[tax['id']] = tax;
+        }
+
+        return right(taxMap);
       } else {
         return left(CacheFailure());
       }

@@ -19,7 +19,7 @@ class FireDartItemsDataSource implements ItemsDataSource {
     try {
       var snapshot = await _firebaseFirestore.collection('items').get();
 
-      items = snapshot.map((doc) => Item.fromSnapshot(doc)).toList();
+      items = snapshot.map((doc) => Item.fromSnapshot(doc,{})).toList();
 
       if (categoryId != null) {
         for (var item in items) {
@@ -45,7 +45,7 @@ class FireDartItemsDataSource implements ItemsDataSource {
     try {
       var snapshot = await _firebaseFirestore.collection('items').get();
 
-      items = snapshot.map((doc) => Item.fromSnapshot(doc)).toList();
+      items = snapshot.map((doc) => Item.fromSnapshot(doc,{})).toList();
 
       for (var item in items) {
         if (item.PLU_EAN.contains(keyWord)) {

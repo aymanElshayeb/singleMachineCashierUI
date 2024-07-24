@@ -62,10 +62,10 @@ List<Map<String, dynamic>> groupItemsByTax() {
 
   // Grouping items by taxPercentage
   for (var item in items) {
-    if (!groupedMap.containsKey(item.taxPercentage)) {
-      groupedMap[item.taxPercentage] = [];
+    if (!groupedMap.containsKey(item.taxMap[1]['amount'])) {
+      groupedMap[item.taxMap[1]['amount'][0]] = [];
     }
-    groupedMap[item.taxPercentage]!.add(item);
+    groupedMap[item.taxMap[1]['amount']]!.add(item);
   }
 
   List<Map<String, dynamic>> result = [];
@@ -136,7 +136,7 @@ List<Map<String, dynamic>> groupItemsByTax() {
                 "text": e.name,
                 "vat_amounts": [
                   {
-                    "percentage": (e.taxPercentage/100).toStringAsFixed(2),
+                    "percentage": (e.taxMap[1]['amount']/100).toStringAsFixed(2),
                     "incl_vat": e.grossPrice.toStringAsFixed(2)
                   }
                 ],
