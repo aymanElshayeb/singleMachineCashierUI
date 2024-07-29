@@ -87,7 +87,6 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
               return Discount(grossAmount: discountAmount);
             },
           ).toList());
-      add(CreateInvoice(order: order));
       final response = await orders.saveOrder(order: order);
       response.fold((failure) {
         if (failure is AuthenticationFailure) {
@@ -103,6 +102,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
               orderDiscounts: state.orderDiscounts));
         }
       }, (items) {
+        add(CreateInvoice(order: order));
         add(UpdateOrderAndTotalPrice(
             updatedOrder: event.subOrder != null ? event.restOfOrderItems! : [],
             updatedDiscounts:

@@ -99,7 +99,8 @@ class Item extends Equatable {
         taxExeptionReasonCode = source.taxExeptionReasonCode,
         taxFormat = source.taxFormat,
         taxMap = source.taxMap,
-        unit = source.unit;
+        unit = source.unit,
+        taxIds = source.taxIds;
   Item.copyWithDiscount(Item source, List<double> newDiscounts)
       : id = source.id,
         name = source.name,
@@ -113,23 +114,24 @@ class Item extends Equatable {
         taxExeptionReasonCode = source.taxExeptionReasonCode,
         taxFormat = source.taxFormat,
         taxMap = source.taxMap,
-        unit = source.unit;
+        unit = source.unit,
+        taxIds = source.taxIds;
+
   static Item fromJsonOdoo(Map json, Map<int, dynamic> taxMap) {
-      List<int> taxIds = [];
-  
-  if (json['taxes_id'] != null) {
-    taxIds = (json['taxes_id'] as List).map((tax) {
-      // Safely handle non-int values by using a null-aware operator and casting
-      if (tax is int) {
-        return tax;
-      } else if (tax is String) {
-        return int.tryParse(tax) ?? 0; // Attempt to parse if it's a string
-      } else {
-        return 0; // Default value if unable to cast
-      }
-    }).toList();
-  }
-    
+    List<int> taxIds = [];
+
+    if (json['taxes_id'] != null) {
+      taxIds = (json['taxes_id'] as List).map((tax) {
+        // Safely handle non-int values by using a null-aware operator and casting
+        if (tax is int) {
+          return tax;
+        } else if (tax is String) {
+          return int.tryParse(tax) ?? 0; // Attempt to parse if it's a string
+        } else {
+          return 0; // Default value if unable to cast
+        }
+      }).toList();
+    }
 
     return Item(
         id: json['id'].toString(),

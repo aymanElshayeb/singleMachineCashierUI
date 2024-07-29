@@ -8,7 +8,6 @@ enum PaymentMethod { cash, card }
 class Order extends Equatable {
   final String id;
   final List<Item> items;
-  final double taxPercentage;
   final List<Discount> orderDiscounts;
   double get discountAmount {
     double total = 0;
@@ -42,7 +41,13 @@ class Order extends Equatable {
     return total - totalOrderDiscount;
   }
 
-  double get taxAmount => netAmount * (taxPercentage / 100);
+  double get taxAmount {
+    double total = 0;
+    for (var item in items) {
+      total += item.taxPrice;
+    }
+    return total;
+  }
 
   double get grossPrice => netAmount + taxAmount;
 
@@ -50,41 +55,44 @@ class Order extends Equatable {
   final DateTime issueDate;
 
   const Order({
-    this.taxPercentage = 15.0,
     required this.paymentMethod,
     required this.issueDate,
     this.id = '0',
     required this.items,
     required this.orderDiscounts,
   });
-List<Map<String, dynamic>> groupItemsByTax() {
-  Map<double, List<Item>> groupedMap = {};
+  List<Map<String, dynamic>> groupItemsByTax() {
+    Map<double, List<Item>> groupedMap = {};
 
-  // Grouping items by taxPercentage
-  for (var item in items) {
-    if (!groupedMap.containsKey(item.taxMap[1]['amount'])) {
-      groupedMap[item.taxMap[1]['amount'][0]] = [];
+    // Grouping items by taxPercentage
+    for (var item in items) {
+      if (!groupedMap.containsKey(item.taxMap[1]['amount'])) {
+        groupedMap[item.taxMap[1]['amount'][0]] = [];
+      }
+      groupedMap[item.taxMap[1]['amount']]!.add(item);
     }
-    groupedMap[item.taxMap[1]['amount']]!.add(item);
-  }
 
-  List<Map<String, dynamic>> result = [];
+    List<Map<String, dynamic>> result = [];
 
-  // Constructing the result list
-  groupedMap.forEach((taxPercentage, itemList) {
-    double totalGrossPrice = itemList.map((item) => item.grossPrice).reduce((value, element) => value + element);
-    double totalPriceWithoutVAT = itemList.map((item) => item.netAmount).reduce((value, element) => value + element);
+    // Constructing the result list
+    groupedMap.forEach((taxPercentage, itemList) {
+      double totalGrossPrice = itemList
+          .map((item) => item.grossPrice)
+          .reduce((value, element) => value + element);
+      double totalPriceWithoutVAT = itemList
+          .map((item) => item.netAmount)
+          .reduce((value, element) => value + element);
 
-    result.add({
-      'percentage': (taxPercentage/100).toStringAsFixed(2),
-      'incl_vat': totalGrossPrice.toStringAsFixed(2),
-      'excl_vat': totalPriceWithoutVAT.toStringAsFixed(2),
-      'vat':(totalGrossPrice-totalPriceWithoutVAT).toStringAsFixed(2)
+      result.add({
+        'percentage': (taxPercentage / 100).toStringAsFixed(2),
+        'incl_vat': totalGrossPrice.toStringAsFixed(2),
+        'excl_vat': totalPriceWithoutVAT.toStringAsFixed(2),
+        'vat': (totalGrossPrice - totalPriceWithoutVAT).toStringAsFixed(2)
+      });
     });
-  });
 
-  return result;
-}
+    return result;
+  }
 
   @override
   List<Object?> get props => [id, paymentMethod, issueDate];
@@ -119,24 +127,28 @@ List<Map<String, dynamic>> groupItemsByTax() {
       "data": {
         "currency": 'EUR',
         "full_amount_incl_vat": grossPrice.toStringAsFixed(2),
-        "full_amount_incl_vat_before_discount": (grossPrice - totalOrderDiscount).toStringAsFixed(2),
+        "full_amount_incl_vat_before_discount":
+            (grossPrice - totalOrderDiscount).toStringAsFixed(2),
         "total_discount_value": totalOrderDiscount.toStringAsFixed(2),
-        "date":DateTime.now().millisecondsSinceEpoch ~/ 1000,
+        "date": DateTime.now().millisecondsSinceEpoch ~/ 1000,
         "discounts": orderDiscounts
-            .map((discount) =>
-                {"name": "Discount", "discount_value": discount.grossAmount.toStringAsFixed(2)})
+            .map((discount) => {
+                  "name": "Discount",
+                  "discount_value": discount.grossAmount.toStringAsFixed(2)
+                })
             .toList(),
         "payment_types": [
           {"amount": grossPrice.toStringAsFixed(2), "name": "CASH"}
         ],
-        "vat_amounts":groupItemsByTax(),
+        "vat_amounts": groupItemsByTax(),
         "lines": items
             .map(
               (e) => {
                 "text": e.name,
                 "vat_amounts": [
                   {
-                    "percentage": (e.taxMap[1]['amount']/100).toStringAsFixed(2),
+                    "percentage":
+                        (e.taxMap[1]['amount'] / 100).toStringAsFixed(2),
                     "incl_vat": e.grossPrice.toStringAsFixed(2)
                   }
                 ],
@@ -151,7 +163,8 @@ List<Map<String, dynamic>> groupItemsByTax() {
                         .map((discountPercentage) => {
                               "name": "Discount",
                               "discount_value":
-                                  (discountPercentage * e.grossPrice).toStringAsFixed(2)
+                                  (discountPercentage * e.grossPrice)
+                                      .toStringAsFixed(2)
                             })
                         .toList()
                     : []

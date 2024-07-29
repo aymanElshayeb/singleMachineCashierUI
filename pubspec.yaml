@@ -68,7 +68,7 @@ dependencies:
   jwt_decoder: ^2.0.1
   flutter_pdfview: ^1.3.2
   authentication_module:
-    path: D:/projects/authentication-package/authentication_module
+    path: H:/projects/authentication-package/authentication_module
  
   
   

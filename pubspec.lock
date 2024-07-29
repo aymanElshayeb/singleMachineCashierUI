@@ -68,7 +68,7 @@ packages:
   authentication_module:
     dependency: "direct main"
     description:
-      path: "D:/projects/authentication-package/authentication_module"
+      path: "H:/projects/authentication-package/authentication_module"
       relative: false
     source: path
     version: "0.0.1"
