@@ -16,7 +16,6 @@ class OdooOrderDataSource implements OrderDataSource {
     const storage = FlutterSecureStorage();
     final String? sessionId = await storage.read(key: 'sessionId');
     final String? orderIdString = await storage.read(key: 'orderId');
-    print('invoice order id $orderIdString');
     if (sessionId == null) {
       return left(AuthenticationFailure());
     }
@@ -100,7 +99,6 @@ class OdooOrderDataSource implements OrderDataSource {
     bool isOrderStatusPaid = false;
     if (orderId != -1) {
       await storage.write(key: 'orderId', value: orderId.toString());
-      print('added orderID $orderId');
       isOrderStatusPaid = await changeOrderStatusToPaid(
           jsonEncode({
             "jsonrpc": "2.0",
