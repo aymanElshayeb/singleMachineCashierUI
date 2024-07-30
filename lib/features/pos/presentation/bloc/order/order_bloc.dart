@@ -151,9 +151,11 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       (item) => item.id == event.item.id,
     );
     if (existingProductIndex != -1) {
-      List<double> updatedDiscounts =
-          updatedOrderItems[existingProductIndex].discountPercentages ?? [];
-
+      List<double> updatedDiscounts = [];
+      if (updatedOrderItems[existingProductIndex].discountPercentages != null) {
+        updatedDiscounts.addAll(
+            updatedOrderItems[existingProductIndex].discountPercentages!);
+      }
       updatedDiscounts.add(event.discount);
       Item updatedItem = Item.copyWithDiscount(
           updatedOrderItems[existingProductIndex], updatedDiscounts);
@@ -245,7 +247,6 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
             totalPrice: state.totalPrice,
             orderDiscounts: state.orderDiscounts));
       }, (invoiceBase64PdfData) async {
-        
         Uint8List pdfBytes = base64Decode(invoiceBase64PdfData.split(',').last);
         PdfApi.printExternalInvoice(pdfBytes);
       });

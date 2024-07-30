@@ -83,7 +83,11 @@ class OdooOrderDataSource implements OrderDataSource {
                           "price_subtotal_incl": item.grossPrice,
                           "tax_ids": [
                             [6, 0, item.taxIds]
-                          ]
+                          ],
+                          "discount": calculateEffectiveDiscount(
+                                  discountPercentages:
+                                      item.discountPercentages) *
+                              100
                         }
                       ],
                     )
@@ -96,6 +100,7 @@ class OdooOrderDataSource implements OrderDataSource {
         }),
         sessionId,
         url);
+    print(orderId);
     bool isOrderStatusPaid = false;
     if (orderId != -1) {
       await storage.write(key: 'orderId', value: orderId.toString());
@@ -132,6 +137,19 @@ class OdooOrderDataSource implements OrderDataSource {
     }
 
     return -1;
+  }
+
+  double calculateEffectiveDiscount({List<double>? discountPercentages}) {
+    double effectiveDiscount = 1.0;
+    if (discountPercentages == null) {
+      return 0;
+    }
+
+    for (double discount in discountPercentages) {
+      effectiveDiscount *= (1 - discount / 100);
+    }
+
+    return (1 - effectiveDiscount) * 100;
   }
 
   Future<bool> changeOrderStatusToPaid(
