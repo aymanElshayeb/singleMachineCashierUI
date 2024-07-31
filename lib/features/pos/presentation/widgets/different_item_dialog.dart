@@ -52,13 +52,21 @@ class DifferentItem extends StatelessWidget {
           onPressed: () {
             double unitPrice = double.parse(priceController.text);
             double quantity = double.parse(quantityController.text);
-            double taxPercentage =
+            double taxAmount =
                 taxController.text == '' ? 0 : double.parse(taxController.text);
             Item customItem = Item.custom(
-                taxPercentage: taxPercentage,
+                taxMap: {
+                  0: {
+                    'id': 1,
+                    'name': '15%',
+                    'amount': taxAmount,
+                    'price_include': false
+                  }
+                },
                 name: nameController.text,
                 price: unitPrice,
-                quantity: quantity,discountPercentages: []);
+                quantity: quantity,
+                discountPercentages: []);
 
             BlocProvider.of<OrderBloc>(context)
                 .add(AddItemToOrder(item: customItem));

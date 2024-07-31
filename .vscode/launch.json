@@ -11,7 +11,8 @@
             "toolArgs": [
                 "--dart-define-from-file",
                 ".env"
-            ]
+            ],
+            "program": "lib/main.dart"
         },
         {
             "name": "singleMachineCashierUI (profile mode)",

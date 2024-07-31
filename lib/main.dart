@@ -5,10 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:logging/logging.dart';
 import 'package:printing/printing.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:single_machine_cashier_ui/features/pos/data/datasources/firebase/firebase_category_data_source.dart';
 import 'package:single_machine_cashier_ui/features/pos/data/datasources/firebase/firebase_items_data_source.dart';
 import 'package:single_machine_cashier_ui/features/pos/data/datasources/firebase/firebase_order_data_source.dart';
@@ -43,7 +41,6 @@ import 'package:authentication_module/authentication_module.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final SharedPreferences prefs = await SharedPreferences.getInstance();
   String jsonString = await getConfigForFirebase();
   Map configMap = json.decode(jsonString);
   Map dataProjectConfig = configMap['data_firebase_config'];
@@ -59,13 +56,14 @@ void main() async {
     debugPrint(
         '[${record.loggerName}] -- ${record.level.name} -- ${record.time} -- ${record.message}');
   });
-  final String? token = await const FlutterSecureStorage().read(key: 'token');
+  final authService = AuthService();
+  final bool isAuthenticated = await authService.isAuthenticated();
 
   runApp(MyApp(
-      prefs: prefs,
-      authProjectId: authProjectConfig['projectId'],
-      dataProjectId: dataProjectConfig['projectId'],
-      token: token));
+    isAuthenticated: isAuthenticated,
+    authProjectId: authProjectConfig['projectId'],
+    dataProjectId: dataProjectConfig['projectId'],
+  ));
 }
 
 Future<String> getConfigForFirebase() async =>
@@ -73,52 +71,60 @@ Future<String> getConfigForFirebase() async =>
 
 class MyApp extends StatelessWidget {
   final String? dataProjectId;
-  final SharedPreferences prefs;
+  final bool? isAuthenticated;
   final String? authProjectId;
-  final String? token;
-  const MyApp(
-      {super.key,
-      this.dataProjectId,
-      required this.prefs,
-      this.authProjectId,
-      this.token});
+  const MyApp({
+    super.key,
+    this.dataProjectId,
+    this.isAuthenticated,
+    this.authProjectId,
+  });
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     const secureStorage = FlutterSecureStorage();
-    final bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
 
     return MultiBlocProvider(
       providers: [
         BlocProvider(
             create: (_) => AuthBloc(
-                  authRepository: OfflineAuthenticationRepository(
-                      secureStorage: secureStorage,
-                      sharedPreferences: prefs,
-                      systemName: 'POS'),
+                  authRepository: AuthRepositoryImpl(
+                      dataSource: const String.fromEnvironment('DATA_SOURCE'),
+                      nodeDataSource: NodeAuthDataSource(
+                          secureStorage: secureStorage,
+                          systemName: 'POS'),
+                      odooDataSource: OdooAuthDataSource(
+                          secureStorage: secureStorage, systemName: 'POS')),
                 )),
         BlocProvider(
             create: (_) => OrderBloc(
-                orders: Orders(
-                  repository: OrderRepositoryImpl(nodeDataSource: NodeOrderDataSource(), fireBaseDataSource: FireBaseOrderDataSource(), fireDartDataSource: FireDartOrderDataSource(firebaseFirestore: Firestore(dataProjectId!)), odooDataSource: OdooOrderDataSource()),
-                    ))),
+                    orders: Orders(
+                  repository: OrderRepositoryImpl(
+                      nodeDataSource: NodeOrderDataSource(),
+                      fireBaseDataSource: FireBaseOrderDataSource(),
+                      fireDartDataSource: FireDartOrderDataSource(
+                          firebaseFirestore: Firestore(dataProjectId!)),
+                      odooDataSource: OdooOrderDataSource()),
+                ))),
         BlocProvider(
             create: (_) => ItemBloc(
-                items: Items(
-            repository: ItemsRepositoryImpl(
-                nodeDataSource: NodeItemsDataSource(),
-                fireBaseDataSource: FireBaseItemsDataSource(),
-                fireDartDataSource: FireDartItemsDataSource(firebaseFirestore: Firestore(dataProjectId!)),
-                odooDataSource: OdooItemsDataSource()),
-          ))),
+                    items: Items(
+                  repository: ItemsRepositoryImpl(
+                      nodeDataSource: NodeItemsDataSource(),
+                      fireBaseDataSource: FireBaseItemsDataSource(),
+                      fireDartDataSource: FireDartItemsDataSource(
+                          firebaseFirestore: Firestore(dataProjectId!)),
+                      odooDataSource: OdooItemsDataSource()),
+                ))),
         BlocProvider(
           create: (_) => EanBloc(
               items: Items(
             repository: ItemsRepositoryImpl(
                 nodeDataSource: NodeItemsDataSource(),
                 fireBaseDataSource: FireBaseItemsDataSource(),
-                fireDartDataSource: FireDartItemsDataSource(firebaseFirestore: Firestore(dataProjectId!)),
+                fireDartDataSource: FireDartItemsDataSource(
+                    firebaseFirestore: Firestore(dataProjectId!)),
                 odooDataSource: OdooItemsDataSource()),
           )),
         ),
@@ -148,7 +154,7 @@ class MyApp extends StatelessWidget {
             theme: ThemeData.dark(),
             title: 'POS',
             locale: state.locale,
-            initialRoute: buildInitialRoute(token),
+            initialRoute: isAuthenticated! ? '/home' : '/auth',
             onGenerateRoute: (settings) {
               switch (settings.name) {
                 case '/auth':
@@ -173,16 +179,9 @@ class MyApp extends StatelessWidget {
 
               return null;
             },
-            home: isLoggedIn ? const HomePage() : null,
           );
         },
       ),
     );
   }
-
-  String buildInitialRoute(String? token) => token == null
-      ? '/auth'
-      : !JwtDecoder.isExpired(token)
-          ? '/home'
-          : '/auth';
 }
