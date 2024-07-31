@@ -22,12 +22,12 @@ class CategoryList extends StatelessWidget {
           return GridView.builder(
             itemCount:
                 state.categories.length, //should be length of the items list
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                childAspectRatio: MediaQuery.of(context).size.width /
-                    (MediaQuery.of(context).size.height * 0.5),
-                crossAxisCount: 4,
-                crossAxisSpacing: 4.0,
-                mainAxisSpacing: 4.0),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              childAspectRatio: 2.0,
+              crossAxisCount: 4,
+              crossAxisSpacing: 4.0,
+              mainAxisSpacing: 4.0,
+            ),
             itemBuilder: (BuildContext context, int index) {
               return SizedBox(
                   width: 10,
