@@ -35,7 +35,7 @@ class Currency extends StatelessWidget {
           height: height,
           margin: const EdgeInsets.all(8.0),
           decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.background,
+              color: Theme.of(context).colorScheme.onSecondary,
               borderRadius: const BorderRadius.all(Radius.circular(11.0))),
         ),
         SizedBox(

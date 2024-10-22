@@ -14,7 +14,7 @@ class Bill extends StatelessWidget {
       width: width * 0.3,
       padding: EdgeInsets.all(width * 0.02),
       decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.background,
+          color: Theme.of(context).colorScheme.onSecondary,
           borderRadius: BorderRadius.circular(15)),
       child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
