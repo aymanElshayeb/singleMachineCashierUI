@@ -89,7 +89,7 @@ class _SplitBillState extends State<SplitBill> {
       height: height,
       padding: EdgeInsets.all(width * 0.02),
       decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.background,
+          color: Theme.of(context).colorScheme.onSecondary,
           borderRadius: BorderRadius.circular(15)),
       child: widget.orderItems.isNotEmpty
           ? ListView.builder(
@@ -186,7 +186,7 @@ class _SplitBillState extends State<SplitBill> {
       height: height,
       padding: EdgeInsets.all(width * 0.02),
       decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.background,
+          color: Theme.of(context).colorScheme.onSecondary,
           borderRadius: BorderRadius.circular(15)),
       child: widget.subOrderItems.isNotEmpty
           ? ListView.builder(

@@ -60,7 +60,7 @@ class CustomDialog extends StatelessWidget {
                 height: height * 0.6,
                 width: (width * 0.6) * 0.65,
                 decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.background,
+                    color: Theme.of(context).colorScheme.onSecondary,
                     borderRadius: BorderRadius.circular(15)),
                 child: BlocConsumer<EanBloc, EanState>(
                   bloc: BlocProvider.of(context)..add(EmptyEan()),

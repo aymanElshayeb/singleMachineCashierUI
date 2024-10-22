@@ -205,7 +205,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
       padding: const EdgeInsets.all(3.0),
       margin: const EdgeInsets.all(8.0),
       decoration: BoxDecoration(
-          color: Theme.of(context).primaryColor,
+          color: Theme.of(context).primaryColorDark,
           borderRadius: const BorderRadius.all(Radius.circular(5.0))),
       child: Center(
           child:
@@ -236,12 +236,12 @@ class _PaymentScreenState extends State<PaymentScreen> {
       padding: const EdgeInsets.all(8.0),
       child: ElevatedButton.icon(
           style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all(
-                  Theme.of(context).dialogBackgroundColor),
-              foregroundColor: MaterialStateProperty.all(
+              backgroundColor: WidgetStateProperty.all(
+                  Theme.of(context).buttonTheme.colorScheme!.onPrimary),
+              foregroundColor: WidgetStateProperty.all(
                   Theme.of(context).textTheme.labelLarge!.color),
-              padding: const MaterialStatePropertyAll(EdgeInsets.all(16)),
-              fixedSize: MaterialStatePropertyAll(Size(
+              padding: const WidgetStatePropertyAll (EdgeInsets.all(16)),
+              fixedSize: WidgetStatePropertyAll(Size(
                 MediaQuery.of(context).size.width * 0.230,
                 MediaQuery.of(context).size.height * 0.077,
               ))),

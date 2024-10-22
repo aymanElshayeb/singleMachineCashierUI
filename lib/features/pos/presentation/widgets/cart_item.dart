@@ -18,7 +18,7 @@ class CartItem extends StatelessWidget {
     double height = MediaQuery.of(context).size.height;
 
     return SizedBox(
-      height: height * 0.15,
+      height: height * 0.2,
       child: Card(
           color: Theme.of(context).cardColor,
           semanticContainer: true,
@@ -50,7 +50,7 @@ class CartItem extends StatelessWidget {
                   width: width * 0.06,
                   height: height * 0.035,
                   decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.background,
+                      color: Theme.of(context).colorScheme.onSecondary,
                       borderRadius:
                           const BorderRadius.all(Radius.circular(8.0))),
                   child: Row(

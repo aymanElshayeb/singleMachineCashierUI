@@ -80,9 +80,9 @@ class _NumberButton extends StatelessWidget {
           onNumberPressed(value);
         },
         style: ElevatedButton.styleFrom(
-          foregroundColor: theme.primaryColorDark,
-          backgroundColor: theme.primaryColor,
-          padding: const EdgeInsets.all(16.0), // Adjust the padding for spacing
+          foregroundColor: theme.canvasColor,
+          backgroundColor: theme.buttonTheme.colorScheme!.onPrimary,
+          padding: const EdgeInsets.all(30.0), // Adjust the padding for spacing
         ),
         child: Text(
           number.toString(),
@@ -110,13 +110,13 @@ class _DecimalPointButton extends StatelessWidget {
         onPressed: onDecimalPointPressed,
         style: ElevatedButton.styleFrom(
           foregroundColor: theme.primaryColorDark,
-          backgroundColor: floatingPointMode ? theme.primaryColor : Colors.grey,
+          backgroundColor: floatingPointMode ? theme.buttonTheme.colorScheme!.onPrimary : Colors.grey,
           padding: buttonPadding,
         ),
         child: Text(
           '.',
           style: TextStyle(
-            fontSize: 24.0,
+            fontSize: 30.0,
             color: floatingPointMode
                 ? Colors.white
                 : theme.primaryColor, // Change color when in floating mode
@@ -143,7 +143,7 @@ class _BackspaceButton extends StatelessWidget {
         onPressed: onBackspacePressed,
         style: ElevatedButton.styleFrom(
           foregroundColor: theme.primaryColorDark,
-          backgroundColor: theme.primaryColor,
+          backgroundColor: theme.buttonTheme.colorScheme!.onPrimary,
           padding: const EdgeInsets.all(16.0), // Adjust the padding for spacing
         ),
         child: Icon(

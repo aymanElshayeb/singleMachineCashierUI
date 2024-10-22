@@ -34,7 +34,7 @@ class _DeviceMangamentState extends State<DeviceMangament> {
           width: screenwidth * 0.7,
           height: screenheight * 0.9,
           decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.background,
+              color: Theme.of(context).colorScheme.onSecondary,
               borderRadius: BorderRadius.circular(15)),
           child: Column(children: [
             Container(

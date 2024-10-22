@@ -16,7 +16,7 @@ class MenuBackground extends StatelessWidget {
         padding:
             EdgeInsets.all((width ?? MediaQuery.of(context).size.width) * 0.02),
         decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.background,
+            color: Theme.of(context).colorScheme.onSecondary,
             borderRadius: BorderRadius.circular(15)),
         child: content);
   }
