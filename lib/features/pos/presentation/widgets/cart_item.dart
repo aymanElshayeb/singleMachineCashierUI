@@ -48,7 +48,7 @@ class CartItem extends StatelessWidget {
                         fontWeight: FontWeight.bold, fontSize: height * 0.019)),
                 Container(
                   width: width * 0.06,
-                  height: height * 0.035,
+                  height: height * 0.034,
                   decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.onSecondary,
                       borderRadius:
