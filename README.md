@@ -1,19 +1,88 @@
-# single_machine_cashier_ui
+# singleMachineCashierUI
+
+A fully dockerized Point of Sale (POS) system consisting of:
+
+* **🖥️ Flutter App** (Desktop POS Client)
+*  Flutter package for Authentication
+* **👥 Auth Service** (Node.js / JWT)
+* **🛍️ POS Service** (Node.js / Products, Categories, Orders)
+* **📄 Invoicing Service** (Node.js / Invoices & Printing, supporting both **TSE in Germany** and **ZATCA e-invoicing in Saudi Arabia**, configured via `.env`)
+
+All services use a **single MongoDB database**.
+
+## ⚡️ Architecture Diagram
+
+```
+[ Flutter App ]
+       |
+       v
+[ Auth Service ] ---> [ MongoDB ]
+       |
+       v
+[ POS Service ] ---> [ MongoDB ]
+       |
+       v
+[ Invoicing Service ] ---> [ MongoDB ]
+```
+
+## ✅ Repos
+
+* **Auth Service:** [Authentication Service](https://github.com/aymanElshayeb/authentication-module-node)
+* **POS Service:** [POS node service](https://github.com/aymanElshayeb/pos-node)
+* **Invoicing Service:** [Invoicing Service](https://github.com/aymanElshayeb/invoicing-node)
+* **Flutter App:** (This repo)
+* **Flutter Package:** [Auth Package](https://github.com/aymanElshayeb/authentication-package)
+
+## ⚡️ Prerequisites
+
+* 🐳 [Docker & Docker Compose](https://docs.docker.com/compose/install/)
+* 💻 [Node.js & NPM](https://nodejs.org/)
+* 📱 [Flutter](https://docs.flutter.dev/get-started/install)
+
+## ⚡️ Setup Instructions
+
+1️⃣ **Clone All Repos**
+
+```bash
+git clone https://github.com/aymanElshayeb/authentication-module-node.git
+git clone https://github.com/aymanElshayeb/pos-node.git
+git clone https://github.com/aymanElshayeb/invoicing-node.git
+git clone https://github.com/aymanElshayeb/authentication-package.git
+```
 
 
-# steps to run the desktop POS app:
-1. install mongodb local server, from [here](https://www.mongodb.com/docs/manual/tutorial/install-mongodb-on-windows/)
-2. install the centralized authentication node js module from [auth repo](https://github.com/AhmedMostafaMohamed/authentication-module-node)
-3. open the authentication directory and then open cmd and use the command `node app.js` to run the server
-4. install the pos backend node js server from this [pos repo](https://github.com/AhmedMostafaMohamed/pos-node)
-5. run the server with the same mentioned method
-6. install the invoicing node js backend server from [invoicing repo](https://github.com/AhmedMostafaMohamed/invoicing-node)
-7. run the server with the same mentioned method
-8. download the latest release.zip file and run the .exe file
+2️⃣ **Final Directory Layout**
 
-# web POS app:
-you can open pos app through the [POS website](https://pos-system-fe6f1.firebaseapp.com/) or through the desktop app located inside the relase directory
-  ## notes
-  - only Gmail sign in works for now
-  - to be able to sign in you should first make sure your gmail has access to this site through **User Management App**
+```
+flutter_app/
+├─ docker-compose.yml
+├─ auth_service/
+├─ pos_service/
+├─ invoicing_service/
+├─ flutter_auth_package/
+```
+
+3️⃣ **Build Services with Docker**
+
+```bash
+docker compose up --build
+```
+
+4️⃣ **Run Flutter App**
+
+```bash
+cd flutter_app
+flutter pub get
+flutter run
+```
+
+## ⚡️ Ports
+
+| Service           | Port                          |
+| ----------------- | ----------------------------- |
+| MongoDB           | 27017                         |
+| Auth Service      | 3005                          |
+| POS Service       | 3003                          |
+| Invoicing Service | 3006                          |
+| Flutter App       | As configured (default 56821) |
 
