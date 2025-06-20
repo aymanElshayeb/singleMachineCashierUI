@@ -1,0 +1,38 @@
+services:
+  mongodb:
+    image: mongo:6.0
+    container_name: pos_mongodb
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: adminpassword
+      MONGO_INITDB_DATABASE: pos_db
+
+  auth_service:
+    build: ./authentication-module-node
+    container_name: auth_service
+    ports:
+      - "3005:3005"
+    depends_on:
+      - mongodb
+  pos_service:
+    build: ./pos-node
+    container_name: pos_service
+    ports:
+      - "3003:3003"
+    depends_on:
+      - mongodb
+  invoicing_service:
+    build: ./invoicing-node
+    container_name: invoicing_service
+    ports:
+      - "3006:3006"
+    depends_on:
+      - mongodb
+
+volumes:
+  mongo_data:
